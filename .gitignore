@@ -154,3 +154,6 @@ cython_debug/
 
 db.env
 django.env
+
+.DS_Store
+.idea/

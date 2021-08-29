@@ -1,0 +1,354 @@
+from django.contrib import admin, messages
+from django.contrib.admin import ModelAdmin
+from django.contrib.gis.admin import OSMGeoAdmin
+from django.db import models
+from django.forms import TextInput, Textarea
+from django.http import HttpResponseRedirect
+from django.urls import path
+from django.utils.html import format_html
+from django_admin_row_actions import AdminRowActionsMixin
+
+from app.models import EducationFacility, Device, Municipality, ServerAttribute, Platform, \
+    EducationalFacilityMembership, DeviceConnection, CronJobExecution, CronJob
+from app.rabbitops.rabbit_task import RabbitTask
+from app.rabbitops.rabbit_task_producer import RabbitTaskProducer
+from app.system.dockerops import DockerOps
+
+
+def get_form_field_overrides():
+    return {
+        models.CharField: {'widget': TextInput(attrs={'size': '40'})},
+        models.EmailField: {'widget': TextInput(attrs={'size': '40'})},
+        models.GenericIPAddressField: {'widget': TextInput(attrs={'size': '40'})},
+        models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})}
+    }
+
+
+class EducationFacilityInlineAdmin(admin.TabularInline):
+    model = EducationFacility
+    can_delete = False
+    extra = 0
+    show_change_link = False
+    readonly_fields = ['created_at', 'updated_at']
+    fields = ['code', 'name', 'type', 'address', 'municipality', 'updated_at']
+    formfield_overrides = get_form_field_overrides()
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+class EducationalFacilityMembershipInline(admin.TabularInline):
+    model = EducationalFacilityMembership
+    can_delete = True
+    extra = 0
+    show_change_link = True
+    fields = ['user', 'created_at']
+    readonly_fields = ['created_at', ]
+    formfield_overrides = get_form_field_overrides()
+
+
+@admin.register(Municipality)
+class MunicipalityAdmin(OSMGeoAdmin):
+    list_display = ('name', 'code', 'created_at', 'updated_at')
+    list_display_links = ('name',)
+    list_filter = ('name', 'code')
+    fieldsets = [
+        (None, {'fields': ['name', 'code', 'area']}),
+    ]
+    formfield_overrides = get_form_field_overrides()
+    inlines = [EducationFacilityInlineAdmin, ]
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+
+class DeviceInlineAdmin(admin.TabularInline):
+    model = Device
+    can_delete = True
+    extra = 0
+    show_change_link = True
+    readonly_fields = ['status', 'created_at', 'updated_at']
+    fields = ['device_id', 'name', 'type', 'status', 'educational_facility']
+    formfield_overrides = get_form_field_overrides()
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(EducationFacility)
+class EducationFacilityAdmin(OSMGeoAdmin):
+    list_display = ('code', 'name', 'type', 'address', 'municipality', 'updated_at')
+    list_display_links = ('code', 'name',)
+    list_filter = ('type',)
+    readonly_fields = ['created_at', 'updated_at']
+    fieldsets = [
+        (None, {'fields': (
+            'code', 'name',
+            'address', 'email',
+            'type', 'municipality',
+            'location',
+            'description',
+            'created_at', 'updated_at')})
+    ]
+    inlines = [DeviceInlineAdmin, EducationalFacilityMembershipInline, ]
+    formfield_overrides = get_form_field_overrides()
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+
+class DeviceConnectionInlineAdmin(admin.TabularInline):
+    model = DeviceConnection
+    can_delete = False
+    extra = 0
+    show_change_link = False
+    readonly_fields = ['name', 'user', 'client_id', 'msg_cnt', 'msg_rate',
+                       'ip_address', 'faults', 'state', 'connected_at', 'terminated_at']
+    fields = ['client_id', 'faults', 'msg_cnt', 'msg_rate', 'state', 'connected_at', 'terminated_at']
+    formfield_overrides = get_form_field_overrides()
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(Device)
+class DeviceAdmin(AdminRowActionsMixin, OSMGeoAdmin):
+    actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container']
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        RabbitTaskProducer.publish_task(RabbitTask("register_device", obj.device_id))
+
+    def register(self, request, queryset):
+        for device in queryset:
+            RabbitTaskProducer.publish_task(RabbitTask("register_device", device.device_id))
+
+    def activate(self, request, queryset):
+        for device in queryset:
+            RabbitTaskProducer.publish_task(RabbitTask("activate_device", device.device_id))
+
+    def deactivate(self, request, queryset):
+        for device in queryset:
+            RabbitTaskProducer.publish_task(RabbitTask("deactivate_device", device.device_id))
+
+    def terminate(self, request, queryset):
+        for device in queryset:
+            RabbitTaskProducer.publish_task(RabbitTask("terminate_device", device.device_id))
+
+    def start_container(self, request, queryset):
+        for device in queryset:
+            DockerOps.start_demo_container(device)
+            # only_one
+            break
+        RabbitTaskProducer.publish_task(RabbitTask("list_connections", 0))
+        messages.add_message(request, messages.INFO, 'Device demo will soon be started. Refresh page for updates.')
+
+    def stop_container(self, request, queryset):
+        for device in queryset:
+            DockerOps.stop_demo_container(device)
+            # only_one
+            break
+        RabbitTaskProducer.publish_task(RabbitTask("list_connections", 0))
+        messages.add_message(request, messages.INFO, 'Device demo will soon be stopped. Refresh page for updates.')
+
+    def state(self, obj):
+        connection = DeviceConnection.objects.filter(device=obj).last()
+        s = "UNKNOWN" if not connection else connection.state
+        colors = {
+            'RUNNING': '#44B78B',
+            'TERMINATED': '#A41515',
+            'UNKNOWN': '#0C4B33',
+        }
+        return format_html('<b style="color:{};">{}</b>', colors[s], s,)
+
+    def activation_status(self, obj):
+        colors = {
+            'NEW': '#0C4B33',
+            'REGISTERED': '#0C4B33',
+            'ACTIVATED': '#44B78B',
+            'DEACTIVATED': '#A41515',
+            'TERMINATED': '#A41515',
+        }
+        return format_html('<b style="color:{};">{}</b>', colors[obj.status], obj.status,)
+
+    state.admin_order_field = 'unknown'
+    activation_status.admin_order_field = 'unknown'
+    register.short_description = "Register devices"
+    activate.short_description = "Activate devices"
+    deactivate.short_description = "Deactivate devices"
+    terminate.short_description = "Terminate devices"
+    start_container.short_description = "Start devices (demo)"
+    stop_container.short_description = "Stop devices (demo)"
+
+    def get_row_actions(self, obj):
+        row_actions = []
+        row_actions += super(DeviceAdmin, self).get_row_actions(obj)
+        return row_actions
+
+    list_display = ('device_id', 'name', 'type', 'educational_facility', 'activation_status', 'state')
+    list_display_links = ('device_id', 'name')
+    list_filter = ('status', 'type')
+    readonly_fields = ['status', 'created_at', 'updated_at', 'state']
+    fieldsets = [
+        (None, {'fields': (
+            ('device_id', 'type'),
+            ('name', 'profile'),
+            ('description', 'educational_facility')
+        )}),
+        ('Location', {'fields': ('address', 'location')}),
+        ('Confidential', {'fields': ('device_pass', 'device_key', 'ip_address'), 'classes': ['collapse']}),
+    ]
+
+    inlines = [DeviceConnectionInlineAdmin, ]
+    formfield_overrides = get_form_field_overrides()
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+
+class CronJobExecutionAdmin(admin.TabularInline):
+    model = CronJobExecution
+    can_delete = False
+    extra = 0
+    show_change_link = False
+    formfield_overrides = get_form_field_overrides()
+    fields = ['runid', 'job_pid', 'status', 'start_time', 'end_time']
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+class CronJobList(admin.TabularInline):
+    model = CronJob
+    can_delete = False
+    extra = 0
+    show_change_link = True
+    formfield_overrides = get_form_field_overrides()
+    fields = ['jobid', 'jobname', 'schedule', 'command']
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(CronJob)
+class CronJobAdmin(ModelAdmin):
+    list_display = ('jobid', 'jobname', 'schedule')
+    list_display_links = ('jobid', 'jobname',)
+    inlines = [CronJobExecutionAdmin, ]
+    formfield_overrides = get_form_field_overrides()
+
+    readonly_fields = ['jobid', 'jobname']
+    fieldsets = [
+        (None, {'fields': (
+            'jobid',
+            'jobname',
+            'schedule',
+            'command')
+        })
+    ]
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+class AttributesAdminInline(admin.TabularInline):
+    model = ServerAttribute
+    can_delete = True
+    extra = 0
+    show_change_link = True
+    readonly_fields = ['created_at', 'updated_at']
+    fields = ['name', 'value']
+    formfield_overrides = get_form_field_overrides()
+
+
+@admin.register(Platform)
+class PlatformAdmin(ModelAdmin):
+    change_list_template = "admin/platform_changelist.html"
+    list_display = ('name', 'description')
+    list_display_links = ('name',)
+    fieldsets = [
+        (None, {'fields': ['name', 'description']}),
+    ]
+    inlines = [AttributesAdminInline, ]
+    formfield_overrides = get_form_field_overrides()
+
+    def has_add_permission(self, request):
+        if self.model.objects.count() >= 1:
+            return False
+        return super().has_add_permission(request)
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            path('connections/', self.get_connections),
+            path('overview/', self.get_overview),
+        ]
+        return my_urls + urls
+
+    def get_connections(self, request):
+        self.message_user(request, "Getting connections ...")
+        RabbitTaskProducer.publish_task(RabbitTask("list_connections", 0))
+        return HttpResponseRedirect("../")
+
+    def get_overview(self, request):
+        self.message_user(request, "Getting overview ...")
+        RabbitTaskProducer.publish_task(RabbitTask("get_overview", 0))
+        return HttpResponseRedirect("../")
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
