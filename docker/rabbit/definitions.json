@@ -1,0 +1,205 @@
+{
+  "rabbit_version": "3.8.21",
+  "rabbitmq_version": "3.8.21",
+  "product_name": "RabbitMQ",
+  "product_version": "3.8.21",
+  "users": [
+    {
+      "name": "guest",
+      "password_hash": "n5shg0JG1EtNzz/JXMCuC+znmj6acHeseQMlJSWmN3h/FAQh",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator",
+      "limits": {}
+    },
+    {
+      "name": "amqptaskconsumer",
+      "password_hash": "NppQmaEmFuCDx1hIcXWs84ya30Ij29EDS8hXjjIqdU5HOTL5",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator",
+      "limits": {}
+    },
+    {
+      "name": "rabbitmngmt",
+      "password_hash": "VqwJRT2QsT/zzPlT7xNUYtRBqd8mtIs6FBGxyoC3sFhNpiMM",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator",
+      "limits": {}
+    },
+    {
+      "name": "mqtteventproducer",
+      "password_hash": "ENrX84wdaGdtf4/MvE7VTShxlssERZ5KB2T+ILVBPhd3gApB",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator",
+      "limits": {}
+    },
+    {
+      "name": "amqptaskproducer",
+      "password_hash": "WQTjp8oYDJesx6r9j6QjbuJoKcKJnFl/gknHhgGAs02XCLsC",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator",
+      "limits": {}
+    },
+    {
+      "name": "amqpingest",
+      "password_hash": "Brtimk/Z4mHCER95k2cvwTErhTgcPNZ1n3xNFo1nxt08ZeT9",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator",
+      "limits": {}
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "amqptaskproducer",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "mqtteventproducer",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "guest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "amqptaskconsumer",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "amqpingest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "rabbitmngmt",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "topic_permissions": [
+    {
+      "user": "rabbitmngmt",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "amqptaskproducer",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "mqtteventproducer",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "amqpingest",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "amqptaskconsumer",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "parameters": [],
+  "global_parameters": [
+    {
+      "name": "cluster_name",
+      "value": "rabbit@rabbit1"
+    }
+  ],
+  "policies": [],
+  "queues": [
+    {
+      "name": "mq2_amqp",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "tasks_amqp_delay",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "amq.direct",
+        "x-dead-letter-routing-key": "tasks.amqp",
+        "x-message-ttl": 30000
+      }
+    },
+    {
+      "name": "tasks_amqp",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "aliveness-test",
+      "vhost": "/",
+      "durable": false,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "exchanges": [],
+  "bindings": [
+    {
+      "source": "amq.direct",
+      "vhost": "/",
+      "destination": "tasks_amqp",
+      "destination_type": "queue",
+      "routing_key": "tasks.amqp",
+      "arguments": {}
+    },
+    {
+      "source": "amq.topic",
+      "vhost": "/",
+      "destination": "mq2_amqp",
+      "destination_type": "queue",
+      "routing_key": "v1.devices.#.actions.ingest",
+      "arguments": {}
+    },
+    {
+      "source": "amq.topic",
+      "vhost": "/",
+      "destination": "tasks_amqp",
+      "destination_type": "queue",
+      "routing_key": "v1.devices.actions",
+      "arguments": {}
+    }
+  ]
+}
