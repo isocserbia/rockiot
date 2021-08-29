@@ -1,0 +1,16 @@
+django
+djangorestframework
+djangorestframework-gis
+djangorestframework-simplejwt
+psycopg2-binary
+pika
+paho-mqtt
+configparser
+python-decouple
+django-admin-interface
+pyrabbit2
+dataclasses-json
+drf-yasg
+requests
+docker
+django-admin-row-actions
