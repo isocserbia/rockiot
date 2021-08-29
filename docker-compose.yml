@@ -1,0 +1,165 @@
+version: '3'
+
+services:
+
+  timescaledb:
+    container_name: rockiot_timescale
+    build:
+      context: ./docker/timescale
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USERNAME: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "rock_iot"
+      PG_DATA: "$HOME/docker/postgres/data"
+    volumes:
+      - $HOME/docker/postgres/data:/var/lib/postgresql/data
+    networks:
+      - app-tier
+
+  rabbit1:
+    container_name: rockiot_rabbitmq
+    build:
+      context: ./docker/rabbit
+    hostname: rabbit1
+    volumes:
+      - ./docker/rabbit/rabbitmq_enabled_plugins:/etc/rabbitmq/enabled_plugins
+      - $HOME/docker/rabbitmq/data:/var/lib/rabbitmq/mnesia/
+    networks:
+      - app-tier
+    ports:
+      - "5671:5671"
+      - "5672:5672"
+      - "1883:1883"
+      - "8883:8883"
+      - "15672:15672"
+
+  rockiot:
+    container_name: rockiot_app
+    build: rockiot
+    ports:
+      - 8000:8000
+    env_file:
+      - db.env
+      - common.env
+      - django.env
+    environment:
+      - BROKER_EXCHANGE=amq.topic
+      - WAIT_HOSTS=rabbit1:8883
+    depends_on:
+      - timescaledb
+      - rabbit1
+    networks:
+      - app-tier
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  rockiot_ingest:
+    container_name: rockiot_ingest
+    build: rockiot_ingest
+    env_file:
+      - db.env
+      - common.env
+    environment:
+      - BROKER_USER=amqpingest
+      - BROKER_PASS=amqpingest_pass
+      - BROKER_QUEUE=mq2_amqp
+      - WAIT_HOSTS=rabbit1:8883
+    depends_on:
+      - timescaledb
+      - rabbit1
+      - rockiot
+    networks:
+      - app-tier
+
+  rockiot_demo:
+    build: rockiot_demo
+    container_name: rockiot_demo_device1
+    env_file:
+      - common.env
+    environment:
+      - DEVICE_ID=device1
+      - DEVICE_PASS=device1pass
+      - DEVICE_KEY=4OrcNTFSZUrYX6NqP0P3lz
+      - DEMO_SLEEP_SECONDS=3
+      - DEMO_IS_SSL=True
+      - WAIT_HOSTS=rabbit1:8883
+    depends_on:
+      - rockiot
+      - rockiot_ingest
+    networks:
+      - app-tier
+    labels:
+      org.rockiot.image.type: "rockiot-demo"
+
+  pgadmin:
+    image: biarms/pgadmin4:4.21
+    container_name: rockiot_pgadmin
+    ports:
+      - "5050:5050"
+    depends_on:
+      - timescaledb
+    environment:
+      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+    volumes:
+      - $HOME/docker/pgadmin/data:/var/lib/pgadmin
+    networks:
+      - app-tier
+
+#  prometheus:
+#    image: prom/prometheus:v2.28.1
+#    container_name: rockiot_prometheus
+#    hostname: prometheus
+#    ports:
+#      - "9090:9090"
+#    volumes:
+#      - $HOME/docker/prometheus/data:/prometheus
+#      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+#    networks:
+#      - app-tier
+#
+#  grafana:
+#    image: grafana/grafana:7.1.5
+#    container_name: rockiot_grafana
+#    ports:
+#      - "3000:3000"
+#    depends_on:
+#      - timescaledb
+#    environment:
+#      - WAIT_HOSTS=timescaledb:5432,rockiot:8000,rabbit1:8883
+#      - GF_INSTALL_PLUGINS=flant-statusmap-panel,grafana-piechart-panel
+#    networks:
+#      - app-tier
+#    volumes:
+#      - $HOME/docker/grafana/data:/var/lib/grafana
+#      - ./docker/grafana/provisioning/:/etc/grafana/provisioning/
+
+#  nginx:
+#    image: rockiot_nginx:latest
+#    build:
+#      context: ./docker/nginx
+#    container_name: rockiot_nginx
+#    hostname: rockiotgate
+##    restart: never
+#    ports:
+#      - 80:80
+#      - 443:443
+#    networks:
+#      - app-tier
+
+#  rabbitproxy:
+#    build: ./docker/haproxy
+#    hostname: rabbitproxy
+#    ports:
+#     - 8080:8080
+#    networks:
+#     - app-tier
+#    depends_on:
+#      - rabbit1
+#    environment:
+#      - WAIT_HOSTS=rabbit1:1883
+
+networks:
+  app-tier:
+    driver: bridge
