@@ -7,15 +7,21 @@ verify_ssl = true
 
 [packages]
 djangorestframework = "*"
-martor = "*"
-gunicorn = "*"
-Django = "*"
+djangorestframework-gis = "*"
+djangorestframework-simplejwt = "*"
 psycopg2-binary = "*"
-celery = "*"
-kombu = "*"
-celery-message-consumer = "*"
 pika = "*"
 paho-mqtt = "*"
+configparser = "*"
+python-decouple = "*"
+django-admin-interface = "*"
+pyrabbit2 = "*"
+dataclasses-json = "*"
+drf-yasg = "*"
+requests = "*"
+docker = "*"
+django-admin-row-actions = "*"
+Django = "*"
 
 [requires]
 python_version = "3.7"
