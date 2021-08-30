@@ -3,13 +3,11 @@ from django.contrib.admin import ModelAdmin
 from django.contrib.gis.admin import OSMGeoAdmin
 from django.db import models
 from django.forms import TextInput, Textarea
-from django.http import HttpResponseRedirect
-from django.urls import path
 from django.utils.html import format_html
 from django_admin_row_actions import AdminRowActionsMixin
 
-from app.models import EducationFacility, Device, Municipality, ServerAttribute, Platform, \
-    EducationalFacilityMembership, DeviceConnection, CronJobExecution, CronJob
+from app.models import Facility, Device, Municipality, PlatformAttribute, Platform, \
+    FacilityMembership, DeviceConnection, CronJobExecution, CronJob
 from app.rabbitops.rabbit_task import RabbitTask
 from app.rabbitops.rabbit_task_producer import RabbitTaskProducer
 from app.system.dockerops import DockerOps
@@ -24,8 +22,8 @@ def get_form_field_overrides():
     }
 
 
-class EducationFacilityInlineAdmin(admin.TabularInline):
-    model = EducationFacility
+class FacilityInlineAdmin(admin.TabularInline):
+    model = Facility
     can_delete = False
     extra = 0
     show_change_link = False
@@ -43,8 +41,8 @@ class EducationFacilityInlineAdmin(admin.TabularInline):
         return False
 
 
-class EducationalFacilityMembershipInline(admin.TabularInline):
-    model = EducationalFacilityMembership
+class FacilityMembershipInline(admin.TabularInline):
+    model = FacilityMembership
     can_delete = True
     extra = 0
     show_change_link = True
@@ -62,7 +60,7 @@ class MunicipalityAdmin(OSMGeoAdmin):
         (None, {'fields': ['name', 'code', 'area']}),
     ]
     formfield_overrides = get_form_field_overrides()
-    inlines = [EducationFacilityInlineAdmin, ]
+    inlines = [FacilityInlineAdmin, ]
 
     def get_actions(self, request):
         actions = super().get_actions(request)
@@ -77,7 +75,7 @@ class DeviceInlineAdmin(admin.TabularInline):
     extra = 0
     show_change_link = True
     readonly_fields = ['status', 'created_at', 'updated_at']
-    fields = ['device_id', 'name', 'type', 'status', 'educational_facility']
+    fields = ['device_id', 'name', 'type', 'profile', 'status']
     formfield_overrides = get_form_field_overrides()
 
     def has_add_permission(self, request, obj=None):
@@ -90,8 +88,8 @@ class DeviceInlineAdmin(admin.TabularInline):
         return False
 
 
-@admin.register(EducationFacility)
-class EducationFacilityAdmin(OSMGeoAdmin):
+@admin.register(Facility)
+class FacilityAdmin(OSMGeoAdmin):
     list_display = ('code', 'name', 'type', 'address', 'municipality', 'updated_at')
     list_display_links = ('code', 'name',)
     list_filter = ('type',)
@@ -105,7 +103,7 @@ class EducationFacilityAdmin(OSMGeoAdmin):
             'description',
             'created_at', 'updated_at')})
     ]
-    inlines = [DeviceInlineAdmin, EducationalFacilityMembershipInline, ]
+    inlines = [DeviceInlineAdmin, FacilityMembershipInline, ]
     formfield_overrides = get_form_field_overrides()
 
     def get_actions(self, request):
@@ -209,7 +207,7 @@ class DeviceAdmin(AdminRowActionsMixin, OSMGeoAdmin):
         row_actions += super(DeviceAdmin, self).get_row_actions(obj)
         return row_actions
 
-    list_display = ('device_id', 'name', 'type', 'educational_facility', 'activation_status', 'state')
+    list_display = ('device_id', 'name', 'type', 'facility', 'activation_status', 'state')
     list_display_links = ('device_id', 'name')
     list_filter = ('status', 'type')
     readonly_fields = ['status', 'created_at', 'updated_at', 'state']
@@ -217,10 +215,10 @@ class DeviceAdmin(AdminRowActionsMixin, OSMGeoAdmin):
         (None, {'fields': (
             ('device_id', 'type'),
             ('name', 'profile'),
-            ('description', 'educational_facility')
+            ('description', 'facility')
         )}),
-        ('Location', {'fields': ('address', 'location')}),
-        ('Confidential', {'fields': ('device_pass', 'device_key', 'ip_address'), 'classes': ['collapse']}),
+        ('Location', {'fields': ('location',)}),
+        ('Confidential', {'fields': ('device_pass', 'device_key'), 'classes': ['collapse']}),
     ]
 
     inlines = [DeviceConnectionInlineAdmin, ]
@@ -300,7 +298,7 @@ class CronJobAdmin(ModelAdmin):
 
 
 class AttributesAdminInline(admin.TabularInline):
-    model = ServerAttribute
+    model = PlatformAttribute
     can_delete = True
     extra = 0
     show_change_link = True
@@ -327,24 +325,6 @@ class PlatformAdmin(ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
-
-    def get_urls(self):
-        urls = super().get_urls()
-        my_urls = [
-            path('connections/', self.get_connections),
-            path('overview/', self.get_overview),
-        ]
-        return my_urls + urls
-
-    def get_connections(self, request):
-        self.message_user(request, "Getting connections ...")
-        RabbitTaskProducer.publish_task(RabbitTask("list_connections", 0))
-        return HttpResponseRedirect("../")
-
-    def get_overview(self, request):
-        self.message_user(request, "Getting overview ...")
-        RabbitTaskProducer.publish_task(RabbitTask("get_overview", 0))
-        return HttpResponseRedirect("../")
 
     def get_actions(self, request):
         actions = super().get_actions(request)

@@ -12,7 +12,7 @@ def load_data_from_sql(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('app', '0017_auto_20210812_2051'),
+        ('app', '0027_auto_20210830_1855'),
     ]
 
     operations = [

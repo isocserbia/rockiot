@@ -1,6 +1,6 @@
 import logging
 from rest_framework import permissions
-from app.models import Device, EducationalFacilityMembership, EducationFacility
+from app.models import FacilityMembership, Facility
 
 logger = logging.getLogger(__name__)
 
@@ -24,14 +24,14 @@ class UserFacilityPermission(permissions.BasePermission):
                            (request.user, request.get_full_path))
             return False
 
-        educational_facility = EducationFacility.objects.filter(slug=code).first()
-        if not educational_facility:
+        facility = Facility.objects.filter(code=code).first()
+        if not facility:
             logger.warning("no such facility [user: %s] [facility: %s] [path: %s]" %
                            (request.user, code, request.get_full_path))
             return False
 
-        member = EducationalFacilityMembership.objects.filter(educational_facility=educational_facility,
-                                                              user=request.user).first()
+        member = FacilityMembership.objects.filter(facility=facility,
+                                                   user=request.user).first()
         if not member:
             logger.warning("no membership for facility [user: %s] [facility: %s] [path: %s]" %
                            (request.user, code, request.get_full_path))

@@ -67,11 +67,11 @@ envs = [env_dict_2, env_dict_3, env_dict_4, env_dict_5, env_dict_6, env_dict_7, 
 for e in envs:
     container = client.containers.run(
         command="/start.sh",
-        image='rockiot_rockiot_demo',
-        name=f'rockiot_rockiot_demo_{e["DEVICE_ID"]}',
+        image='rockiot_demo',
+        name=f'rockiot_project_rockiot_demo_{e["DEVICE_ID"]}',
         detach=True,
         environment=e,
-        network="rockiot_app-tier"
+        network="rockiot_project_app-tier"
     )
 
 

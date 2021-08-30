@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 class Municipality(models.Model):
     name = models.CharField(max_length=100)
-    code = models.CharField('ISO Code', max_length=4, null=True)
+    code = models.CharField(max_length=100, null=True)
     area = gismodels.MultiPolygonField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -25,8 +25,12 @@ class Municipality(models.Model):
     def __str__(self):
         return str(self.name)
 
+    def save(self, *args, **kwargs):
+        self.code = slugify(self.name)
+        super(Municipality, self).save(*args, **kwargs)
 
-class EducationFacility(models.Model):
+
+class Facility(models.Model):
     ELEMENTARY_SCHOOL = 'ELEMENTARY_SCHOOL'
     HIGH_SCHOOL = 'HIGH_SCHOOL'
     FACULTY = 'FACULTY'
@@ -46,16 +50,14 @@ class EducationFacility(models.Model):
     municipality = models.ForeignKey(Municipality, related_name='facilities',
                                      db_column='municipality_id', on_delete=models.PROTECT)
     address = models.CharField(max_length=250)
-    lon = models.FloatField('Longitude', null=True, blank=True)
-    lat = models.FloatField('Latitude', null=True, blank=True)
     location = gismodels.PointField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     users = models.ManyToManyField(
         User,
-        through='EducationalFacilityMembership',
-        through_fields=('educational_facility', 'user'),
+        through='FacilityMembership',
+        through_fields=('facility', 'user'),
     )
 
     class Meta:
@@ -66,13 +68,21 @@ class EducationFacility(models.Model):
     def __str__(self):
         return str(self.name)
 
+    @property
+    def lon(self):
+        return None if not self.location else self.location.coords[0]
+
+    @property
+    def lat(self):
+        return None if not self.location else self.location.coords[1]
+
     def save(self, *args, **kwargs):
         self.code = slugify(self.name)
-        super(EducationFacility, self).save(*args, **kwargs)
+        super(Facility, self).save(*args, **kwargs)
 
 
-class EducationalFacilityMembership(models.Model):
-    educational_facility = models.ForeignKey(EducationFacility, on_delete=models.CASCADE)
+class FacilityMembership(models.Model):
+    facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -115,12 +125,9 @@ class Device(models.Model):
     name = models.CharField(max_length=30, null=False)
     type = models.CharField(max_length=20, null=False, choices=TYPES, default=SENSOR)
     description = models.TextField(blank=True, null=True)
-    address = models.CharField(max_length=250)
-    lon = models.FloatField('Longitude', null=True, blank=True)
-    lat = models.FloatField('Latitude', null=True, blank=True)
     location = gismodels.PointField(null=True)
-    educational_facility = models.ForeignKey(EducationFacility, related_name='devices',
-                                             db_column='education_facility_id', on_delete=models.PROTECT)
+    facility = models.ForeignKey(Facility, related_name='devices',
+                                 db_column='facility_id', on_delete=models.PROTECT)
     device_id = models.CharField(max_length=50, null=True)
     device_pass = models.CharField(max_length=128, null=True)
     device_key = models.CharField(max_length=128, null=True)
@@ -128,7 +135,6 @@ class Device(models.Model):
     status = models.CharField(max_length=20, null=False, choices=STATUSES, default=NEW)
     profile = models.CharField(max_length=20, null=False, choices=MODES, default=DEFAULT)
 
-    ip_address = models.GenericIPAddressField(null=True, blank=True)
     metadata = JSONField(default=default_device_metadata)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -158,6 +164,14 @@ class Device(models.Model):
     def can_deactivate(self):
         return self.status == Device.ACTIVATED
 
+    @property
+    def lon(self):
+        return None if not self.location else self.location.coords[0]
+
+    @property
+    def lat(self):
+        return None if not self.location else self.location.coords[1]
+
 
 class Platform(models.Model):
     name = models.CharField(max_length=30, null=False)
@@ -173,7 +187,7 @@ class Platform(models.Model):
         return str(self.name)
 
 
-class ServerAttribute(models.Model):
+class PlatformAttribute(models.Model):
     name = models.CharField(max_length=30, null=False)
     value = models.CharField(max_length=250, null=False)
     description = models.TextField(blank=True, null=True)
