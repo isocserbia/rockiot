@@ -13,7 +13,7 @@ config = settings.BROKER_CONFIG
 logger = logging.getLogger(__name__)
 
 ROCKIOT_DEMO_CONTAINER = 'rockiot_demo'
-ROCKIOT_DEMO_IMAGE = 'rockiot_rockiot_demo'
+ROCKIOT_DEMO_IMAGE = 'rockiot_project_rockiot_demo'
 
 
 class DockerOps:

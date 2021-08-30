@@ -1,3 +1,4 @@
+import rest_framework
 from rest_framework.serializers import CharField
 from rest_framework_gis import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -24,40 +25,38 @@ class MunicipalityModelSerializer(serializers.ModelSerializer):
 
 
 class DeviceModelSerializer(serializers.ModelSerializer):
+    lon = rest_framework.serializers.ReadOnlyField()
+    lat = rest_framework.serializers.ReadOnlyField()
+
     class Meta:
         model = Device
-        exclude = ["id", "device_pass", "device_key", "educational_facility", "location"]
+        exclude = ["id", "device_pass", "device_key", "facility", "location"]
 
 
-class EducationalFacilityMembershipSerializer(serializers.ModelSerializer):
+class FacilityMembershipSerializer(serializers.ModelSerializer):
     user_email = CharField(source='user.email')
 
     class Meta:
-        model = EducationalFacilityMembership
+        model = FacilityMembership
         fields = ["id", "user_email", "created_at"]
 
 
-class EducationFacilityModelSerializer(serializers.ModelSerializer):
+class FacilityModelSerializer(serializers.ModelSerializer):
     devices = DeviceModelSerializer(many=True, read_only=True)
     municipality = MunicipalityModelSerializer(many=False, read_only=True)
-    memberships = EducationalFacilityMembershipSerializer(many=True, read_only=True)
+    memberships = FacilityMembershipSerializer(many=True, read_only=True)
+    lon = rest_framework.serializers.ReadOnlyField()
+    lat = rest_framework.serializers.ReadOnlyField()
 
     class Meta:
-        model = EducationFacility
+        model = Facility
         fields = ['name', 'type', 'email', 'description', 'address', 'lon', 'lat',
                   'municipality', 'location', 'created_at', 'updated_at', 'devices', 'memberships']
 
 
-class EducationFacilitySerializer(serializers.GeoFeatureModelSerializer):
+class FacilitySerializer(serializers.GeoFeatureModelSerializer):
     class Meta:
-        model = EducationFacility
-        fields = ("id", "name")
-        geo_field = "location"
-
-
-class DeviceSerializer(serializers.GeoFeatureModelSerializer):
-    class Meta:
-        model = Device
+        model = Facility
         fields = ("id", "name")
         geo_field = "location"
 

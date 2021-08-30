@@ -1,22 +1,18 @@
 """Markers view."""
+from django.shortcuts import get_object_or_404
+from django.views.generic.base import TemplateView
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
-
-from app.models import EducationFacility, SensorData, SensorDataLastValues, Device, Municipality, \
-    SensorsDataRollupAbstract
-from app.serializers import EducationFacilityModelSerializer, MyTokenObtainPairSerializer, SensorDataSerializer, \
-    SensorDataLastValuesSerializer, DeviceModelSerializer, \
-    SensorsDataRollupSerializer, MunicipalityModelSerializer, SensorsDataRollupWithDeviceSerializer
-from rest_framework import generics
-from django.views.generic.base import TemplateView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
 
-from app.system.user_facility_permission import UserFacilityPermission
-
-from django.shortcuts import get_object_or_404
-import datetime
+from app.models import Facility, SensorData, SensorDataLastValues, Device, Municipality, \
+    SensorsDataRollupAbstract
+from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer, SensorDataSerializer, \
+    SensorDataLastValuesSerializer, DeviceModelSerializer, \
+    SensorsDataRollupSerializer, MunicipalityModelSerializer, SensorsDataRollupWithDeviceSerializer
 
 
 class EducationFacilityMapView(TemplateView):
@@ -62,7 +58,7 @@ class MunicipalityList(generics.ListAPIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
 
 
-class EducationFacilityView(generics.RetrieveAPIView):
+class FacilityView(generics.RetrieveAPIView):
     @swagger_auto_schema(operation_description="Retrieve single Facility entity",
                          operation_summary="Gets Facility by code",
                          tags=['core'])
@@ -71,21 +67,21 @@ class EducationFacilityView(generics.RetrieveAPIView):
 
     def get_object(self):
         code = self.kwargs['code']
-        return get_object_or_404(EducationFacility, code)
+        return get_object_or_404(Facility, code)
 
-    serializer_class = EducationFacilityModelSerializer
-    permission_classes = [UserFacilityPermission]
+    serializer_class = FacilityModelSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
 
-class EducationFacilityList(generics.ListAPIView):
+class FacilityList(generics.ListAPIView):
     @swagger_auto_schema(operation_description="Retrieve list of all Facility entities",
                          operation_summary="Gets all Facilities",
                          tags=['core'])
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
-    queryset = EducationFacility.objects.all()
-    serializer_class = EducationFacilityModelSerializer
+    queryset = Facility.objects.all()
+    serializer_class = FacilityModelSerializer
     permission_classes = [IsAuthenticated, ]
 
 
@@ -178,7 +174,7 @@ class MunicipalitySensorsSummary(generics.ListAPIView):
         interval = self.request.query_params.get('interval')
         model_cls = SensorsDataRollupAbstract.get_class_for_interval(interval)
         mid = Municipality.objects.filter(code=code).first().id
-        eids = [e.id for e in EducationFacility.objects.filter(municipality__id=mid)]
+        eids = [e.id for e in Facility.objects.filter(municipality__id=mid)]
         ids = list([d.device_id for d in Device.objects.filter(educational_facility__id__in=eids)])
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
