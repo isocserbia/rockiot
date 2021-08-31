@@ -13,7 +13,7 @@ class DeviceAction:
 
 @dataclass_json
 @dataclass(init=True)
-class DeviceStatusEvent:
+class DeviceEvent:
     previous_status: str
     new_status: str
     school_id: str

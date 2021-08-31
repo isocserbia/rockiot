@@ -8,18 +8,19 @@ def date_converter(o):
         return o.__str__()
 
 
-def random_sensor_data(device_id, client_id, school_id):
+def random_sensor_data(device_id, client_id):
+    multi = float(uniform(1, 2))
     message = {
         "device_id": device_id,
         "client_id": client_id,
         "time": datetime.utcnow(),
         "data": {
-            "temperature": ("%.2f" % uniform(10.0 * (float(school_id) - 1), 10.0 * (float(school_id) + 1))),
-            "humidity": ("%.1f" % uniform(1.0 * (float(school_id) - 1), 1.0 * (float(school_id) + 1))),
-            "NO2": ("%.1f" % uniform(1.0 * (float(school_id) - 1), 1.0 * (float(school_id) + 2))),
-            "SO2": ("%.1f" % uniform(1.0 * (float(school_id) - 1), 1.0 * (float(school_id) + 3))),
-            "PM10": ("%.1f" % triangular(1.0 * (float(school_id) - 1), 1.0 * (float(school_id) + 1))),
-            "PM25": ("%.1f" % triangular(1.0 * (float(school_id) - 1), 1.0 * (float(school_id) + 1)))
+            "temperature": ("%.2f" % uniform(10.0 * multi, 10.0 * multi)),
+            "humidity": ("%.1f" % uniform(1.0 * multi, 2.0 * multi)),
+            "NO2": ("%.1f" % uniform(1.0 * multi, 2.0 * multi)),
+            "SO2": ("%.1f" % uniform(1.0 * multi, 2.0 * multi)),
+            "PM10": ("%.1f" % triangular(1.0 * multi, 2.0 * multi)),
+            "PM25": ("%.1f" % triangular(1.0 * multi, 2.0 * multi))
         }
     }
     return json.dumps(message,
