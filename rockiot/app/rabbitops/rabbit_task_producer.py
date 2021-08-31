@@ -1,5 +1,4 @@
 import logging
-import threading
 
 import pika
 from django.conf import settings
@@ -11,9 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 class RabbitTaskProducer:
-
-    __connection = None
-    __lock = threading.Lock()
 
     @staticmethod
     def publish_task(task: RabbitTask):
@@ -33,23 +29,14 @@ class RabbitTaskProducer:
 
     @classmethod
     def _get_connection(cls):
-        if not cls.__connection or cls.__connection.is_closed:
-            with cls.__lock:
-                if not cls.__connection or cls.__connection.is_closed:
-                    credentials = pika.credentials.PlainCredentials(
-                        username=config['AMQPTASKPRODUCER_USER'],
-                        password=config['AMQPTASKPRODUCER_PASS']
-                    )
-                    parameters = pika.ConnectionParameters(
-                        host=config['BROKER_HOST'],
-                        credentials=credentials,
-                        port=config['BROKER_AMQP_PORT'],
-                        heartbeat=60
-                    )
-                    cls.__connection = pika.BlockingConnection(parameters)
-                    logger.info("Initialized Pika Blocking Connection [user: %s] [connection: %s]"
-                                % (config['AMQPTASKPRODUCER_USER'], str(cls.__connection)))
-                    return cls.__connection
-
-        logger.info("Using existing Pika Blocking Connection [user: %s]" % (config['AMQPTASKPRODUCER_USER']))
-        return cls.__connection
+        credentials = pika.credentials.PlainCredentials(
+            username=config['AMQPTASKPRODUCER_USER'],
+            password=config['AMQPTASKPRODUCER_PASS']
+        )
+        parameters = pika.ConnectionParameters(
+            host=config['BROKER_HOST'],
+            credentials=credentials,
+            port=config['BROKER_AMQP_PORT'],
+            heartbeat=60
+        )
+        return pika.BlockingConnection(parameters)
