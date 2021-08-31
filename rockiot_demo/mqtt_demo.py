@@ -66,6 +66,7 @@ class MqttDemo(object):
     def try_to_reconnect(self):
         """Attempts to reconnect by stopping the loop, establishing new connection and starting new event loop"""
         self.client.loop_stop()
+        self.client = paho.Client(self.client_id)
         self.establish_connection()
         self.client.loop_start()
         print(self.identified + (" publisher %s loop re-started" % self.client_id))
