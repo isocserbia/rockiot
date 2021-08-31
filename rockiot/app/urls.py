@@ -1,6 +1,6 @@
 from django.urls import path
 
-from app.views import EducationFacilityMapView, FacilityList, MyTokenObtainPairView, FacilityView, \
+from app.views import FacilityMapView, FacilityList, MyTokenObtainPairView, FacilityView, \
     SensorDataList, SensorDataLastValuesList, DevicesList, \
     MunicipalitySensorsSummary, FacilitySensorsSummary, DeviceSensorsSummary, MunicipalityList, MunicipalityView, \
     MyTokenRefreshView
@@ -8,7 +8,7 @@ from app.views import EducationFacilityMapView, FacilityList, MyTokenObtainPairV
 app_name = "app"
 
 urlpatterns = [
-    path("map/", EducationFacilityMapView.as_view()),
+    path("map/", FacilityMapView.as_view()),
     path('municipalities/', MunicipalityList.as_view(), name='facility-list'),
     path('municipalities/<code>/', MunicipalityView.as_view(), name='facility-list'),
     path('municipalities/<code>/sensors/summary/', MunicipalitySensorsSummary.as_view(), name='municipality-sensors-list'),
