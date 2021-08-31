@@ -265,7 +265,7 @@ class RabbitOps:
             device.save()
 
             event = rabbit_events.DeviceStatusEvent.construct_activation(Device.REGISTERED, Device.ACTIVATED,
-                                                                         device.educational_facility.id,
+                                                                         device.facility.id,
                                                                          "Device activated")
             cls.paho_publisher.publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_key), device_id, event.to_json())
             logger.info("Device ingest user activated [device-id: %s]" % device_id)

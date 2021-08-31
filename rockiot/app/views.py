@@ -15,7 +15,7 @@ from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer
     SensorsDataRollupSerializer, MunicipalityModelSerializer, SensorsDataRollupWithDeviceSerializer
 
 
-class EducationFacilityMapView(TemplateView):
+class FacilityMapView(TemplateView):
     template_name = "map.html"
 
 
@@ -151,7 +151,7 @@ class FacilitySensorsSummary(generics.ListAPIView):
         code = self.kwargs['code']
         interval = self.request.query_params.get('interval')
         model_cls = SensorsDataRollupAbstract.get_class_for_interval(interval)
-        ids = list([d.device_id for d in Device.objects.filter(educational_facility__code=code)])
+        ids = list([d.device_id for d in Device.objects.filter(facility__code=code)])
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
         return model_cls.objects.filter(device_id__in=ids, time__date__gt=from_date, time__date__lt=until_date)
@@ -175,7 +175,7 @@ class MunicipalitySensorsSummary(generics.ListAPIView):
         model_cls = SensorsDataRollupAbstract.get_class_for_interval(interval)
         mid = Municipality.objects.filter(code=code).first().id
         eids = [e.id for e in Facility.objects.filter(municipality__id=mid)]
-        ids = list([d.device_id for d in Device.objects.filter(educational_facility__id__in=eids)])
+        ids = list([d.device_id for d in Device.objects.filter(facility__id__in=eids)])
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
         return model_cls.objects.filter(device_id__in=ids, time__date__gt=from_date, time__date__lt=until_date)
