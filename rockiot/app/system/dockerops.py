@@ -32,7 +32,6 @@ class DockerOps:
             env = dict(config)
             env['DEVICE_ID'] = device.device_id
             env['DEVICE_PASS'] = device.device_pass
-            env['DEVICE_KEY'] = device.device_key
 
             name = f'{ROCKIOT_DEMO_CONTAINER}_{env["DEVICE_ID"]}'
             containers = cls.__client.containers.list(ignore_removed=False, filters={"name": name})

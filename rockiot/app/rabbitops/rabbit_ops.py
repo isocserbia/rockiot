@@ -73,11 +73,11 @@ class RabbitOps:
                                 device_connection.terminated_at = datetime.datetime.now()
                                 device_connection.save()
                                 logger.info("%s connection terminated" % device.device_id)
-                                device_connection = DeviceConnection()
-                                device_connection.device = device
-                                device_connection.update_from_rabbitmq_connection(c)
-                                device_connection.save()
-                                logger.info("%s connection created" % device.device_id)
+                                dc = DeviceConnection()
+                                dc.device = device
+                                dc.update_from_rabbitmq_connection(c)
+                                dc.save()
+                                logger.info("%s connection created" % dc.device_id)
                         else:
                             device_connection.state = "TERMINATED"
                             device_connection.terminated_at = datetime.datetime.now()
@@ -195,7 +195,6 @@ class RabbitOps:
         vname = config['BROKER_VHOST']
         exchange = config['BROKER_EXCHANGE']
         device_pass = device.device_pass
-        device_key = device.device_key
 
         try:
             if isinstance(RabbitOps.client.create_user(device_id, device_pass, None, "device"), Exception):
@@ -211,7 +210,7 @@ class RabbitOps:
                 "exchange": exchange,
                 "write": config["BROKER_DEVICE_ACTIONS_TOPIC"],
                 "read": ("(" + config["BROKER_ATTRIBUTES_TOPIC"] + "|"
-                         + (config["BROKER_DEVICE_EVENTS_TOPIC"] % device_key) + ")")
+                         + (config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id) + ")")
             })
 
             action = "/api/topic-permissions/%s/%s" % (quote_plus(vname), device_id)
@@ -222,7 +221,7 @@ class RabbitOps:
             device.save()
 
             event = rabbit_events.DeviceStatusEvent.construct_status(Device.NEW, Device.REGISTERED, "Device registered")
-            cls.paho_publisher.publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_key), device_id, event.to_json())
+            cls.paho_publisher.publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id, event.to_json())
             logger.info("Device ingest user registered [device-id: %s]" % device_id)
             return True
 
@@ -244,7 +243,6 @@ class RabbitOps:
 
         vname = config['BROKER_VHOST']
         exchange = config['BROKER_EXCHANGE']
-        device_key = device.device_key
 
         try:
 
@@ -252,9 +250,9 @@ class RabbitOps:
                 "vhost": vname,
                 "exchange": exchange,
                 "write": ("(" + config["BROKER_DEVICE_ACTIONS_TOPIC"] + "|"
-                          + (config["BROKER_DEVICE_INGEST_TOPIC"] % device_key) + ")"),
+                          + (config["BROKER_DEVICE_INGEST_TOPIC"] % device_id) + ")"),
                 "read": ("(" + config["BROKER_ATTRIBUTES_TOPIC"] + "|"
-                         + (config["BROKER_DEVICE_EVENTS_TOPIC"] % device_key) + ")")
+                         + (config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id) + ")")
             })
 
             action = "/api/topic-permissions/%s/%s" % (quote_plus(vname), device_id)
@@ -267,7 +265,7 @@ class RabbitOps:
             event = rabbit_events.DeviceStatusEvent.construct_activation(Device.REGISTERED, Device.ACTIVATED,
                                                                          device.facility.id,
                                                                          "Device activated")
-            cls.paho_publisher.publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_key), device_id, event.to_json())
+            cls.paho_publisher.publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id, event.to_json())
             logger.info("Device ingest user activated [device-id: %s]" % device_id)
             return True
 

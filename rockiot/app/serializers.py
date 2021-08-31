@@ -30,7 +30,7 @@ class DeviceModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Device
-        exclude = ["id", "device_pass", "device_key", "facility", "location"]
+        exclude = ["id", "device_pass", "facility", "location"]
 
 
 class FacilityMembershipSerializer(serializers.ModelSerializer):

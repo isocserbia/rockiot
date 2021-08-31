@@ -174,7 +174,7 @@ class DeviceAdmin(AdminRowActionsMixin, OSMGeoAdmin):
         messages.add_message(request, messages.INFO, 'Device demo will soon be stopped. Refresh page for updates.')
 
     def state(self, obj):
-        connection = DeviceConnection.objects.filter(device=obj).last()
+        connection = DeviceConnection.objects.filter(device=obj).first()
         s = "UNKNOWN" if not connection else connection.state
         colors = {
             'RUNNING': '#44B78B',
@@ -218,7 +218,7 @@ class DeviceAdmin(AdminRowActionsMixin, OSMGeoAdmin):
             ('description', 'facility')
         )}),
         ('Location', {'fields': ('location',)}),
-        ('Confidential', {'fields': ('device_pass', 'device_key'), 'classes': ['collapse']}),
+        ('Confidential', {'fields': ('device_pass',), 'classes': ['collapse']}),
     ]
 
     inlines = [DeviceConnectionInlineAdmin, ]
