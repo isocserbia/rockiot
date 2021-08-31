@@ -99,6 +99,8 @@ services:
       - "5050:5050"
     depends_on:
       - timescaledb
+    env_file:
+      - common.env
     environment:
       - WAIT_HOSTS=timescaledb:5432,rockiot:8000
     volumes:
@@ -125,6 +127,8 @@ services:
       - "3000:3000"
     depends_on:
       - timescaledb
+    env_file:
+      - common.env
     environment:
       - WAIT_HOSTS=timescaledb:5432,rockiot:8000,rabbit1:8883
       - GF_INSTALL_PLUGINS=flant-statusmap-panel,grafana-piechart-panel
@@ -156,6 +160,8 @@ services:
 #     - app-tier
 #    depends_on:
 #      - rabbit1
+#    env_file:
+#      - common.env
 #    environment:
 #      - WAIT_HOSTS=rabbit1:1883
 

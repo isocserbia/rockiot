@@ -53,7 +53,7 @@ class RabbitOps:
                     connection_map[c_user] = c
                 devices = Device.objects.all()
                 for device in devices:
-                    device_connection = DeviceConnection.objects.filter(device=device).last()
+                    device_connection = DeviceConnection.objects.filter(device=device).first()
                     c = connection_map.get(device.device_id)
                     if not device_connection:
                         if c:
@@ -77,12 +77,13 @@ class RabbitOps:
                                 dc.device = device
                                 dc.update_from_rabbitmq_connection(c)
                                 dc.save()
-                                logger.info("%s connection created" % dc.device_id)
+                                logger.info("%s connection created" % dc.device.device_id)
                         else:
-                            device_connection.state = "TERMINATED"
-                            device_connection.terminated_at = datetime.datetime.now()
-                            device_connection.save()
-                            logger.info("%s connection terminated" % device.device_id)
+                            if device_connection.state != "TERMINATED":
+                                device_connection.state = "TERMINATED"
+                                device_connection.terminated_at = datetime.datetime.now()
+                                device_connection.save()
+                                logger.info("%s connection terminated" % device.device_id)
             except Exception as ex:
                 logger.exception("Unknown exception during device connections check", ex)
 
