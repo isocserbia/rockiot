@@ -41,16 +41,4 @@ INSERT INTO public.app_platform(name, description, created_at, updated_at) VALUE
 
 INSERT INTO public.app_platformattribute(name, value, description, created_at, updated_at, platform_id) VALUES ('INGEST_INTERVAL', '60', 'Ingest interval for sensor devices', NOW(), NOW(), 1);
 
-INSERT INTO public.app_platformattribute(name, value, description, created_at, updated_at, platform_id) VALUES ('SSL_ENABLED', 'false', 'Indicates if devices should communicate with platform using SSL', NOW(), NOW(), 1);
-
-INSERT INTO public.auth_group(name) VALUES ('RESEARCHER');
-
-INSERT INTO public.auth_group(name) VALUES ('DEVICE_ADMIN');
-
-INSERT INTO public.auth_group(name) VALUES ('DEVICE_INSTALLER');
-
-INSERT INTO public.auth_group(name) VALUES ('PLATFORM_ADMIN');
-
-INSERT INTO public.auth_group(name) VALUES ('CONNECTED_API_USER');
-
-INSERT INTO public.auth_group(name) VALUES ('PUBLIC_API_USER');
+INSERT INTO public.app_platformattribute(name, value, description, created_at, updated_at, platform_id) VALUES ('SSL_ENABLED', 'true', 'Indicates if devices should communicate with platform using SSL', NOW(), NOW(), 1);
