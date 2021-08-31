@@ -130,7 +130,6 @@ class Device(models.Model):
                                  db_column='facility_id', on_delete=models.PROTECT)
     device_id = models.CharField(max_length=50, null=True)
     device_pass = models.CharField(max_length=128, null=True)
-    device_key = models.CharField(max_length=128, null=True)
 
     status = models.CharField(max_length=20, null=False, choices=STATUSES, default=NEW)
     profile = models.CharField(max_length=20, null=False, choices=MODES, default=DEFAULT)

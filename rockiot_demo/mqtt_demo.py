@@ -22,7 +22,6 @@ BROKER_DEVICE_EVENTS_TOPIC = os.getenv("BROKER_DEVICE_EVENTS_TOPIC", default='v1
 BROKER_DEVICE_INGEST_TOPIC = os.getenv("BROKER_DEVICE_INGEST_TOPIC", default='v1.devices.%s.actions.ingest')
 
 DEVICE_ID = os.getenv("DEVICE_ID", default='device1')
-DEVICE_KEY = os.getenv("DEVICE_KEY", default='4OrcNTFSZUrYX6NqP0P3lz')
 DEVICE_PASS = os.getenv("DEVICE_PASS", default='device1pass')
 
 DEMO_SLEEP_SECONDS = int(os.getenv("DEMO_SLEEP_SECONDS", default='5'))
@@ -85,7 +84,7 @@ class MqttDemo:
         else:
             print(self.identified + " connected with result: " + paho.connack_string(rc))
             self.client.subscribe(BROKER_ATTRIBUTES_TOPIC)
-            self.client.subscribe(BROKER_DEVICE_EVENTS_TOPIC % DEVICE_KEY)
+            self.client.subscribe(BROKER_DEVICE_EVENTS_TOPIC % DEVICE_ID)
             self.connected = True
 
     def on_disconnect(self, client, userdata, rc):
@@ -120,7 +119,7 @@ class MqttDemo:
     def publish_sensor_data(self):
         if self.client.is_connected():
             message = mqtt_demo_readings.random_sensor_data(DEVICE_ID, self.clientid, self.schoolId)
-            topic = (BROKER_DEVICE_INGEST_TOPIC % DEVICE_KEY)
+            topic = (BROKER_DEVICE_INGEST_TOPIC % DEVICE_ID)
             self.client.publish(topic=topic, payload=message)
             print("%s sensor data sent to topic %s: %s" % (self.identified, topic, message))
         else:

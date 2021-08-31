@@ -20,47 +20,38 @@ env_dict = {
 env_dict_2 = env_dict.copy()
 env_dict_2['DEVICE_ID'] = 'device2'
 env_dict_2['DEVICE_PASS'] = 'device2pass'
-env_dict_2['DEVICE_KEY'] = '1OrcNTFSZUrYX6NqP0P3ly'
 
 env_dict_3 = env_dict.copy()
 env_dict_3['DEVICE_ID'] = 'device3'
 env_dict_3['DEVICE_PASS'] = 'device3pass'
-env_dict_3['DEVICE_KEY'] = '3OrrNTFSGUrYX6NqP0P3ly'
 
 env_dict_4 = env_dict.copy()
 env_dict_4['DEVICE_ID'] = 'device4'
 env_dict_4['DEVICE_PASS'] = 'device4pass'
-env_dict_4['DEVICE_KEY'] = '41rrNEFSGUrYX6NqP0P3lg'
 
 env_dict_5 = env_dict.copy()
 env_dict_5['DEVICE_ID'] = 'device5'
 env_dict_5['DEVICE_PASS'] = 'device5pass'
-env_dict_5['DEVICE_KEY'] = '51rrNEFSGUrYX6NqP0P3lg'
 
 env_dict_6 = env_dict.copy()
 env_dict_6['DEVICE_ID'] = 'device6'
 env_dict_6['DEVICE_PASS'] = 'device6pass'
-env_dict_6['DEVICE_KEY'] = '61rrNEFSGUrYX6NqP0P3lg'
 
 env_dict_7 = env_dict.copy()
 env_dict_7['DEVICE_ID'] = 'device7'
 env_dict_7['DEVICE_PASS'] = 'device7pass'
-env_dict_7['DEVICE_KEY'] = '71rrNEFSGUrYX6NqP0P3lg'
 
 env_dict_8 = env_dict.copy()
 env_dict_8['DEVICE_ID'] = 'device8'
 env_dict_8['DEVICE_PASS'] = 'device8pass'
-env_dict_8['DEVICE_KEY'] = '81rrNEFSGUrYX6NqP0P3lg'
 
 env_dict_9 = env_dict.copy()
 env_dict_9['DEVICE_ID'] = 'device9'
 env_dict_9['DEVICE_PASS'] = 'device9pass'
-env_dict_9['DEVICE_KEY'] = '91rrNEFSGUrYX6NqP0P3lg'
 
 env_dict_10 = env_dict.copy()
 env_dict_10['DEVICE_ID'] = 'device10'
 env_dict_10['DEVICE_PASS'] = 'device10pass'
-env_dict_10['DEVICE_KEY'] = '10rrNEFSGUrYX6NqP0P3lg'
 
 envs = [env_dict_2, env_dict_3, env_dict_4, env_dict_5, env_dict_6, env_dict_7, env_dict_8, env_dict_9, env_dict_10]
 
@@ -73,6 +64,3 @@ for e in envs:
         environment=e,
         network="rockiot_project_app-tier"
     )
-
-
-

@@ -256,10 +256,9 @@ class PikaConsumer(object):
                     basic_deliver.delivery_tag, basic_deliver.routing_key, basic_deliver.exchange,
                     properties.timestamp, properties.headers, body)
 
-        device_key = re.split("\.", basic_deliver.routing_key)[2]
-        print("DEVICE_KEY: %s" % device_key)
+        # device_id = re.split("\.", basic_deliver.routing_key)[2]
+        # print("DEVICE_ID: %s" % device_id)
 
-        # self.publish_message_to_db(body)
         self.write_to_db(body)
         self.acknowledge_message(basic_deliver.delivery_tag)
 
@@ -364,20 +363,6 @@ class PikaConsumer(object):
             except:
                 LOGGER.error("Fatal error inserting data into db", exc_info=True)
                 conn.rollback()
-
-    # def write_to_db(self, message):
-    #     with self.get_connection() as conn:
-    #         try:
-    #             sqlite_select_query = """SELECT * from database_developers"""
-    #             cursor = conn.cursor()
-    #             cursor.execute(sqlite_select_query)
-    #             LOGGER.debug("Fetching single row")
-    #             record = cursor.fetchone()
-    #             cursor.close()
-    #
-    #         except:
-    #             LOGGER.error("Fatal error inserting data into db", exc_info=True)
-    #             conn.rollback()
 
 
 class ReconnectingPikaConsumer(object):
