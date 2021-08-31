@@ -45,7 +45,7 @@ class DockerOps:
                     logger.info(f"Device {device.device_id} container started [name: {container.name}]")
             else:
                 container = cls.__client.containers.run(image=ROCKIOT_DEMO_IMAGE, name=name, command="/start.sh",
-                                                        detach=True, environment=env, network="rockiot_app-tier")
+                                                        detach=True, environment=env, network="rockiot_project_app-tier")
                 logger.info(f"Device {device.device_id} container started [name: {container.name}]")
 
             return True
