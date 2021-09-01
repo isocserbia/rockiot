@@ -36,20 +36,22 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'app',
+    'tasks',
+    'admin_interface',
+    'colorfield',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "django.contrib.gis",
-    'admin_interface',
-    'colorfield',
     'django.contrib.admin',
-    'django_admin_row_actions',
+    'django_celery_results',
+    'django_celery_beat',
     'rest_framework',
     'rest_framework_gis',
     'rest_framework_simplejwt',
-    'drf_yasg',
+    'drf_yasg'
 ]
 
 MIDDLEWARE = [
@@ -68,7 +70,15 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.openapi.AutoSchema',
-    'PAGE_SIZE': 100
+    'PAGE_SIZE': 100,
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/day',
+        'user': '1000/day'
+    }
 }
 
 SWAGGER_SETTINGS = {
@@ -115,6 +125,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'project.wsgi.application'
 GDAL_LIBRARY_PATH = '/usr/lib/libgdal.so'
 GEOS_LIBRARY_PATH = '/usr/lib/libgeos_c.so'
+# GDAL_LIBRARY_PATH = '/usr/local/lib/libgdal.dylib'
+# GEOS_LIBRARY_PATH = '/usr/local/lib/libgeos_c.dylib'
 
 
 # Database
@@ -166,6 +178,8 @@ BROKER_CONFIG = {
     'AMQPTASKCONSUMER_PASS': config('AMQPTASKCONSUMER_PASS', default='amqptaskconsumer_pass'),
     'MQTTEVENTPRODUCER_USER': config('MQTTEVENTPRODUCER_USER', default='mqtteventproducer'),
     'MQTTEVENTPRODUCER_PASS': config('MQTTEVENTPRODUCER_PASS', default='mqtteventproducer_pass'),
+    'RABBITCELERY_USER': config('RABBITCELERY_USER', default='rabbitcelery'),
+    'RABBITCELERY_PASS': config('RABBITCELERY_PASS', default='rabbitcelery_pass'),
     'BROKER_HOST': config('BROKER_HOST', default='localhost'),
     'BROKER_VHOST': config('BROKER_VHOST', default='/'),
     'BROKER_AMQP_PORT': config('BROKER_AMQP_PORT', default='5672'),
@@ -190,6 +204,9 @@ ROCKIOT_CONFIG = {
     'FAULT_DIFF_PERC_CO': int(config('FAULT_DIFF_PERC_CO', default='100')),
     'FAULT_SECONDS_SINCE_LAST_ENTRY': int(config('FAULT_SECONDS_SINCE_LAST_ENTRY', default='300')),
 }
+
+CELERY_RESULT_BACKEND = "db+postgresql://postgres:postgres@timescaledb/rock_iot"
+CELERY_TASK_SERIALIZER = 'json'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

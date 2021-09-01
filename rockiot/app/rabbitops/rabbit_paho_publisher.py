@@ -21,13 +21,17 @@ class PahoPublisher:
 
     def __init__(self):
         self.conflag = False
+        self.initialized = False
         self.clientid = paho.base62(uuid.uuid4().int, padding=22)
         self.client = paho.Client(self.clientid)  # create client object
         self.client.username_pw_set(username=MQTTEVENTPRODUCER_USER, password=MQTTEVENTPRODUCER_PASS)
         self.client.on_connect = self.on_connect
         self.client.on_disconnect = self.on_disconnect
+
+    def start(self):
         self.client.connect(BROKER_HOST, BROKER_MQTT_PORT, keepalive=60)
         self.client.loop_start()
+        self.initialized = True
         logger.info("Paho publisher %s loop started" % self.clientid)
 
     def on_disconnect(self, client, userdata, rc):
@@ -46,6 +50,8 @@ class PahoPublisher:
         logger.info("Paho publisher %s connected with result: %s" % (self.clientid, str(rc)))
 
     def publish(self, topic, device, message):
+        if not self.initialized:
+            self.start()
         logger.info("Paho publisher %s message to device [device-id: %s]" % (self.clientid, device))
         while 1 == 1:
             if not self.conflag:

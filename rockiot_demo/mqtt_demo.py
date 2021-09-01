@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import logging
 import os
 import ssl
 import sys
@@ -26,6 +27,9 @@ DEVICE_PASS = os.getenv("DEVICE_PASS", default='device1pass')
 
 DEMO_SLEEP_SECONDS = int(os.getenv("DEMO_SLEEP_SECONDS", default='5'))
 DEMO_IS_SSL = bool(os.getenv("DEMO_IS_SSL", default='True'))
+
+LOG_FORMAT = '%(levelname)s %(asctime)s %(module)s %(name)s %(process)d %(thread)d %(message)s'
+LOGGER = logging.getLogger(__name__)
 
 
 class MqttDemo(object):
@@ -61,7 +65,7 @@ class MqttDemo(object):
         self.client.on_message = self.on_message
         self.client.connect(BROKER_HOST, BROKER_MQTT_SSL_PORT if DEMO_IS_SSL else BROKER_MQTT_PORT, keepalive=60)
         self.client.loop_start()
-        print(self.identified + " loop started")
+        LOGGER.info(self.identified + " loop started")
 
     def try_to_reconnect(self):
         """Attempts to reconnect by stopping the loop, establishing new connection and starting new event loop"""
@@ -69,7 +73,7 @@ class MqttDemo(object):
         self.client = paho.Client(self.client_id)
         self.establish_connection()
         self.client.loop_start()
-        print(self.identified + (" publisher %s loop re-started" % self.client_id))
+        LOGGER.warning(self.identified + (" publisher %s loop re-started" % self.client_id))
 
     def on_connect(self, client, userdata, flags, rc):
         """ On connect event callback @see paho.mqtt.Client
@@ -77,16 +81,16 @@ class MqttDemo(object):
         and logs failure reasons in case of unexpected server responses
         """
         if rc is 0:
-            print(self.identified + " connected with result: " + paho.connack_string(rc))
+            LOGGER.info(self.identified + " connected with result: " + paho.connack_string(rc))
             self.client.subscribe(BROKER_ATTRIBUTES_TOPIC)
             self.client.subscribe(BROKER_DEVICE_EVENTS_TOPIC % DEVICE_ID)
             self.connected = True
         else:
-            print(self.identified + " failed connecting with result: " + paho.connack_string(rc))
+            LOGGER.warning(self.identified + " failed connecting with result: " + paho.connack_string(rc))
             if rc is 4 or rc is 5:
-                print(self.identified + " waiting for device registration... ")
+                LOGGER.warning(self.identified + " waiting for device registration... ")
             else:
-                print(self.identified + " fatal error detected. Stopping mqtt client.")
+                LOGGER.critical(self.identified + " fatal error detected. Stopping mqtt client.")
                 self.client.loop_stop()
                 exit(0)
 
@@ -95,15 +99,15 @@ class MqttDemo(object):
         This implementation simply logs that client disconnected from the platform
         """
         try:
-            print("%s disconnected with result: %s, userdata: %s" % (self.identified, paho.error_string(rc), userdata))
+            LOGGER.warning("%s disconnected with result: %s, userdata: %s" % (self.identified, paho.error_string(rc), userdata))
         except:
-            print(self.identified + (" publisher failed stopping client loop [reason: %s]" % sys.exc_info()[0]))
+            LOGGER.warning(self.identified + (" publisher failed stopping client loop [reason: %s]" % sys.exc_info()[0]))
 
     def on_subscribe(self, client, userdata, mid, granted_qos):
         """ on_subscribe event callback @see paho.mqtt.Client.
         This implementation simply logs that subscription has been made
         """
-        print(self.identified + " subscribed to topic: " + str(mid))
+        LOGGER.info(self.identified + " subscribed to topic: " + str(mid))
         return True
 
     def on_message(self, client, userdata, message):
@@ -112,19 +116,19 @@ class MqttDemo(object):
         Otherwise it simply logs the received event.
         """
         payload_decode = message.payload.decode('utf-8')
-        print(self.identified + " received: " + payload_decode)
+        LOGGER.info(self.identified + " received: " + payload_decode)
         event = DeviceEvent.from_json(payload_decode)
         if not event:
-            print(self.identified + " can't parse mqtt event")
+            LOGGER.error(self.identified + " can't parse mqtt event")
             return
         if event.type == 'activation':
             self.activated = True
             self.activating = False
-            print(self.identified + " device activated [data: %s]" % event)
+            LOGGER.info(self.identified + " device activated [data: %s]" % event)
         elif event.type == 'status':
-            print(self.identified + " received status event [data: %s]" % event)
+            LOGGER.info(self.identified + " received status event [data: %s]" % event)
         else:
-            print(self.identified + " received unknown event [data: %s]" % event)
+            LOGGER.warning(self.identified + " received unknown event [data: %s]" % event)
         return True
 
     def publish_sensor_data(self):
@@ -133,16 +137,16 @@ class MqttDemo(object):
             message = mqtt_demo_readings.random_sensor_data(DEVICE_ID, self.client_id)
             topic = (BROKER_DEVICE_INGEST_TOPIC % DEVICE_ID)
             self.client.publish(topic=topic, payload=message)
-            print("%s sensor data sent to topic %s: %s" % (self.identified, topic, message))
+            LOGGER.info("%s sensor data sent to topic %s: %s" % (self.identified, topic, message))
         else:
-            print("%s client disconnected" % self.identified)
+            LOGGER.critical("%s client disconnected" % self.identified)
             sys.exit(0)
 
     def publish_activate_action(self):
         """Publishes activation request to actions topic"""
         message = DeviceAction("activation_request", self.client_id, DEVICE_ID, datetime.now().isoformat()).to_json()
         self.client.publish(topic=BROKER_DEVICE_ACTIONS_TOPIC, payload=message)
-        print("%s activate_request sent to topic %s: %s" % (self.identified, BROKER_DEVICE_ACTIONS_TOPIC, message))
+        LOGGER.info("%s activate_request sent to topic %s: %s" % (self.identified, BROKER_DEVICE_ACTIONS_TOPIC, message))
         self.activating = True
 
     def start_publishing_sensor_data(self):
@@ -154,7 +158,7 @@ class MqttDemo(object):
         max_attempts_counter = 0
         while 1 == 1:
             if max_attempts_counter >= 200:
-                print(self.identified + " failed to connect/activate (reached max attempts).")
+                LOGGER.critical(self.identified + " failed to connect/activate (reached max attempts).")
                 break
             sleep(DEMO_SLEEP_SECONDS)
             if self.connected:
@@ -163,7 +167,7 @@ class MqttDemo(object):
                 else:
                     max_attempts_counter = max_attempts_counter + 1
                     if self.activating:
-                        print(self.identified + " waiting for activation...")
+                        LOGGER.info(self.identified + " waiting for activation...")
                     else:
                         sleep(DEMO_SLEEP_SECONDS)
                         self.publish_activate_action()
@@ -171,19 +175,20 @@ class MqttDemo(object):
                 max_attempts_counter = max_attempts_counter + 1
                 if (max_attempts_counter % 10) == 0:
                     try:
-                        print("%s trying to reconnect ..." % self.identified)
+                        LOGGER.info("%s trying to reconnect ..." % self.identified)
                         self.try_to_reconnect()
                     except:
-                        print("%s can't reconnect %s" % (self.identified, sys.exc_info()))
+                        LOGGER.warning("%s can't reconnect %s" % (self.identified, sys.exc_info()))
                 else:
-                    print(self.identified + " waiting for connection...")
+                    LOGGER.info(self.identified + " waiting for connection...")
 
 
 if __name__ == '__main__':
     try:
+        logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
         MqttDemo()
     except KeyboardInterrupt:
-        print('Interrupted')
+        LOGGER.warning('Interrupted')
         try:
             sys.exit(0)
         except SystemExit:

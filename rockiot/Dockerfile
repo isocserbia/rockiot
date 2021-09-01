@@ -22,4 +22,4 @@ ADD start.sh /start.sh
 RUN chmod +x /wait.sh
 RUN chmod +x /start.sh
 
-CMD /wait.sh && /start.sh
+# CMD /wait.sh && /start.sh
