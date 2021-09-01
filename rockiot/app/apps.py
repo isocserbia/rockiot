@@ -32,6 +32,7 @@ class AppConfig(AppConfig):
         from django_celery_beat.models import PeriodicTask, CrontabSchedule, IntervalSchedule
         if IntervalSchedule.objects.count() <= 0:
             print("No scheduled data found in DB, initializing ...")
+
             schedule, created = IntervalSchedule.objects.get_or_create(every=10, period=IntervalSchedule.SECONDS)
             PeriodicTask.objects.create(interval=schedule,
                                         name='RabbitMQ connections sync',
@@ -43,7 +44,7 @@ class AppConfig(AppConfig):
                                         task='app.tasks.check_system_health')
 
             schedule3, created3 = CrontabSchedule.objects.get_or_create(
-                minute='30', hour='*', day_of_week='*', day_of_month='*', month_of_year='*',
+                minute='5', hour='*', day_of_week='*', day_of_month='*', month_of_year='*',
                 timezone=pytz.utc)
             PeriodicTask.objects.create(interval=schedule3,
                                         name='Export raw data to CSV',
