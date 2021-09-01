@@ -45,6 +45,13 @@
       "hashing_algorithm": "rabbit_password_hashing_sha256",
       "tags": "administrator",
       "limits": {}
+    },
+    {
+      "name": "rabbitcelery",
+      "password_hash": "REXJt2b0nDSCIU5RnHD84+iFu8FesLPerJ4+OF3S8Wd2jtSy",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator",
+      "limits": {}
     }
   ],
   "vhosts": [
@@ -94,6 +101,13 @@
       "configure": ".*",
       "write": ".*",
       "read": ".*"
+    },
+    {
+      "user": "rabbitcelery",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
     }
   ],
   "topic_permissions": [
@@ -131,6 +145,13 @@
       "exchange": ".*",
       "write": ".*",
       "read": ".*"
+    },
+    {
+      "user": "rabbitcelery",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
     }
   ],
   "parameters": [],
@@ -148,17 +169,6 @@
       "durable": true,
       "auto_delete": false,
       "arguments": {}
-    },
-    {
-      "name": "tasks_amqp_delay",
-      "vhost": "/",
-      "durable": true,
-      "auto_delete": false,
-      "arguments": {
-        "x-dead-letter-exchange": "amq.direct",
-        "x-dead-letter-routing-key": "tasks.amqp",
-        "x-message-ttl": 30000
-      }
     },
     {
       "name": "tasks_amqp",

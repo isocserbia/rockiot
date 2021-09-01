@@ -11,8 +11,7 @@ import pika
 from django.conf import settings
 
 from app.rabbitops.rabbit_events import DeviceAction
-from app.rabbitops.rabbit_task import RabbitTask
-from app.rabbitops.rabbit_task_handler_router import RabbitTaskHandlerRouter
+from app.tasks import handle_activation_request
 
 config = settings.BROKER_CONFIG
 LOGGER = logging.getLogger(__name__)
@@ -245,17 +244,8 @@ class RabbitPikaTaskConsumer(object):
                     (basic_deliver.delivery_tag, properties.app_id, body))
 
         try:
-            body_dict = json.loads(body)
-            if "client_id" in body_dict:
-                task = DeviceAction.from_json(body)
-                task = RabbitTask(task.type, task.correlation_id)
-            else:
-                task = RabbitTask.from_json(body)
-
-            if not task:
-                logging.error("can't parse message payload [body: %s]" % body)
-            else:
-                RabbitTaskHandlerRouter.handle_task(task)
+            event = DeviceAction.from_json(body)
+            handle_activation_request.apply_async((event.correlation_id,))
         except:
             LOGGER.error("Failed handling task message", sys.exc_info())
 
