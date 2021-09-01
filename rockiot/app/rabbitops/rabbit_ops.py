@@ -26,11 +26,15 @@ def get_mngmt_client():
 def check_system_health():
     logger.info("checking system health")
     try:
+        responses = {}
         client = get_mngmt_client()
-        resp = client._call('/api/health/checks/alarms', 'GET')
-        logger.info("Health checks alarms response: %s" % resp)
-        resp = client._call('/api/health/checks/local-alarms', 'GET')
-        logger.info("Health checks local-alarms response: %s" % resp)
+        resp_alarms = client._call('/api/health/checks/alarms', 'GET')
+        responses["alarms"] = resp_alarms
+        logger.info("Health checks alarms response: %s" % resp_alarms)
+        resp_alarms_local = client._call('/api/health/checks/local-alarms', 'GET')
+        responses["alarms_local"] = resp_alarms_local
+        logger.info("Health checks local-alarms response: %s" % resp_alarms_local)
+        return json.dumps(responses)
     except Exception as ex:
         logger.exception("Unknown exception during connection check", str(ex))
 
@@ -39,8 +43,7 @@ def get_overview():
     logger.info("getting overview")
     overview = get_mngmt_client().get_overview()
     logger.info("overview " + str(overview))
-    for o in overview:
-        logger.info("overview " + str(o))
+    return json.dumps(overview)
 
 
 def update_connections():
