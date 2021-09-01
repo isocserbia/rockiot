@@ -1,13 +1,12 @@
 """Markers view."""
-from datetime import datetime, date
 
-from django.http import FileResponse, HttpResponse
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import generics, viewsets, views
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny, DjangoModelPermissionsOrAnonReadOnly
+from rest_framework import generics, views
+from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
 
@@ -200,13 +199,17 @@ class SensorDataLastValuesList(generics.ListAPIView):
 
 
 class CsvExportView(views.APIView):
-
+    @swagger_auto_schema(operation_description="Get CSV file with raw sensor data for given date",
+                         operation_summary="Download daily raw sensor data as CSV",
+                         tags=['report'])
     def get(self, request, format=None):
-        file_name = f'sensor_data-{date.today().isoformat()}.csv'
+        from_date = self.request.query_params.get('from_date', None)
+        file_name = f'sensor_data-{from_date}.csv'
         file_handle = open(f'/rockiot-data/{file_name}', 'rb')
         response = FileResponse(file_handle, content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
         return response
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
 
 class FacilityView(generics.RetrieveAPIView):
