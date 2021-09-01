@@ -49,9 +49,9 @@ class MqttDemo(object):
         self.establish_connection()
         self.start_publishing_sensor_data()
 
-    def establish_connection(self):
+    def establish_connection(self, set_ssl=True):
         """Configures MQTT client and establishes connection with the server"""
-        if DEMO_IS_SSL:
+        if DEMO_IS_SSL and set_ssl:
             self.client.tls_set(ca_certs="certs/ca_certificate.pem", certfile="certs/client_certificate.pem",
                                 keyfile="certs/client_key.pem", cert_reqs=ssl.CERT_REQUIRED,
                                 tls_version=ssl.PROTOCOL_TLSv1_2, ciphers=None)
@@ -70,8 +70,7 @@ class MqttDemo(object):
     def try_to_reconnect(self):
         """Attempts to reconnect by stopping the loop, establishing new connection and starting new event loop"""
         self.client.loop_stop()
-        self.client = paho.Client(self.client_id)
-        self.establish_connection()
+        self.establish_connection(set_ssl=False)
         self.client.loop_start()
         LOGGER.warning(self.identified + (" publisher %s loop re-started" % self.client_id))
 

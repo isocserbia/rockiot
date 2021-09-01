@@ -36,10 +36,10 @@ class PahoPublisher:
 
     def on_disconnect(self, client, userdata, rc):
         try:
-            logger.debug("Paho publisher %s disconnected [rc: %s] [userdata: %s]" % (rc, userdata))
+            logger.warning("Paho publisher %s disconnected [rc: %s] [userdata: %s]" % (rc, userdata))
             self.client.loop_stop()
         except:
-            logger.debug("Paho publisher failed stopping client loop [reason: %s]" % sys.exc_info()[0])
+            logger.warning("Paho publisher failed stopping client loop [reason: %s]" % sys.exc_info()[0])
         sleep(5)
         self.client.connect(BROKER_HOST, BROKER_MQTT_PORT, keepalive=60)
         self.client.loop_start()

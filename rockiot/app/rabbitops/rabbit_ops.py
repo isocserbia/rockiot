@@ -86,6 +86,7 @@ def update_connections():
     for did in list(connection_map.keys()):
         for cid in list(connection_map[did].keys()):
             new_dc = DeviceConnection()
+            new_dc.device = Device.objects.get(device_id=did)
             new_dc.update_from_rabbitmq_connection(connection_map[did][cid])
             new_dc.save()
             logger.info(f"{did} new connection created [client: {cid}]")
@@ -151,8 +152,6 @@ class RabbitOps:
     client = api.Client(config['BROKER_HOST'] + ":" + config['BROKER_MNGMT_PORT'],
                         config['RABBITMNGMT_USER'], config['RABBITMNGMT_PASS'])
 
-    paho_publisher = PahoPublisher()
-
     @classmethod
     def _register_device_internal(cls, device_id):
 
@@ -193,7 +192,7 @@ class RabbitOps:
             device.save()
 
             event = rabbit_events.DeviceEvent.construct_status(Device.NEW, Device.REGISTERED, "Device registered")
-            cls.paho_publisher.publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id, event.to_json())
+            PahoPublisher().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id, event.to_json())
             logger.info("Device ingest user registered [device-id: %s]" % device_id)
             return True
 
@@ -236,7 +235,7 @@ class RabbitOps:
 
             event = rabbit_events.DeviceEvent.construct_activation(Device.REGISTERED, Device.ACTIVATED,
                                                                    "Device activated")
-            cls.paho_publisher.publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id, event.to_json())
+            PahoPublisher().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id, event.to_json())
             logger.info("Device ingest user activated [device-id: %s]" % device_id)
             return True
 
