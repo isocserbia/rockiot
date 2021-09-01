@@ -35,8 +35,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'app',
-    'tasks',
     'admin_interface',
     'colorfield',
     'django.contrib.auth',
@@ -48,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django_celery_results',
     'django_celery_beat',
+    'app',
+    'tasks',
     'rest_framework',
     'rest_framework_gis',
     'rest_framework_simplejwt',

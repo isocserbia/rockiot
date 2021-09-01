@@ -4,6 +4,8 @@ from django.contrib.gis.admin import OSMGeoAdmin
 from django.db import models
 from django.forms import TextInput, Textarea
 from django.utils.html import format_html
+from django_celery_beat.models import SolarSchedule, ClockedSchedule
+from django_celery_results.models import TaskResult, GroupResult
 
 from app.models import Facility, Device, Municipality, PlatformAttribute, Platform, \
     FacilityMembership, DeviceConnection, CronJobExecution, CronJob
@@ -336,3 +338,8 @@ class PlatformAdmin(ModelAdmin):
             del actions['delete_selected']
         return actions
 
+
+admin.site.unregister(SolarSchedule)
+admin.site.unregister(ClockedSchedule)
+admin.site.unregister(TaskResult)
+admin.site.unregister(GroupResult)
