@@ -8,7 +8,7 @@ from django.utils.html import format_html
 from app.models import Facility, Device, Municipality, PlatformAttribute, Platform, \
     FacilityMembership, DeviceConnection, CronJobExecution, CronJob
 from app.system.dockerops import DockerOps
-from app.tasks import register_device, activate_device, deactivate_device, terminate_device
+from app.tasks import register_device, activate_device, deactivate_device, terminate_device, export_raw_data_to_csv
 
 
 def get_form_field_overrides():
@@ -133,6 +133,7 @@ class DeviceConnectionInlineAdmin(admin.TabularInline):
 
 @admin.register(Device)
 class DeviceAdmin(OSMGeoAdmin):
+
     actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container']
 
     def save_model(self, request, obj, form, change):
@@ -313,6 +314,13 @@ class PlatformAdmin(ModelAdmin):
     ]
     inlines = [AttributesAdminInline, ]
     formfield_overrides = get_form_field_overrides()
+
+    actions = ['export']
+
+    def export(self, request, queryset):
+        export_raw_data_to_csv.apply_async()
+
+    export.short_description = "Export raw data"
 
     def has_add_permission(self, request):
         if self.model.objects.count() >= 1:

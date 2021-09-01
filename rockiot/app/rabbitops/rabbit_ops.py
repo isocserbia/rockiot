@@ -54,12 +54,12 @@ def update_connections():
             continue
         connection_map[c_user] = {}
         connection_map[c_user][c_client] = c
-        logger.debug(f"Found {c_user} active connection ...")
+        logger.info(f"Found {c_user} active connection ...")
 
     dcs = DeviceConnection.objects.filter(Q(state='UNKNOWN') | Q(state='RUNNING')).prefetch_related('device')
     for dc in dcs:
         device = dc.device
-        logger.debug(f"Found {device.device_id} connection in db ...")
+        logger.info(f"Found {device.device_id} connection in db ...")
         conn = connection_map.get(device.device_id)
         if conn or conn is not None:
             if conn.get(dc.client_id, None) is not None:
@@ -86,6 +86,7 @@ def update_connections():
     for did in list(connection_map.keys()):
         for cid in list(connection_map[did].keys()):
             new_dc = DeviceConnection()
+            new_dc.device = Device.objects.get(device_id=did)
             new_dc.update_from_rabbitmq_connection(connection_map[did][cid])
             new_dc.save()
             logger.info(f"{did} new connection created [client: {cid}]")

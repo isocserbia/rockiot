@@ -49,6 +49,7 @@ services:
       - app-tier
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - rockiot-data:/rockiot-data
     env_file:
       - db.env
       - common.env
@@ -139,37 +140,37 @@ services:
     networks:
       - app-tier
 
-  prometheus:
-    image: prom/prometheus:v2.28.1
-    container_name: rockiot_prometheus
-    hostname: prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - $HOME/docker/prometheus/data:/prometheus
-      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - app-tier
-    environment:
-      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
-
-  grafana:
-    image: grafana/grafana:7.1.5
-    container_name: rockiot_grafana
-    ports:
-      - "3000:3000"
-    depends_on:
-      - timescaledb
-    env_file:
-      - common.env
-    environment:
-      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
-      - GF_INSTALL_PLUGINS=flant-statusmap-panel,grafana-piechart-panel
-    networks:
-      - app-tier
-    volumes:
-      - $HOME/docker/grafana/data:/var/lib/grafana
-      - ./docker/grafana/provisioning/:/etc/grafana/provisioning/
+#  prometheus:
+#    image: prom/prometheus:v2.28.1
+#    container_name: rockiot_prometheus
+#    hostname: prometheus
+#    ports:
+#      - "9090:9090"
+#    volumes:
+#      - $HOME/docker/prometheus/data:/prometheus
+#      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+#    networks:
+#      - app-tier
+#    environment:
+#      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+#
+#  grafana:
+#    image: grafana/grafana:7.1.5
+#    container_name: rockiot_grafana
+#    ports:
+#      - "3000:3000"
+#    depends_on:
+#      - timescaledb
+#    env_file:
+#      - common.env
+#    environment:
+#      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+#      - GF_INSTALL_PLUGINS=flant-statusmap-panel,grafana-piechart-panel
+#    networks:
+#      - app-tier
+#    volumes:
+#      - $HOME/docker/grafana/data:/var/lib/grafana
+#      - ./docker/grafana/provisioning/:/etc/grafana/provisioning/
 
 #  nginx:
 #    image: rockiot_nginx:latest
@@ -201,3 +202,6 @@ services:
 networks:
   app-tier:
     driver: bridge
+
+volumes:
+  rockiot-data:
