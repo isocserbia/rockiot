@@ -205,8 +205,8 @@ ROCKIOT_CONFIG = {
     'FAULT_SECONDS_SINCE_LAST_ENTRY': int(config('FAULT_SECONDS_SINCE_LAST_ENTRY', default='300')),
 }
 
-CELERY_RESULT_BACKEND = "db+postgresql://postgres:postgres@timescaledb/rock_iot"
-CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_BACKEND = "db+postgresql://postgres:postgres@timescaledb/rock_iot"
+# CELERY_TASK_SERIALIZER = 'json'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

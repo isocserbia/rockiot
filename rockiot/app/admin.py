@@ -317,13 +317,6 @@ class PlatformAdmin(ModelAdmin):
     inlines = [AttributesAdminInline, ]
     formfield_overrides = get_form_field_overrides()
 
-    actions = ['export']
-
-    def export(self, request, queryset):
-        export_raw_data_to_csv.apply_async()
-
-    export.short_description = "Export raw data"
-
     def has_add_permission(self, request):
         if self.model.objects.count() >= 1:
             return False
@@ -341,5 +334,4 @@ class PlatformAdmin(ModelAdmin):
 
 admin.site.unregister(SolarSchedule)
 admin.site.unregister(ClockedSchedule)
-admin.site.unregister(TaskResult)
 admin.site.unregister(GroupResult)
