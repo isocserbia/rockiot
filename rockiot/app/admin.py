@@ -4,13 +4,11 @@ from django.contrib.gis.admin import OSMGeoAdmin
 from django.db import models
 from django.forms import TextInput, Textarea
 from django.utils.html import format_html
-from django_admin_row_actions import AdminRowActionsMixin
 
 from app.models import Facility, Device, Municipality, PlatformAttribute, Platform, \
     FacilityMembership, DeviceConnection, CronJobExecution, CronJob
-from app.rabbitops.rabbit_task import RabbitTask
-from app.rabbitops.rabbit_task_producer import RabbitTaskProducer
 from app.system.dockerops import DockerOps
+from app.tasks import register_device, activate_device, deactivate_device, terminate_device
 
 
 def get_form_field_overrides():
@@ -134,35 +132,34 @@ class DeviceConnectionInlineAdmin(admin.TabularInline):
 
 
 @admin.register(Device)
-class DeviceAdmin(AdminRowActionsMixin, OSMGeoAdmin):
+class DeviceAdmin(OSMGeoAdmin):
     actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container']
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
-        RabbitTaskProducer.publish_task(RabbitTask("register_device", obj.device_id))
+        # register_device.apply_async((obj.device_id,))
 
     def register(self, request, queryset):
         for device in queryset:
-            RabbitTaskProducer.publish_task(RabbitTask("register_device", device.device_id))
+            register_device.apply_async((device.device_id,))
 
     def activate(self, request, queryset):
         for device in queryset:
-            RabbitTaskProducer.publish_task(RabbitTask("activate_device", device.device_id))
+            activate_device.apply_async((device.device_id,))
 
     def deactivate(self, request, queryset):
         for device in queryset:
-            RabbitTaskProducer.publish_task(RabbitTask("deactivate_device", device.device_id))
+            deactivate_device.apply_async((device.device_id,))
 
     def terminate(self, request, queryset):
         for device in queryset:
-            RabbitTaskProducer.publish_task(RabbitTask("terminate_device", device.device_id))
+            terminate_device.apply_async((device.device_id,))
 
     def start_container(self, request, queryset):
         for device in queryset:
             DockerOps.start_demo_container(device)
             # only_one
             break
-        RabbitTaskProducer.publish_task(RabbitTask("list_connections", 0))
         messages.add_message(request, messages.INFO, 'Device demo will soon be started. Refresh page for updates.')
 
     def stop_container(self, request, queryset):
@@ -170,7 +167,6 @@ class DeviceAdmin(AdminRowActionsMixin, OSMGeoAdmin):
             DockerOps.stop_demo_container(device)
             # only_one
             break
-        RabbitTaskProducer.publish_task(RabbitTask("list_connections", 0))
         messages.add_message(request, messages.INFO, 'Device demo will soon be stopped. Refresh page for updates.')
 
     def state(self, obj):

@@ -24,21 +24,20 @@ class DeviceAction:
 
 @dataclass_json
 @dataclass(init=True)
-class DeviceStatusEvent:
+class DeviceEvent:
     previous_status: str
     new_status: str
-    school_id: str
     message: str
     sent_at: str
     type: str = "status"
 
     @classmethod
     def construct_status(cls, previous_status, new_status, message):
-        return DeviceStatusEvent(previous_status, new_status, None, message,
-                                 datetime.now().isoformat(), "status")
+        return DeviceEvent(previous_status, new_status, message,
+                           datetime.now().isoformat(), "status")
 
     @classmethod
-    def construct_activation(cls, previous_status, new_status, school_id, message):
-        return DeviceStatusEvent(previous_status, new_status, school_id, message,
-                                 datetime.now().isoformat(), "activation")
+    def construct_activation(cls, previous_status, new_status, message):
+        return DeviceEvent(previous_status, new_status, message,
+                           datetime.now().isoformat(), "activation")
 

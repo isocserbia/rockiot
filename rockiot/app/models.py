@@ -238,8 +238,12 @@ class DeviceConnection(models.Model):
         self.ip_address = c["peer_host"]
         if "recv_cnt" in c:
             self.msg_cnt = c["recv_cnt"]
+        else:
+            self.msg_cnt = 0
         if "recv_oct_details" in c:
             self.msg_rate = c["recv_oct_details"]["rate"]
+        else:
+            self.msg_rate = 0
         if "state" in c:
             self.state = c["state"].upper()
 

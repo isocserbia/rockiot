@@ -35,18 +35,13 @@ services:
       - "8883:8883"
       - "15672:15672"
 
-  rockiot:
+  rockiot: &rockiotfunction
     container_name: rockiot_app
-    build: rockiot
-    ports:
-      - 8000:8000
-    env_file:
-      - db.env
-      - common.env
-      - django.env
-    environment:
-      - BROKER_EXCHANGE=amq.topic
-      - WAIT_HOSTS=rabbit1:8883
+    build:
+      context: rockiot
+      dockerfile: ./Dockerfile
+    command: >
+      sh -c "/wait.sh && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - timescaledb
       - rabbit1
@@ -54,6 +49,43 @@ services:
       - app-tier
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    env_file:
+      - db.env
+      - common.env
+      - django.env
+    ports:
+      - 8000:8000
+    environment:
+      - BROKER_EXCHANGE=amq.topic
+      - WAIT_HOSTS=rabbit1:8883,rabbit1:15672
+
+  rockiotworker:
+    <<: *rockiotfunction
+    container_name: rockiot_app_worker
+    command: >
+      sh -c "/wait.sh && celery -A tasks.celery worker -Q normal -n normal@%h -l info"
+    ports: [ ]
+    depends_on:
+      - timescaledb
+      - rabbit1
+      - rockiot
+    environment:
+      - BROKER_EXCHANGE=amq.topic
+      - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
+
+  rockiotbeat:
+    <<: *rockiotfunction
+    container_name: rockiot_app_beat
+    command: >
+      sh -c "/wait.sh && celery -A tasks.celery beat -l info -S django"
+    ports: [ ]
+    depends_on:
+      - timescaledb
+      - rabbit1
+      - rockiot
+    environment:
+      - BROKER_EXCHANGE=amq.topic
+      - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
 
   rockiot_ingest:
     container_name: rockiot_ingest
@@ -65,7 +97,7 @@ services:
       - BROKER_USER=amqpingest
       - BROKER_PASS=amqpingest_pass
       - BROKER_QUEUE=mq2_amqp
-      - WAIT_HOSTS=rabbit1:8883
+      - WAIT_HOSTS=rabbit1:8883,rockiot:8000
     depends_on:
       - timescaledb
       - rabbit1
@@ -81,16 +113,15 @@ services:
     environment:
       - DEVICE_ID=device1
       - DEVICE_PASS=device1pass
+      - DEVICE_KEY=4OrcNTFSZUrYX6NqP0P3lz
       - DEMO_SLEEP_SECONDS=3
       - DEMO_IS_SSL=True
-      - WAIT_HOSTS=rabbit1:8883
+      - WAIT_HOSTS=rabbit1:8883,rockiot:8000
     depends_on:
       - rockiot
       - rockiot_ingest
     networks:
       - app-tier
-    labels:
-      org.rockiot.image.type: "rockiot-demo"
 
   pgadmin:
     image: biarms/pgadmin4:4.21
@@ -119,6 +150,8 @@ services:
       - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - app-tier
+    environment:
+      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
 
   grafana:
     image: grafana/grafana:7.1.5
@@ -130,7 +163,7 @@ services:
     env_file:
       - common.env
     environment:
-      - WAIT_HOSTS=timescaledb:5432,rockiot:8000,rabbit1:8883
+      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
       - GF_INSTALL_PLUGINS=flant-statusmap-panel,grafana-piechart-panel
     networks:
       - app-tier
