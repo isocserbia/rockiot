@@ -24,7 +24,7 @@ app.conf.database_table_schemas = {
     'group': 'public',
 }
 
-app.conf.task_ignore_result = True
+app.conf.task_ignore_result = False
 app.conf.task_store_errors_even_if_ignored = True
 
 app.conf.task_queues = (
