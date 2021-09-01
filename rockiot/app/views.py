@@ -1,10 +1,13 @@
 """Markers view."""
+from datetime import datetime, date
+
+from django.http import FileResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
+from rest_framework import generics, viewsets, views
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny, DjangoModelPermissionsOrAnonReadOnly
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
 
@@ -28,7 +31,7 @@ class DevicesList(generics.ListAPIView):
 
     queryset = Device.objects.all()
     serializer_class = DeviceModelSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
 
 class MunicipalityView(generics.RetrieveAPIView):
@@ -43,7 +46,7 @@ class MunicipalityView(generics.RetrieveAPIView):
         return get_object_or_404(Municipality, code)
 
     serializer_class = MunicipalityModelSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
 
 class MunicipalityList(generics.ListAPIView):
@@ -55,7 +58,7 @@ class MunicipalityList(generics.ListAPIView):
 
     queryset = Municipality.objects.all()
     serializer_class = MunicipalityModelSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
 
 class FacilityView(generics.RetrieveAPIView):
@@ -70,7 +73,7 @@ class FacilityView(generics.RetrieveAPIView):
         return get_object_or_404(Facility, code)
 
     serializer_class = FacilityModelSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
 
 class FacilityList(generics.ListAPIView):
@@ -82,7 +85,7 @@ class FacilityList(generics.ListAPIView):
 
     queryset = Facility.objects.all()
     serializer_class = FacilityModelSerializer
-    permission_classes = [IsAuthenticated, ]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
 
 from_date_param = openapi.Parameter('from_date', openapi.IN_QUERY,
@@ -111,7 +114,7 @@ class SensorDataList(generics.ListAPIView):
         return SensorData.objects.filter(device_id=did, time__date__gt=from_date, time__date__lt=until_date)
 
     serializer_class = SensorDataSerializer
-    permission_classes = [IsAuthenticated, ]  # UserDevicePermission
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]  # UserDevicePermission
 
 
 interval_param = openapi.Parameter('interval', openapi.IN_QUERY,
@@ -136,7 +139,7 @@ class DeviceSensorsSummary(generics.ListAPIView):
         return model_cls.objects.filter(device_id=device_id, time__date__gt=from_date, time__date__lt=until_date)
 
     serializer_class = SensorsDataRollupSerializer
-    permission_classes = [AllowAny, ]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
 
 class FacilitySensorsSummary(generics.ListAPIView):
@@ -157,7 +160,7 @@ class FacilitySensorsSummary(generics.ListAPIView):
         return model_cls.objects.filter(device_id__in=ids, time__date__gt=from_date, time__date__lt=until_date)
 
     serializer_class = SensorsDataRollupWithDeviceSerializer
-    permission_classes = [AllowAny, ]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
 
 class MunicipalitySensorsSummary(generics.ListAPIView):
@@ -181,7 +184,7 @@ class MunicipalitySensorsSummary(generics.ListAPIView):
         return model_cls.objects.filter(device_id__in=ids, time__date__gt=from_date, time__date__lt=until_date)
 
     serializer_class = SensorsDataRollupWithDeviceSerializer
-    permission_classes = [AllowAny, ]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
 
 class SensorDataLastValuesList(generics.ListAPIView):
@@ -193,7 +196,32 @@ class SensorDataLastValuesList(generics.ListAPIView):
 
     queryset = SensorDataLastValues.objects.all()
     serializer_class = SensorDataLastValuesSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+
+
+class CsvExportView(views.APIView):
+
+    def get(self, request, format=None):
+        file_name = f'sensor_data-{date.today().isoformat()}.csv'
+        file_handle = open(f'/rockiot-data/{file_name}', 'rb')
+        response = FileResponse(file_handle, content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
+        return response
+
+
+class FacilityView(generics.RetrieveAPIView):
+    @swagger_auto_schema(operation_description="Retrieve single Facility entity",
+                         operation_summary="Gets Facility by code",
+                         tags=['core'])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def get_object(self):
+        code = self.kwargs['code']
+        return get_object_or_404(Facility, code)
+
+    serializer_class = FacilityModelSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
