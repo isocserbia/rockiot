@@ -158,7 +158,7 @@ class Device(models.Model):
         return self.status != Device.NEW
 
     def can_activate_from_device(self):
-        return self.status == Device.DEACTIVATED
+        return self.status != Device.FAULTY
 
     def can_deactivate(self):
         return self.status == Device.ACTIVATED
