@@ -38,7 +38,7 @@ class DockerOps:
             if containers and len(containers) > 0:
                 container = containers[0]
                 if container.status == 'running' or container.status == 'restarting':
-                    logger.info(f"Device {device.device_id} container is already {container.state}")
+                    logger.info(f"Device {device.device_id} container is already {container.status}")
                 else:
                     container.start()
                     logger.info(f"Device {device.device_id} container started [name: {container.name}]")

@@ -2,7 +2,6 @@ import os
 import sys
 
 from django.apps import AppConfig
-from app.rabbitops.rabbit_task import RabbitTask
 
 
 class AppConfig(AppConfig):
@@ -25,8 +24,20 @@ class AppConfig(AppConfig):
         consumer.start()
         print("Started rabbit pika consumer thread [name: %s]" % consumer.getName())
 
-        from app.rabbitops.rabbit_task_producer import RabbitTaskProducer
-        # RabbitTaskProducer.publish_delayed_task(RabbitTask("check_devices_health", 0))
-        # RabbitTaskProducer.publish_delayed_task(RabbitTask("check_connection", 0))
-        RabbitTaskProducer.publish_delayed_task(RabbitTask("list_connections", 0))
+        from app.tasks import update_connections
+        update_connections.apply_async()
         print("Sent initial health / connection collect tasks")
+
+        from django_celery_beat.models import PeriodicTask, IntervalSchedule
+        if IntervalSchedule.objects.count() <= 0:
+            print("No scheduled data found in DB, initializing ...")
+            schedule, created = IntervalSchedule.objects.get_or_create(every=10, period=IntervalSchedule.SECONDS)
+            PeriodicTask.objects.create(interval=schedule,
+                                        name='RabbitMQ connections sync',
+                                        task='app.tasks.update_connections')
+
+            schedule2, created2 = IntervalSchedule.objects.get_or_create(every=30, period=IntervalSchedule.SECONDS)
+            PeriodicTask.objects.create(interval=schedule2,
+                                        name='RabbitMQ health check',
+                                        task='app.tasks.check_system_health')
+            print("Initialized scheduled system tasks ...")

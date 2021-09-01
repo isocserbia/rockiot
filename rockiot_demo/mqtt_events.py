@@ -16,7 +16,6 @@ class DeviceAction:
 class DeviceEvent:
     previous_status: str
     new_status: str
-    school_id: str
     message: str
     sent_at: str
     type: str

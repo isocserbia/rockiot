@@ -4,15 +4,13 @@ import json
 import os
 import functools
 import logging
-import re
 import time
 from contextlib import contextmanager
 
 import pika
 from psycopg2.pool import ThreadedConnectionPool
 
-LOG_FORMAT = ('%(levelname) -10s %(asctime)s %(name) -30s %(funcName) '
-              '-35s %(lineno) -5d: %(message)s')
+LOG_FORMAT = '%(levelname)s %(asctime)s %(module)s %(name)s %(process)d %(thread)d %(message)s'
 LOGGER = logging.getLogger(__name__)
 
 BROKER_HOST = os.getenv("BROKER_HOST", default='localhost')
@@ -376,7 +374,7 @@ class ReconnectingPikaConsumer(object):
         self._consumer = PikaConsumer()
 
     def run(self):
-        time.sleep(10)
+        time.sleep(5)
         while True:
             try:
                 self._consumer.run()
