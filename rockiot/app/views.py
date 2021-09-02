@@ -1,6 +1,8 @@
 """Markers view."""
+import logging
+from datetime import date
 
-from django.http import FileResponse
+from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
 from drf_yasg import openapi
@@ -15,6 +17,8 @@ from app.models import Facility, SensorData, SensorDataLastValues, Device, Munic
 from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer, SensorDataSerializer, \
     SensorDataLastValuesSerializer, DeviceModelSerializer, \
     SensorsDataRollupSerializer, MunicipalityModelSerializer, SensorsDataRollupWithDeviceSerializer
+
+logger = logging.getLogger(__name__)
 
 
 class FacilityMapView(TemplateView):
@@ -201,15 +205,20 @@ class SensorDataLastValuesList(generics.ListAPIView):
 class CsvExportView(views.APIView):
     @swagger_auto_schema(operation_description="Get CSV file with raw sensor data for given date",
                          operation_summary="Download daily raw sensor data as CSV",
+                         manual_parameters=[from_date_param],
                          tags=['report'])
     def get(self, request, format=None):
-        from_date = self.request.query_params.get('from_date', None)
+        from_date = self.request.query_params.get('from_date', date.today().isoformat())
         file_name = f'sensor_data-{from_date}.csv'
-        file_handle = open(f'/rockiot-data/{file_name}', 'rb')
-        response = FileResponse(file_handle, content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
-        return response
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+        try:
+            file_handle = open(f'/rockiot-data/{file_name}', 'rb')
+            response = FileResponse(file_handle, content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
+            return response
+        except IOError as ioe:
+            meg = f"Requested CSV file {file_name} not found: {ioe}"
+            logger.warning(meg)
+            raise Http404(meg)
 
 
 class FacilityView(generics.RetrieveAPIView):

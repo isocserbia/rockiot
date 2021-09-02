@@ -5,12 +5,12 @@ from django.db import models
 from django.forms import TextInput, Textarea
 from django.utils.html import format_html
 from django_celery_beat.models import SolarSchedule, ClockedSchedule
-from django_celery_results.models import TaskResult, GroupResult
+from django_celery_results.models import GroupResult
 
 from app.models import Facility, Device, Municipality, PlatformAttribute, Platform, \
     FacilityMembership, DeviceConnection, CronJobExecution, CronJob
 from app.system.dockerops import DockerOps
-from app.tasks import register_device, activate_device, deactivate_device, terminate_device, export_raw_data_to_csv
+from app.tasks import register_device, activate_device, deactivate_device, terminate_device
 
 
 def get_form_field_overrides():
@@ -145,18 +145,26 @@ class DeviceAdmin(OSMGeoAdmin):
     def register(self, request, queryset):
         for device in queryset:
             register_device.apply_async((device.device_id,))
+            device.status = Device.REGISTERED
+            device.save()
 
     def activate(self, request, queryset):
         for device in queryset:
             activate_device.apply_async((device.device_id,))
+            device.status = Device.ACTIVATED
+            device.save()
 
     def deactivate(self, request, queryset):
         for device in queryset:
             deactivate_device.apply_async((device.device_id,))
+            device.status = Device.DEACTIVATED
+            device.save()
 
     def terminate(self, request, queryset):
         for device in queryset:
             terminate_device.apply_async((device.device_id,))
+            device.status = Device.TERMINATED
+            device.save()
 
     def start_container(self, request, queryset):
         for device in queryset:

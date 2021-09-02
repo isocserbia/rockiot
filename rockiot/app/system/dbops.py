@@ -1,39 +1,39 @@
 #!/usr/bin/env python
 
-import os
+import logging
 from datetime import date
 
 import psycopg2
+from django.conf import settings
 
-TS_HOST = os.getenv("TS_HOST", default='localhost')
-TS_PORT = int(os.getenv("TS_PORT", default='5432'))
-TS_DB = os.getenv("TS_DB", default='rock_iot')
-TS_USER = os.getenv("TS_USER", default='postgres')
-TS_PASS = os.getenv("TS_PASS", default='postgres')
+config = settings.DATABASES["default"]
+logger = logging.getLogger(__name__)
 
 
-def export_raw_data_to_csv():
+def export_raw_data_to_csv(dat=date.today().isoformat()):
 
-    print("Preparing for data export")
+    file_path = f"/rockiot-data/sensor_data-{dat}.csv"
+    logger.info(f"Preparing for CSV data export {file_path}")
 
-    db_conn = psycopg2.connect(host=TS_HOST, port=TS_PORT, dbname=TS_DB, user=TS_USER, password=TS_PASS)
+    db_args = dict(host=config["HOST"], port=config["PORT"], dbname=config["NAME"],
+                   user=config["USER"], password=config["PASSWORD"])
+    db_conn = psycopg2.connect(**db_args)
     db_cursor = db_conn.cursor()
 
-    # Use the COPY function on the SQL we created above.
-    query = "SELECT * FROM sensor_data"
-    full_query_csv = "COPY ({0}) TO STDOUT WITH CSV HEADER".format(query)
+    query = f"SELECT * FROM sensor_data WHERE date_trunc('day', time) = '{dat}'"
+    query_csv = "COPY ({0}) TO STDOUT WITH CSV HEADER".format(query)
 
-    t_path_n_file = f"/rockiot-data/sensor_data-{date.today().isoformat()}.csv"
     try:
-        with open(t_path_n_file, 'w') as f_output:
-            db_cursor.copy_expert(full_query_csv, f_output)
-        print("Success. Sensor data exported to: " + t_path_n_file)
+        logger.info(f"Extracting sensor data with query: {query_csv}")
+        with open(file_path, 'w') as f_output:
+            db_cursor.copy_expert(query_csv, f_output)
+        logger.info(f"Sensor data exported to: {file_path}")
     except psycopg2.Error as e:
-        print("Error: " + e + "/n query we ran: " + query + "/n t_path_n_file: " + t_path_n_file)
+        logger.error("Error running sensor data copy csv query", e)
 
     db_cursor.close()
     db_conn.close()
-    return t_path_n_file
+    return file_path
 
 
 if __name__ == '__main__':

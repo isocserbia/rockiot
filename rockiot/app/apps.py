@@ -43,15 +43,14 @@ class AppConfig(AppConfig):
                                         name='RabbitMQ health check',
                                         task='app.tasks.check_system_health')
 
-            schedule3, created3 = IntervalSchedule.objects.get_or_create(every=1, period=IntervalSchedule.MINUTES)
+            schedule3, created3 = IntervalSchedule.objects.get_or_create(every=10, period=IntervalSchedule.MINUTES)
             PeriodicTask.objects.create(interval=schedule3,
                                         name='RabbitMQ overview',
                                         task='app.tasks.get_overview')
 
             schedule4, created4 = CrontabSchedule.objects.get_or_create(
-                minute='5', hour='*', day_of_week='*', day_of_month='*', month_of_year='*',
-                timezone=pytz.utc)
-            PeriodicTask.objects.create(interval=schedule4,
+                minute='*/5', hour='*', day_of_week='*', day_of_month='*', month_of_year='*')
+            PeriodicTask.objects.create(crontab=schedule4,
                                         name='Export raw data to CSV',
                                         task='app.tasks.export_raw_data_to_csv')
 

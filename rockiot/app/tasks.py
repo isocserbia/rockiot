@@ -1,8 +1,9 @@
 import logging
+from datetime import date
 
+from app.rabbitops import rabbit_ops
 from app.system import dbops
 from tasks.celery import app
-from app.rabbitops import rabbit_ops
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +57,6 @@ def terminate_device(self, did):
 
 
 @app.task(bind=True, ignore_result=False, max_retries=3)
-def export_raw_data_to_csv(self):
+def export_raw_data_to_csv(self, dat=date.today().isoformat()):
     logger.debug(f'Export raw data request: {self.request!r}')
-    return dbops.export_raw_data_to_csv()
+    return dbops.export_raw_data_to_csv(dat)

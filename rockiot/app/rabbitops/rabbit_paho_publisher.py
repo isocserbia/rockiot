@@ -6,6 +6,8 @@ from time import sleep
 import paho.mqtt.client as paho
 from django.conf import settings
 
+from app.system.singleton import Singleton
+
 config = settings.BROKER_CONFIG
 
 BROKER_HOST = config["BROKER_HOST"]
@@ -17,6 +19,7 @@ MQTTEVENTPRODUCER_PASS = config["MQTTEVENTPRODUCER_PASS"]
 logger = logging.getLogger(__name__)
 
 
+@Singleton
 class PahoPublisher:
 
     def __init__(self):
