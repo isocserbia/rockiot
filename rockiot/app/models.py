@@ -252,6 +252,7 @@ class DeviceConnection(models.Model):
 class SensorDataAbstract(models.Model):
     time = models.DateTimeField(primary_key=True)
     device_id = models.CharField(max_length=30)
+    client_id = models.CharField(max_length=30)
     temperature = models.DecimalField(decimal_places=2, max_digits=8)
     humidity = models.DecimalField(decimal_places=2, max_digits=8)
     no2 = models.DecimalField(decimal_places=2, max_digits=8)

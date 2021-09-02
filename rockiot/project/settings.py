@@ -104,6 +104,29 @@ SWAGGER_SETTINGS = {
     ],
 }
 
+ADMIN_REORDER = (
+
+    # Exclude models
+    {'app': 'app', 'models': ('app.Platform', 'app.Device', 'app.Facility', 'app.Municipality')},
+
+    # Reorder app models
+    {'app': 'auth', 'label': 'Security', 'models': (
+        {'model': 'auth.User', 'label': 'Users'},
+        {'model': 'auth.Group', 'label': 'Roles'},
+    )},
+
+    # models with custom name
+    {'app': 'django_celery_results', 'label': 'Background Jobs', 'models': (
+        {'model': 'app.CronJob', 'label': 'Data tasks'},
+        {'model': 'django_celery_results.TaskResult', 'label': 'Task results'},
+        {'model': 'django_celery_beat.PeriodicJob', 'label': 'Periodic jobs'},
+        {'model': 'django_celery_beat.IntervalSchedule', 'label': 'Interval periods'},
+        {'model': 'django_celery_beat.CrontabSchedule', 'label': 'Crontab periods'},
+    )},
+
+    {'app': 'admin_interface', 'model': 'admin_interface.Theme'},
+
+)
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(hours=1),
@@ -114,26 +137,6 @@ SIMPLE_JWT = {
     'SIGNING_KEY': SECRET_KEY
 }
 
-# ADMIN_REORDER = (
-#
-#     # Rename app
-#     {'app': 'auth', 'label': 'Authorisation'},
-#
-#     # Reorder app models
-#     {'app': 'auth', 'models': ('auth.User', 'auth.Group')},
-#
-#     # Exclude models
-#     {'app': 'app', 'models': ('app.Platform', 'app.Device', 'app.Facility', 'app.Municipality')},
-#
-#     # Cross-linked models
-#     {'app': 'auth', 'models': ('auth.User', 'sites.Site')},
-#
-#     # models with custom name
-#     {'app': 'auth', 'models': (
-#         {'model': 'auth.User', 'label': 'Users'},
-#         {'model': 'auth.Group', 'label': 'Roles'},
-#     )},
-# )
 
 ROOT_URLCONF = 'project.urls'
 

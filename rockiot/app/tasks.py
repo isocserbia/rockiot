@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 @app.task(bind=True, ignore_result=True, max_retries=3)
 def check_system_health(self):
     logger.debug(f'Check System Health Request: {self.request!r}')
-    rabbit_ops.check_system_health()
+    return rabbit_ops.check_system_health()
 
 
 @app.task(bind=True, ignore_result=True, max_retries=3)
@@ -23,7 +23,7 @@ def update_connections(self):
 @app.task(bind=True, ignore_result=False, max_retries=3)
 def get_overview(self):
     logger.debug(f'Get Overview Request: {self.request!r}')
-    rabbit_ops.get_overview()
+    return rabbit_ops.get_overview()
 
 
 @app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='20/m')

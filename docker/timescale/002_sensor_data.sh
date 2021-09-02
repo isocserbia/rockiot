@@ -11,6 +11,7 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE TABLE IF NOT EXISTS sensor_data (
   time          TIMESTAMP         NOT NULL,
   device_id     TEXT              NOT NULL,
+  client_id     TEXT              NOT NULL,
   temperature   DOUBLE PRECISION  NOT NULL,
   humidity      DOUBLE PRECISION  NOT NULL,
   no2           DOUBLE PRECISION  NOT NULL,
