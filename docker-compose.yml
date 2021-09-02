@@ -115,7 +115,7 @@ services:
       - DEVICE_ID=device1
       - DEVICE_PASS=device1pass
       - DEVICE_KEY=4OrcNTFSZUrYX6NqP0P3lz
-      - DEMO_SLEEP_SECONDS=3
+      - DEMO_SLEEP_SECONDS=30
       - DEMO_IS_SSL=True
       - WAIT_HOSTS=rabbit1:8883,rockiot:8000
     depends_on:
