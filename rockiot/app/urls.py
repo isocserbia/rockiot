@@ -19,7 +19,7 @@ urlpatterns = [
     path('devices/data/raw/', CsvExportView.as_view(), name='device-sensors-last-values'),
     path('devices/data/last/', SensorDataLastValuesList.as_view(), name='device-sensors-last-values'),
     path('devices/<device_id>/data/aggregate/', DeviceSensorsSummary.as_view(), name='device-sensors-summary'),
-    path('devices/<device_id>/data/row/', SensorDataList.as_view(), name='device-sensors-data'),
+    path('devices/<device_id>/data/raw/', SensorDataList.as_view(), name='device-sensors-data'),
     path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', MyTokenRefreshView.as_view(), name='token_refresh'),
 ]

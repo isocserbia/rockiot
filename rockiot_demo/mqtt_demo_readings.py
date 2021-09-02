@@ -8,12 +8,11 @@ def date_converter(o):
         return o.__str__()
 
 
-def random_sensor_data(device_id, client_id):
+def random_sensor_data(client_id):
     multi = float(uniform(1, 2))
     message = {
-        "device_id": device_id,
         "client_id": client_id,
-        "time": datetime.utcnow(),
+        "sent_at": datetime.utcnow(),
         "data": {
             "temperature": ("%.2f" % uniform(10.0 * multi, 10.0 * multi)),
             "humidity": ("%.1f" % uniform(1.0 * multi, 2.0 * multi)),

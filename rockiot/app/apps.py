@@ -49,7 +49,7 @@ class AppConfig(AppConfig):
                                         task='app.tasks.get_overview')
 
             schedule4, created4 = CrontabSchedule.objects.get_or_create(
-                minute='*/5', hour='*', day_of_week='*', day_of_month='*', month_of_year='*')
+                minute='*/10', hour='*', day_of_week='*', day_of_month='*', month_of_year='*')
             PeriodicTask.objects.create(crontab=schedule4,
                                         name='Export raw data to CSV',
                                         task='app.tasks.export_raw_data_to_csv')

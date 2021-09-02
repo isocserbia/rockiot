@@ -133,7 +133,7 @@ class MqttDemo(object):
     def publish_sensor_data(self):
         """Publishes sensor data to ingest topic"""
         if self.client.is_connected():
-            message = mqtt_demo_readings.random_sensor_data(DEVICE_ID, self.client_id)
+            message = mqtt_demo_readings.random_sensor_data(self.client_id)
             topic = (BROKER_DEVICE_INGEST_TOPIC % DEVICE_ID)
             self.client.publish(topic=topic, payload=message)
             LOGGER.info("%s sensor data sent to topic %s: %s" % (self.identified, topic, message))
