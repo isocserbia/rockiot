@@ -10,7 +10,8 @@ config = settings.BROKER_CONFIG
 
 
 app = Celery('tasks',
-             broker=f'amqp://{config["RABBITCELERY_USER"]}:{config["RABBITCELERY_PASS"]}@{config["BROKER_HOST"]}:{config["BROKER_AMQP_PORT"]}/{config["BROKER_VHOST"]}')
+             broker=f'amqp://{config["RABBITCELERY_USER"]}:{config["RABBITCELERY_PASS"]}@{config["BROKER_HOST"]}:{config["BROKER_AMQP_PORT"]}/{config["BROKER_VHOST"]}',
+             backend="django-db")
 
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
@@ -24,7 +25,7 @@ app.conf.database_table_schemas = {
     'group': 'public',
 }
 
-app.conf.task_ignore_result = True
+app.conf.task_ignore_result = False
 app.conf.task_store_errors_even_if_ignored = True
 
 app.conf.task_queues = (
