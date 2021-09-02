@@ -14,8 +14,8 @@ class DeviceAction:
 @dataclass_json
 @dataclass(init=True)
 class DeviceEvent:
+    type: str
     previous_status: str
     new_status: str
     message: str
     sent_at: str
-    type: str

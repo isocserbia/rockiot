@@ -4,6 +4,7 @@ import json
 import os
 import functools
 import logging
+import re
 import time
 from contextlib import contextmanager
 
@@ -254,11 +255,13 @@ class PikaConsumer(object):
                     basic_deliver.delivery_tag, basic_deliver.routing_key, basic_deliver.exchange,
                     properties.timestamp, properties.headers, body)
 
-        # device_id = re.split("\.", basic_deliver.routing_key)[2]
-        # print("DEVICE_ID: %s" % device_id)
-
-        self.write_to_db(body)
-        self.acknowledge_message(basic_deliver.delivery_tag)
+        device_id = re.split("\.", basic_deliver.routing_key)[2]
+        if not device_id:
+            logging.error(f"Device ID not detected from the topic [topic: {basic_deliver.routing_key}]")
+            self.reject_message(basic_deliver.delivery_tag)
+        else:
+            self.write_to_db(device_id, body)
+            self.acknowledge_message(basic_deliver.delivery_tag)
 
     def acknowledge_message(self, delivery_tag):
         """Acknowledge the message delivery from RabbitMQ by sending a
@@ -269,6 +272,16 @@ class PikaConsumer(object):
         """
         LOGGER.info('Acknowledging message %s', delivery_tag)
         self._channel.basic_ack(delivery_tag)
+
+    def reject_message(self, delivery_tag):
+        """Reject the message delivery from RabbitMQ by sending a
+        Basic.Nack RPC method for the delivery tag.
+
+        :param int delivery_tag: The delivery tag from the Basic.Deliver frame
+
+        """
+        LOGGER.info('Rejecting message %s', delivery_tag)
+        self._channel.basic_reject(delivery_tag)
 
     def stop_consuming(self):
         """Tell RabbitMQ that you would like to stop consuming by sending the
@@ -342,14 +355,15 @@ class PikaConsumer(object):
         finally:
             db_pool.putconn(con)
 
-    def write_to_db(self, message):
+    def write_to_db(self, device_id, message):
         with self.get_connection() as conn:
             try:
+                # TODO: add client_id to database
                 payload = json.loads(message)
                 sql = """INSERT INTO sensor_data(time, device_id, temperature, humidity, NO2, SO2, PM10, PM25)
                                          VALUES (%s, %s, %s, %s, %s, %s, %s, %s);"""
                 data = (
-                    payload["time"], payload["device_id"], payload["data"]["temperature"],
+                    payload["sent_at"], device_id, payload["data"]["temperature"],
                     payload["data"]["humidity"], payload["data"]["NO2"], payload["data"]["SO2"],
                     payload["data"]["PM10"], payload["data"]["PM25"])
                 cursor = conn.cursor()

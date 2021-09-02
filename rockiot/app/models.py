@@ -152,7 +152,8 @@ class Device(models.Model):
         return self.device_pass == make_password(pwd)
 
     def can_register(self):
-        return self.status == Device.NEW
+        # return self.status == Device.NEW or self.status = Device.TERMINATED
+        return True
 
     def can_activate(self):
         return self.status != Device.NEW
@@ -260,7 +261,7 @@ class SensorDataAbstract(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ['time']
+        ordering = ['-time']
         unique_together = ('time', 'device_id')
 
 
@@ -268,7 +269,7 @@ class SensorData(SensorDataAbstract):
     class Meta:
         abstract = False
         managed = False
-        ordering = ['time']
+        ordering = ['-time']
         verbose_name_plural = "SensorData"
         db_table = "sensor_data"
 
@@ -286,7 +287,7 @@ class SensorsDataRollupAbstract(models.Model):
     class Meta:
         abstract = True
         managed = False
-        ordering = ['time']
+        ordering = ['-time']
         verbose_name_plural = "SensorsRollups"
 
     @classmethod
@@ -339,7 +340,7 @@ class SensorDataLastValues(SensorDataAbstract):
     class Meta:
         abstract = False
         managed = False
-        ordering = ['time']
+        ordering = ['-time']
         verbose_name_plural = "SensorDataLastValues"
         db_table = "sensors_last_values"
 
@@ -351,7 +352,7 @@ class LagDiffAbstract(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ['time']
+        ordering = ['-time']
         unique_together = ('time', 'device_id')
 
 

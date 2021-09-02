@@ -114,7 +114,12 @@ class SensorDataList(generics.ListAPIView):
         did = self.kwargs['device_id']
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
-        return SensorData.objects.filter(device_id=did, time__date__gt=from_date, time__date__lt=until_date)
+        qs1 = SensorData.objects.filter(device_id=did)
+        if from_date is not None:
+            qs1 = qs1.filter(time__date__gt=from_date)
+        if until_date is not None:
+            qs1 = qs1.filter(time__date__lt=until_date)
+        return qs1
 
     serializer_class = SensorDataSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]  # UserDevicePermission
@@ -139,7 +144,12 @@ class DeviceSensorsSummary(generics.ListAPIView):
         model_cls = SensorsDataRollupAbstract.get_class_for_interval(interval)
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
-        return model_cls.objects.filter(device_id=device_id, time__date__gt=from_date, time__date__lt=until_date)
+        qs1 = model_cls.objects.filter(device_id=device_id)
+        if from_date is not None:
+            qs1 = qs1.filter(time__date__gt=from_date)
+        if until_date is not None:
+            qs1 = qs1.filter(time__date__lt=until_date)
+        return qs1
 
     serializer_class = SensorsDataRollupSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
@@ -160,7 +170,12 @@ class FacilitySensorsSummary(generics.ListAPIView):
         ids = list([d.device_id for d in Device.objects.filter(facility__code=code)])
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
-        return model_cls.objects.filter(device_id__in=ids, time__date__gt=from_date, time__date__lt=until_date)
+        qs1 = model_cls.objects.filter(device_id__in=ids)
+        if from_date is not None:
+            qs1 = qs1.filter(time__date__gt=from_date)
+        if until_date is not None:
+            qs1 = qs1.filter(time__date__lt=until_date)
+        return qs1
 
     serializer_class = SensorsDataRollupWithDeviceSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
@@ -184,7 +199,12 @@ class MunicipalitySensorsSummary(generics.ListAPIView):
         ids = list([d.device_id for d in Device.objects.filter(facility__id__in=eids)])
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
-        return model_cls.objects.filter(device_id__in=ids, time__date__gt=from_date, time__date__lt=until_date)
+        qs1 = model_cls.objects.filter(device_id__in=ids)
+        if from_date is not None:
+            qs1 = qs1.filter(time__date__gt=from_date)
+        if until_date is not None:
+            qs1 = qs1.filter(time__date__lt=until_date)
+        return qs1
 
     serializer_class = SensorsDataRollupWithDeviceSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
@@ -206,7 +226,12 @@ class CsvExportView(views.APIView):
     @swagger_auto_schema(operation_description="Get CSV file with raw sensor data for given date",
                          operation_summary="Download daily raw sensor data as CSV",
                          manual_parameters=[from_date_param],
-                         tags=['report'])
+                         tags=['report'],
+                         responses={
+                             '200': openapi.Response('File Attachment', schema=openapi.Schema(type=openapi.TYPE_FILE)),
+                             '404': 'Not Found'
+                         },
+                         produces='text/csv')
     def get(self, request, format=None):
         from_date = self.request.query_params.get('from_date', date.today().isoformat())
         file_name = f'sensor_data-{from_date}.csv'
