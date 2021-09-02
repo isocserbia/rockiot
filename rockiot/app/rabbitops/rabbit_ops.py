@@ -191,18 +191,19 @@ class RabbitOps:
             RabbitOps.client._call(action, 'PUT', body, api.Client.json_headers)
             logger.info("Device initial permissions configured [device-id: %s]" % device_id)
 
-            device.status = Device.REGISTERED
-            device.save()
-
             event = rabbit_events.DeviceEvent.construct_status(Device.NEW, Device.REGISTERED, "Device registered")
-            PahoPublisher().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id, event.to_json())
+            PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id, event.to_json())
             logger.info("Device ingest user registered [device-id: %s]" % device_id)
             return True
 
         except HTTPError as err:
+            device.status = Device.NEW
+            device.save()
             raise RuntimeError("Device ingest user not registered", err.args)
 
         except Exception as ex:
+            device.status = Device.NEW
+            device.save()
             raise RuntimeError("Device ingest user not registered", ex.args)
 
     @classmethod
@@ -233,25 +234,27 @@ class RabbitOps:
             RabbitOps.client._call(action, 'PUT', body, api.Client.json_headers)
             logger.info("Device ingest user permission configured [device-id: %s]" % device_id)
 
-            device.status = Device.ACTIVATED
-            device.save()
-
             event = rabbit_events.DeviceEvent.construct_activation(Device.REGISTERED, Device.ACTIVATED,
                                                                    "Device activated")
-            PahoPublisher().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id, event.to_json())
+            PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id, event.to_json())
             logger.info("Device ingest user activated [device-id: %s]" % device_id)
             return True
 
         except HTTPError as err:
+            device.status = Device.REGISTERED
+            device.save()
             raise RuntimeError("Device ingest user not activated", err.args)
 
         except Exception as ex:
+            device.status = Device.REGISTERED
+            device.save()
             raise RuntimeError("Device ingest user not activated", ex.args)
 
     @classmethod
     def _deactivate_device_internal(cls, device_id, new_status=Device.DEACTIVATED):
 
         device = Device.objects.get(device_id=device_id)
+        current_status = device.status
         if not device:
             raise ValueError("Device not found [device-id: %s]" % device_id)
 
@@ -284,14 +287,15 @@ class RabbitOps:
                         logger.error("Failed closing device connection [device-id: %s] [name: %s]" %
                                      (device_id, c["name"]))
 
-            device.status = new_status
-            device.save()
             logger.info("Device ingest user %s [device-id: %s]" % (new_status, device_id))
-
             return True
 
         except HTTPError as err:
+            device.status = current_status
+            device.save()
             raise RuntimeError("Device ingest user not " + new_status, err.args)
 
         except Exception as ex:
+            device.status = current_status
+            device.save()
             raise RuntimeError("Device ingest user not " + new_status, ex.args)

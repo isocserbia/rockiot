@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'app',
     'tasks',
+    # 'admin_reorder',
     'rest_framework',
     'rest_framework_gis',
     'rest_framework_simplejwt',
@@ -61,6 +62,7 @@ MIDDLEWARE = [
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    # 'admin_reorder.middleware.ModelAdminReorder',
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -100,6 +102,27 @@ SWAGGER_SETTINGS = {
         'patch'
     ],
 }
+
+# ADMIN_REORDER = (
+#
+#     # Rename app
+#     {'app': 'auth', 'label': 'Authorisation'},
+#
+#     # Reorder app models
+#     {'app': 'auth', 'models': ('auth.User', 'auth.Group')},
+#
+#     # Exclude models
+#     {'app': 'app', 'models': ('app.Platform', 'app.Device', 'app.Facility', 'app.Municipality')},
+#
+#     # Cross-linked models
+#     {'app': 'auth', 'models': ('auth.User', 'sites.Site')},
+#
+#     # models with custom name
+#     {'app': 'auth', 'models': (
+#         {'model': 'auth.User', 'label': 'Users'},
+#         {'model': 'auth.Group', 'label': 'Roles'},
+#     )},
+# )
 
 ROOT_URLCONF = 'project.urls'
 
