@@ -1,6 +1,7 @@
 import os
 import sys
 
+import pytz
 from django.apps import AppConfig
 
 
@@ -28,9 +29,10 @@ class AppConfig(AppConfig):
         update_connections.apply_async()
         print("Sent initial health / connection collect tasks")
 
-        from django_celery_beat.models import PeriodicTask, IntervalSchedule
+        from django_celery_beat.models import PeriodicTask, CrontabSchedule, IntervalSchedule
         if IntervalSchedule.objects.count() <= 0:
             print("No scheduled data found in DB, initializing ...")
+
             schedule, created = IntervalSchedule.objects.get_or_create(every=10, period=IntervalSchedule.SECONDS)
             PeriodicTask.objects.create(interval=schedule,
                                         name='RabbitMQ connections sync',
@@ -40,4 +42,16 @@ class AppConfig(AppConfig):
             PeriodicTask.objects.create(interval=schedule2,
                                         name='RabbitMQ health check',
                                         task='app.tasks.check_system_health')
+
+            schedule3, created3 = IntervalSchedule.objects.get_or_create(every=10, period=IntervalSchedule.MINUTES)
+            PeriodicTask.objects.create(interval=schedule3,
+                                        name='RabbitMQ overview',
+                                        task='app.tasks.get_overview')
+
+            schedule4, created4 = CrontabSchedule.objects.get_or_create(
+                minute='*/5', hour='*', day_of_week='*', day_of_month='*', month_of_year='*')
+            PeriodicTask.objects.create(crontab=schedule4,
+                                        name='Export raw data to CSV',
+                                        task='app.tasks.export_raw_data_to_csv')
+
             print("Initialized scheduled system tasks ...")
