@@ -137,6 +137,11 @@ SIMPLE_JWT = {
     'SIGNING_KEY': SECRET_KEY
 }
 
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'app', 'locale'),
+    os.path.join(BASE_DIR, 'app', 'locale_extra'),
+)
+
 
 ROOT_URLCONF = 'project.urls'
 

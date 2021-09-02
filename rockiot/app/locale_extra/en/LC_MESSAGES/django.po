@@ -1,0 +1,14 @@
+msgid "App"
+msgstr "Applications"
+
+msgid "Admin Interface"
+msgstr "Interface"
+
+msgid "Authentication and Authorization"
+msgstr "Security"
+
+msgid "Periodic Tasks"
+msgstr "Tasks"
+
+msgid "Celery Results"
+msgstr "Task results"
