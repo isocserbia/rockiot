@@ -262,8 +262,8 @@ class FacilityView(generics.RetrieveAPIView):
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
-    @swagger_auto_schema(operation_description="Gets API access token for given credentials",
-                         operation_summary="Gets API access token",
+    @swagger_auto_schema(operation_description="Fetches new API access token for given credentials",
+                         operation_summary="Fetch API access token",
                          tags=['token'])
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
@@ -273,7 +273,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 class MyTokenRefreshView(TokenViewBase):
     @swagger_auto_schema(operation_description="Refreshes API access token",
-                         operation_summary="Gets refreshed API access token",
+                         operation_summary="Fetch refreshed API access token",
                          tags=['token'])
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)

@@ -358,12 +358,11 @@ class PikaConsumer(object):
     def write_to_db(self, device_id, message):
         with self.get_connection() as conn:
             try:
-                # TODO: add client_id to database
                 payload = json.loads(message)
-                sql = """INSERT INTO sensor_data(time, device_id, temperature, humidity, NO2, SO2, PM10, PM25)
-                                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s);"""
+                sql = """INSERT INTO sensor_data(time, device_id, client_id, temperature, humidity, NO2, SO2, PM10, PM25)
+                                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"""
                 data = (
-                    payload["sent_at"], device_id, payload["data"]["temperature"],
+                    payload["sent_at"], device_id, payload["client_id"], payload["data"]["temperature"],
                     payload["data"]["humidity"], payload["data"]["NO2"], payload["data"]["SO2"],
                     payload["data"]["PM10"], payload["data"]["PM25"])
                 cursor = conn.cursor()
