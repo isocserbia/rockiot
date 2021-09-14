@@ -224,6 +224,7 @@ BROKER_CONFIG = {
     'RABBITCELERY_PASS': config('RABBITCELERY_PASS', default='rabbitcelery_pass'),
     'BROKER_HOST': config('BROKER_HOST', default='localhost'),
     'BROKER_VHOST': config('BROKER_VHOST', default='/'),
+    'DEMO_SLEEP_SECONDS': config('DEMO_SLEEP_SECONDS', default='60'),
     'BROKER_AMQP_PORT': config('BROKER_AMQP_PORT', default='5672'),
     'BROKER_AMQP_SSL_PORT': config('BROKER_AMQP_SSL_PORT', default='5671'),
     'BROKER_MQTT_PORT': config('BROKER_MQTT_PORT', default='1883'),
