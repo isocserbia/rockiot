@@ -122,7 +122,7 @@ def handle_activation_request(did):
         if not device:
             raise ValueError("Device not found [device-id: %s]" % did)
         if device.can_activate_from_device():
-            RabbitOps._activate_device_internal(did)
+            RabbitOps._activate_device_internal(did, True)
         else:
             raise ValueError("Device can't be activated remotely[device-id: %s]" % did)
     except ValueError as ve:
@@ -207,7 +207,7 @@ class RabbitOps:
             raise RuntimeError("Device ingest user not registered", ex.args)
 
     @classmethod
-    def _activate_device_internal(cls, device_id):
+    def _activate_device_internal(cls, device_id, update_status=False):
 
         device = Device.objects.get(device_id=device_id)
         if not device:
@@ -233,6 +233,11 @@ class RabbitOps:
             action = "/api/topic-permissions/%s/%s" % (quote_plus(vname), device_id)
             RabbitOps.client._call(action, 'PUT', body, api.Client.json_headers)
             logger.info("Device ingest user permission configured [device-id: %s]" % device_id)
+
+            if update_status:
+                device.status = Device.ACTIVATED
+                device.save()
+                logger.info("Device status updated [device-id: %s] [status: %s]" % (device_id, Device.ACTIVATED))
 
             event = rabbit_events.DeviceEvent.construct_activation(Device.REGISTERED, Device.ACTIVATED,
                                                                    "Device activated")
