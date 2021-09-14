@@ -126,7 +126,7 @@ class SensorDataList(generics.ListAPIView):
 
 
 interval_param = openapi.Parameter('interval', openapi.IN_QUERY,
-                                   description="interval ('5m','1h','4h','24h')",
+                                   description="interval ('15m','1h','4h','24h')",
                                    type=openapi.TYPE_STRING)
 
 

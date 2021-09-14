@@ -17,7 +17,7 @@ def check_system_health(self):
 @app.task(bind=True, ignore_result=True, max_retries=3)
 def update_connections(self):
     logger.debug(f'Update Connections Request: {self.request!r}')
-    rabbit_ops.update_connections()
+    return rabbit_ops.update_connections()
 
 
 @app.task(bind=True, ignore_result=False, max_retries=3)
@@ -29,31 +29,31 @@ def get_overview(self):
 @app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='20/m')
 def register_device(self, did):
     logger.debug(f'Register Device Request: {self.request!r}')
-    rabbit_ops.register_device(did)
+    return rabbit_ops.register_device(did)
 
 
 @app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='20/m')
 def activate_device(self, did):
     logger.debug(f'Activate Device Request: {self.request!r}')
-    rabbit_ops.activate_device(did)
+    return rabbit_ops.activate_device(did)
 
 
 @app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='20/m')
 def deactivate_device(self, did):
     logger.debug(f'Deactivate Device Request: {self.request!r}')
-    rabbit_ops.deactivate_device(did)
+    return rabbit_ops.deactivate_device(did)
 
 
 @app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='20/m')
 def handle_activation_request(self, did):
     logger.debug(f'Handle Activation Request: {self.request!r}')
-    rabbit_ops.handle_activation_request(did)
+    return rabbit_ops.handle_activation_request(did)
 
 
 @app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='20/m')
 def terminate_device(self, did):
     logger.debug(f'Terminate Device Request: {self.request!r}')
-    rabbit_ops.terminate_device(did)
+    return rabbit_ops.terminate_device(did)
 
 
 @app.task(bind=True, ignore_result=False, max_retries=3)

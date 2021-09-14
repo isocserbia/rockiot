@@ -25,7 +25,7 @@ BROKER_DEVICE_INGEST_TOPIC = os.getenv("BROKER_DEVICE_INGEST_TOPIC", default='v1
 DEVICE_ID = os.getenv("DEVICE_ID", default='device1')
 DEVICE_PASS = os.getenv("DEVICE_PASS", default='device1pass')
 
-DEMO_SLEEP_SECONDS = int(os.getenv("DEMO_SLEEP_SECONDS", default='5'))
+DEMO_SLEEP_SECONDS = int(os.getenv("DEMO_SLEEP_SECONDS", default='60'))
 DEMO_IS_SSL = bool(os.getenv("DEMO_IS_SSL", default='True'))
 
 LOG_FORMAT = '%(levelname)s %(asctime)s %(module)s %(name)s %(process)d %(thread)d %(message)s'

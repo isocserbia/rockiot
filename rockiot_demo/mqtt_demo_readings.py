@@ -18,6 +18,7 @@ def random_sensor_data(client_id):
             "humidity": ("%.1f" % uniform(1.0 * multi, 2.0 * multi)),
             "NO2": ("%.1f" % uniform(1.0 * multi, 2.0 * multi)),
             "SO2": ("%.1f" % uniform(1.0 * multi, 2.0 * multi)),
+            "PM1": ("%.1f" % triangular(1.0 * multi, 2.0 * multi)),
             "PM10": ("%.1f" % triangular(1.0 * multi, 2.0 * multi)),
             "PM25": ("%.1f" % triangular(1.0 * multi, 2.0 * multi))
         }
