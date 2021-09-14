@@ -76,6 +76,9 @@ class Facility(models.Model):
     def lat(self):
         return None if not self.location else self.location.coords[1]
 
+    def municipality_name(self):
+        return None if not self.municipality else self.municipality.name
+
     def save(self, *args, **kwargs):
         self.code = slugify(self.name)
         super(Facility, self).save(*args, **kwargs)
@@ -112,18 +115,11 @@ class Device(models.Model):
     CALIBRATION = 'CALIBRATION'
     MODES = (
         (DEFAULT, 'DEFAULT'),
-        (CALIBRATION, 'CALIBRATION')
-    )
-
-    SENSOR = 'SENSOR'
-    ACTUATOR = 'ACTUATOR'
-    TYPES = (
-        (SENSOR, 'SENSOR'),
-        (ACTUATOR, 'ACTUATOR')
+        (CALIBRATION, 'CALIBRATION'),
+        (CALIBRATION, 'PRODUCTION')
     )
 
     name = models.CharField(max_length=30, null=False)
-    type = models.CharField(max_length=20, null=False, choices=TYPES, default=SENSOR)
     description = models.TextField(blank=True, null=True)
     location = gismodels.PointField(null=True)
     facility = models.ForeignKey(Facility, related_name='devices',
@@ -171,6 +167,9 @@ class Device(models.Model):
     @property
     def lat(self):
         return None if not self.location else self.location.coords[1]
+
+    def municipality_name(self):
+        return None if not self.facility else self.facility.municipality_name()
 
 
 class Platform(models.Model):
@@ -257,6 +256,7 @@ class SensorDataAbstract(models.Model):
     humidity = models.DecimalField(decimal_places=2, max_digits=8)
     no2 = models.DecimalField(decimal_places=2, max_digits=8)
     so2 = models.DecimalField(decimal_places=2, max_digits=8)
+    pm1 = models.DecimalField(decimal_places=2, max_digits=8)
     pm10 = models.DecimalField(decimal_places=2, max_digits=8)
     pm25 = models.DecimalField(decimal_places=2, max_digits=8)
 
@@ -282,6 +282,7 @@ class SensorsDataRollupAbstract(models.Model):
     humidity = models.DecimalField(decimal_places=2, max_digits=8)
     no2 = models.DecimalField(decimal_places=2, max_digits=8)
     so2 = models.DecimalField(decimal_places=2, max_digits=8)
+    pm1 = models.DecimalField(decimal_places=2, max_digits=8)
     pm10 = models.DecimalField(decimal_places=2, max_digits=8)
     pm25 = models.DecimalField(decimal_places=2, max_digits=8)
 
@@ -292,9 +293,9 @@ class SensorsDataRollupAbstract(models.Model):
         verbose_name_plural = "SensorsRollups"
 
     @classmethod
-    def get_class_for_interval(cls, interval="5m"):
-        if interval == "5m":
-            return SensorsDataRollup5m
+    def get_class_for_interval(cls, interval="15m"):
+        if interval == "15m":
+            return SensorsDataRollup15m
         if interval == "1h":
             return SensorsDataRollup1h
         elif interval == "4h":
@@ -305,18 +306,20 @@ class SensorsDataRollupAbstract(models.Model):
             return SensorsDataRollup24h
 
 
-class SensorsDataRollup5m(SensorsDataRollupAbstract):
+class SensorsDataRollup15m(SensorsDataRollupAbstract):
     class Meta:
         abstract = False
         managed = False
-        verbose_name_plural = "SensorsDataRollup5m"
-        db_table = "sensor_data_rollup_5m"
+        ordering = ['-time']
+        verbose_name_plural = "SensorsDataRollup15m"
+        db_table = "sensor_data_rollup_15m"
 
 
 class SensorsDataRollup1h(SensorsDataRollupAbstract):
     class Meta:
         abstract = False
         managed = False
+        ordering = ['-time']
         verbose_name_plural = "SensorsDataRollup1h"
         db_table = "sensor_data_rollup_1h"
 
@@ -325,6 +328,7 @@ class SensorsDataRollup4h(SensorsDataRollupAbstract):
     class Meta:
         abstract = False
         managed = False
+        ordering = ['-time']
         verbose_name_plural = "SensorsDataRollup4h"
         db_table = "sensor_data_rollup_4h"
 
@@ -333,6 +337,7 @@ class SensorsDataRollup24h(SensorsDataRollupAbstract):
     class Meta:
         abstract = False
         managed = False
+        ordering = ['-time']
         verbose_name_plural = "SensorsDataRollup24h"
         db_table = "sensor_data_rollup_24h"
 
@@ -387,6 +392,14 @@ class LagDiffSO2(LagDiffAbstract):
         managed = False
         verbose_name_plural = "LagDiffSO2"
         db_table = "lag_diff_so2"
+
+
+class LagDiffPM1(LagDiffAbstract):
+    class Meta:
+        abstract = False
+        managed = False
+        verbose_name_plural = "LagDiffPM1"
+        db_table = "lag_diff_pm1"
 
 
 class LagDiffPM10(LagDiffAbstract):

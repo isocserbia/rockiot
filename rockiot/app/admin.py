@@ -75,7 +75,7 @@ class DeviceInlineAdmin(admin.TabularInline):
     extra = 0
     show_change_link = True
     readonly_fields = ['status', 'created_at', 'updated_at']
-    fields = ['device_id', 'name', 'type', 'profile', 'status']
+    fields = ['device_id', 'name', 'profile', 'status']
     formfield_overrides = get_form_field_overrides()
 
     def has_add_permission(self, request, obj=None):
@@ -180,6 +180,9 @@ class DeviceAdmin(OSMGeoAdmin):
             break
         messages.add_message(request, messages.INFO, 'Device demo will soon be stopped. Refresh page for updates.')
 
+    def municipality(self, obj):
+        return obj.municipality_name()
+
     def state(self, obj):
         connection = DeviceConnection.objects.filter(device=obj).first()
         s = "UNKNOWN" if not connection else connection.state
@@ -214,13 +217,13 @@ class DeviceAdmin(OSMGeoAdmin):
         row_actions += super(DeviceAdmin, self).get_row_actions(obj)
         return row_actions
 
-    list_display = ('device_id', 'name', 'type', 'facility', 'activation_status', 'state')
+    list_display = ('device_id', 'name', 'facility', 'municipality', 'activation_status', 'state')
     list_display_links = ('device_id', 'name')
-    list_filter = ('status', 'type')
+    list_filter = ('status', )
     readonly_fields = ['status', 'created_at', 'updated_at', 'state']
     fieldsets = [
         (None, {'fields': (
-            ('device_id', 'type'),
+            'device_id',
             ('name', 'profile'),
             ('description', 'facility')
         )}),

@@ -17,7 +17,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 2,
-  "iteration": 1629913327275,
+  "iteration": 1631660801418,
   "links": [],
   "panels": [
     {
@@ -240,7 +240,7 @@
           ],
           "metricColumn": "device_id",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  temperature\nFROM sensor_data_rollup_5m\nWHERE\n  $__timeFilter(time)\nORDER BY 1,2",
+          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  temperature\nFROM sensor_data_rollup_15m\nWHERE\n  $__timeFilter(time)\nORDER BY 1,2",
           "refId": "A",
           "select": [
             [
@@ -345,7 +345,7 @@
           "hide": false,
           "metricColumn": "device_id",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  humidity\nFROM sensor_data_rollup_5m\nWHERE\n  $__timeFilter(time)\nORDER BY 1,2",
+          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  humidity\nFROM sensor_data_rollup_15m\nWHERE\n  $__timeFilter(time)\nORDER BY 1,2",
           "refId": "A",
           "select": [
             [
@@ -439,7 +439,7 @@
           "hide": false,
           "metricColumn": "device_id",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  no2\nFROM sensor_data_rollup_5m\nWHERE\n  $__timeFilter(time)\nORDER BY 1,2",
+          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  no2\nFROM sensor_data_rollup_15m\nWHERE\n  $__timeFilter(time)\nORDER BY 1,2",
           "refId": "A",
           "select": [
             [
@@ -536,7 +536,7 @@
           "group": [],
           "metricColumn": "device_id",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  so2\nFROM sensor_data_rollup_5m\nWHERE\n  $__timeFilter(time)\nORDER BY 1,2",
+          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  so2\nFROM sensor_data_rollup_15m\nWHERE\n  $__timeFilter(time)\nORDER BY 1,2",
           "refId": "A",
           "select": [
             [
@@ -584,7 +584,7 @@
     },
     {
       "datasource": "PostgreSQL",
-      "description": "Average PM10 ",
+      "description": "Average PM1",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -606,8 +606,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 12,
+        "h": 8,
+        "w": 8,
         "x": 0,
         "y": 25
       },
@@ -633,7 +633,95 @@
           "group": [],
           "metricColumn": "device_id",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  pm10\nFROM sensor_data_rollup_5m\nWHERE\n  $__timeFilter(time)\nORDER BY 1,2",
+          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  pm1\nFROM sensor_data_rollup_15m\nWHERE\n  $__timeFilter(time)\nORDER BY 1,2",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "avg_temp"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "avg_humidity"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "temperature_humidity_summary_minute",
+          "timeColumn": "bucket",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Average Air Quality: PM1",
+      "type": "stat"
+    },
+    {
+      "datasource": "PostgreSQL",
+      "description": "Average PM10 ",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 25
+      },
+      "id": 20,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "device_id",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  pm10\nFROM sensor_data_rollup_15m\nWHERE\n  $__timeFilter(time)\nORDER BY 1,2",
           "refId": "A",
           "select": [
             [
@@ -672,7 +760,7 @@
     },
     {
       "datasource": "PostgreSQL",
-      "description": "Average PM2.5",
+      "description": "Average PM25",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -694,12 +782,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
+        "h": 8,
+        "w": 8,
+        "x": 16,
         "y": 25
       },
-      "id": 6,
+      "id": 21,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -721,7 +809,7 @@
           "group": [],
           "metricColumn": "device_id",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  pm25\nFROM sensor_data_rollup_5m\nWHERE\n  $__timeFilter(time)\nORDER BY 1,2",
+          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  pm25\nFROM sensor_data_rollup_15m\nWHERE\n  $__timeFilter(time)\nORDER BY 1,2",
           "refId": "A",
           "select": [
             [
@@ -755,7 +843,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Average Air Quality: PM2.5",
+      "title": "Average Air Quality: PM25",
       "type": "stat"
     }
   ],

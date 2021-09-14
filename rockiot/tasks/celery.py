@@ -1,4 +1,7 @@
 from __future__ import absolute_import, unicode_literals
+
+from datetime import timedelta
+
 from celery import Celery
 import os
 from kombu import Queue, Exchange
@@ -17,7 +20,7 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 
 # Optional configuration, see the application user guide.
 app.conf.update(
-    result_expires=3600,
+    result_expires=timedelta(days=7),
 )
 
 app.conf.database_table_schemas = {

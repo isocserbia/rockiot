@@ -24,9 +24,9 @@ def get_mngmt_client():
 
 
 def check_system_health():
+    responses = {}
     logger.info("checking system health")
     try:
-        responses = {}
         client = get_mngmt_client()
         resp_alarms = client._call('/api/health/checks/alarms', 'GET')
         responses["alarms"] = resp_alarms
@@ -37,6 +37,7 @@ def check_system_health():
         return json.dumps(responses)
     except Exception as ex:
         logger.exception("Unknown exception during connection check", str(ex))
+        return json.dump({})
 
 
 def get_overview():
@@ -93,26 +94,29 @@ def update_connections():
             new_dc.update_from_rabbitmq_connection(connection_map[did][cid])
             new_dc.save()
             logger.info(f"{did} new connection created [client: {cid}]")
+    return True
 
 
 def register_device(did):
     logger.info("Registering device [device-id: %s]" % did)
     try:
-        RabbitOps._register_device_internal(did)
+        return RabbitOps._register_device_internal(did)
     except ValueError as ve:
         logger.error("Error executing task: " + str(ve))
     except:
         logger.error("Error executing task", sys.exc_info())
+    return False
 
 
 def activate_device(did):
     logger.info("Activating device [device-id: %s]" % did)
     try:
-        RabbitOps._activate_device_internal(did)
+        return RabbitOps._activate_device_internal(did)
     except ValueError as ve:
         logger.error("Error executing task: " + str(ve))
     except:
         logger.error("Error executing task", sys.exc_info())
+    return False
 
 
 def handle_activation_request(did):
@@ -122,33 +126,36 @@ def handle_activation_request(did):
         if not device:
             raise ValueError("Device not found [device-id: %s]" % did)
         if device.can_activate_from_device():
-            RabbitOps._activate_device_internal(did, True)
+            return RabbitOps._activate_device_internal(did, True)
         else:
             raise ValueError("Device can't be activated remotely[device-id: %s]" % did)
     except ValueError as ve:
         logger.error("Error executing task: " + str(ve))
     except:
         logger.error("Error executing task", sys.exc_info())
+    return False
 
 
 def deactivate_device(did):
     logger.info("Deactivating device [device-id: %s]" % did)
     try:
-        RabbitOps._deactivate_device_internal(did)
+        return RabbitOps._deactivate_device_internal(did)
     except ValueError as ve:
         logger.error("Error executing task: " + str(ve))
     except RuntimeError as re:
         logger.error("Error executing task", re)
+    return False
 
 
 def terminate_device(did):
     logger.info("Terminating device [device-id: %s]" % did)
     try:
-        RabbitOps._deactivate_device_internal(did, Device.TERMINATED)
+        return RabbitOps._deactivate_device_internal(did, Device.TERMINATED)
     except ValueError as ve:
         logger.error("Error executing task: " + str(ve))
     except RuntimeError as re:
         logger.error("Error executing task", re)
+    return False
 
 
 class RabbitOps:

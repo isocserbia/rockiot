@@ -281,7 +281,7 @@ LOGGING = {
             'format': '%(levelname)s %(asctime)s %(module)s %(name)s %(process)d %(thread)d %(message)s'
         },
         'simple': {
-            'format': '%(levelname)s %(module)s %(name)s %(message)s'
+            'format': '%(levelname)s %(asctime)s %(module)s %(name)s %(message)s'
         },
     },
     'handlers': {

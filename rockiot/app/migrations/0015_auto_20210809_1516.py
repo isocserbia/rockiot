@@ -37,11 +37,6 @@ class Migration(migrations.Migration):
             field=models.JSONField(blank=True, default={'a': 1, 'b': 2}, null=True),
         ),
         migrations.AlterField(
-            model_name='device',
-            name='type',
-            field=models.CharField(choices=[('SENSOR', 'SENSOR'), ('ACTUATOR', 'ACTUATOR')], default='SENSOR', max_length=20),
-        ),
-        migrations.AlterField(
             model_name='educationfacility',
             name='municipality',
             field=models.ForeignKey(db_column='municipality_id', on_delete=django.db.models.deletion.PROTECT, to='app.municipality'),

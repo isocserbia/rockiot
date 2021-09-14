@@ -13,4 +13,4 @@ docker image ls | grep "rockiot" | xargs docker rmi
 # docker images -f dangling=true
 
 # clean volumes
-# Docker volume prune -f
+# docker volume prune -f
