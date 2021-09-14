@@ -202,12 +202,12 @@ class DeviceAdmin(OSMGeoAdmin):
 
     state.admin_order_field = 'unknown'
     activation_status.admin_order_field = 'unknown'
-    register.short_description = "Register devices"
-    activate.short_description = "Activate devices"
-    deactivate.short_description = "Deactivate devices"
-    terminate.short_description = "Terminate devices"
-    start_container.short_description = "Start devices (demo)"
-    stop_container.short_description = "Stop devices (demo)"
+    register.short_description = "Register"
+    activate.short_description = "Activate"
+    deactivate.short_description = "Deactivate"
+    terminate.short_description = "Terminate"
+    start_container.short_description = "Start (demo)"
+    stop_container.short_description = "Stop (demo)"
 
     def get_row_actions(self, obj):
         row_actions = []
