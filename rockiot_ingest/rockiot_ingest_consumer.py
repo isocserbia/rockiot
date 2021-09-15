@@ -360,12 +360,12 @@ class PikaConsumer(object):
             try:
                 payload = json.loads(message)
                 payload_data = {k.lower(): v for k, v in payload["data"].items()}
-                sql = """INSERT INTO sensor_data(time, device_id, client_id, temperature, humidity, NO2, SO2, PM1, PM10, PM25)
+                sql = """INSERT INTO sensor_data(time, device_id, client_id, temperature, humidity, NO2, SO2, PM1, PM10, PM2_5)
                                          VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"""
                 data = (
                     payload["sent_at"], device_id, payload["client_id"], payload_data["temperature"],
                     payload_data["humidity"], payload_data["no2"], payload_data["so2"],
-                    payload_data["pm1"], payload_data["pm10"], payload_data["pm25"])
+                    payload_data["pm1"], payload_data["pm10"], payload_data["pm2_5"])
                 cursor = conn.cursor()
                 cursor.execute(sql, data)
                 LOGGER.debug("Data inserted to db")

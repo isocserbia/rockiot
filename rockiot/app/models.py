@@ -258,7 +258,7 @@ class SensorDataAbstract(models.Model):
     so2 = models.DecimalField(decimal_places=4, max_digits=8)
     pm1 = models.DecimalField(decimal_places=4, max_digits=8)
     pm10 = models.DecimalField(decimal_places=4, max_digits=8)
-    pm25 = models.DecimalField(decimal_places=4, max_digits=8)
+    pm2_5 = models.DecimalField(decimal_places=4, max_digits=8)
 
     class Meta:
         abstract = True
@@ -284,7 +284,7 @@ class SensorsDataRollupAbstract(models.Model):
     so2 = models.DecimalField(decimal_places=4, max_digits=8)
     pm1 = models.DecimalField(decimal_places=4, max_digits=8)
     pm10 = models.DecimalField(decimal_places=4, max_digits=8)
-    pm25 = models.DecimalField(decimal_places=4, max_digits=8)
+    pm2_5 = models.DecimalField(decimal_places=4, max_digits=8)
 
     class Meta:
         abstract = True
@@ -410,12 +410,12 @@ class LagDiffPM10(LagDiffAbstract):
         db_table = "lag_diff_pm10"
 
 
-class LagDiffPM25(LagDiffAbstract):
+class LagDiffPM2_5(LagDiffAbstract):
     class Meta:
         abstract = False
         managed = False
-        verbose_name_plural = "LagDiffPM25"
-        db_table = "lag_diff_pm25"
+        verbose_name_plural = "LagDiffPM2_5"
+        db_table = "lag_diff_pm2_5"
 
 
 class CronJob(models.Model):

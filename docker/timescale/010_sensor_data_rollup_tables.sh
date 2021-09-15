@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS sensor_data_rollup_15m (
   so2           DOUBLE PRECISION  NOT NULL,
   pm1           DOUBLE PRECISION  NOT NULL,
   pm10          DOUBLE PRECISION  NOT NULL,
-  pm25          DOUBLE PRECISION  NOT NULL,
+  pm2_5          DOUBLE PRECISION  NOT NULL,
   CONSTRAINT sensor_data_rollup_15m_pkey PRIMARY KEY ("time", device_id)
 );
 
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS sensor_data_rollup_1h (
   so2           DOUBLE PRECISION  NOT NULL,
   pm1           DOUBLE PRECISION  NOT NULL,
   pm10          DOUBLE PRECISION  NOT NULL,
-  pm25          DOUBLE PRECISION  NOT NULL,
+  pm2_5          DOUBLE PRECISION  NOT NULL,
   CONSTRAINT sensor_data_rollup_1h_pkey PRIMARY KEY ("time", device_id)
 );
 
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS sensor_data_rollup_4h (
   so2           DOUBLE PRECISION  NOT NULL,
   pm1           DOUBLE PRECISION  NOT NULL,
   pm10          DOUBLE PRECISION  NOT NULL,
-  pm25          DOUBLE PRECISION  NOT NULL,
+  pm2_5          DOUBLE PRECISION  NOT NULL,
   CONSTRAINT sensor_data_rollup_4h_pkey PRIMARY KEY ("time", device_id)
 );
 
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS sensor_data_rollup_24h (
   so2           DOUBLE PRECISION  NOT NULL,
   pm1           DOUBLE PRECISION  NOT NULL,
   pm10          DOUBLE PRECISION  NOT NULL,
-  pm25          DOUBLE PRECISION  NOT NULL,
+  pm2_5          DOUBLE PRECISION  NOT NULL,
   CONSTRAINT sensor_data_rollup_24h_pkey PRIMARY KEY ("time", device_id)
 );
 

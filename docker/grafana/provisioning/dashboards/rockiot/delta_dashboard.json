@@ -128,7 +128,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "pm25"
+              "options": "pm2_5"
             },
             "properties": [
               {
@@ -191,7 +191,7 @@
           ],
           "metricColumn": "device_id",
           "rawQuery": false,
-          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  device_id AS metric,\n  last(no2,\"time\") AS \"no2\",\n  last(humidity,\"time\") AS \"humidity\",\n  last(so2,\"time\") AS \"so2\",\n  last(temperature,\"time\") AS \"temperature\",\n  last(pm1,\"time\") AS \"pm1\",\n  last(pm10,\"time\") AS \"pm10\",\n  last(pm25,\"time\") AS \"pm25\"\nFROM sensors_last_values\nWHERE\n  $__timeFilter(\"time\")\nGROUP BY 1, device_id,2\nORDER BY 1,2",
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  device_id AS metric,\n  last(no2,\"time\") AS \"no2\",\n  last(humidity,\"time\") AS \"humidity\",\n  last(so2,\"time\") AS \"so2\",\n  last(temperature,\"time\") AS \"temperature\",\n  last(pm1,\"time\") AS \"pm1\",\n  last(pm10,\"time\") AS \"pm10\",\n  last(pm2_5,\"time\") AS \"pm2_5\"\nFROM sensors_last_values\nWHERE\n  $__timeFilter(\"time\")\nGROUP BY 1, device_id,2\nORDER BY 1,2",
           "refId": "A",
           "select": [
             [
@@ -317,7 +317,7 @@
             [
               {
                 "params": [
-                  "pm25"
+                  "pm2_5"
                 ],
                 "type": "column"
               },
@@ -329,7 +329,7 @@
               },
               {
                 "params": [
-                  "pm25"
+                  "pm2_5"
                 ],
                 "type": "alias"
               }

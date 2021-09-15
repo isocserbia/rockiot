@@ -72,7 +72,7 @@ def update_connections():
                 logger.info(f"{device.device_id} connection updated")
             else:
                 dc.state = "TERMINATED"
-                dc.terminated_at = datetime.datetime.now()
+                dc.terminated_at = datetime.datetime.utcnow()
                 dc.save()
                 logger.info("%s connection changed, terminating ... " % device.device_id)
                 new_dc = DeviceConnection()
@@ -83,7 +83,7 @@ def update_connections():
             del connection_map[device.device_id]
         else:
             dc.state = "TERMINATED"
-            dc.terminated_at = datetime.datetime.now()
+            dc.terminated_at = datetime.datetime.utcnow()
             dc.save()
             logger.info("%s connection terminated" % device.device_id)
 

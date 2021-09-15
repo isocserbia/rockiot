@@ -70,7 +70,7 @@ def add_users(apps, schema_editor):
                                                 email="deviceinstaller@rockiot.rs",
                                                 password="deviceinstaller123",
                                                 is_staff=True,
-                                                last_login=make_aware(datetime.now()))
+                                                last_login=make_aware(datetime.utcnow()))
     device_installer.groups.add(device_installer_group)
     device_installer.save()
 
@@ -78,7 +78,7 @@ def add_users(apps, schema_editor):
                                             email="deviceadmin@rockiot.rs",
                                             password="deviceadmin123",
                                             is_staff=True,
-                                            last_login=make_aware(datetime.now()))
+                                            last_login=make_aware(datetime.utcnow()))
     device_admin.groups.add(device_admin_group)
     device_admin.save()
 
@@ -86,7 +86,7 @@ def add_users(apps, schema_editor):
                                         email="apiuser@rockiot.rs",
                                         password="apiuser123",
                                         is_staff=False,
-                                        last_login=make_aware(datetime.now()))
+                                        last_login=make_aware(datetime.utcnow()))
     api_user.groups.add(api_user_group)
     api_user.save()
 

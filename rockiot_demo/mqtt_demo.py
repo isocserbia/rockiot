@@ -143,7 +143,7 @@ class MqttDemo(object):
 
     def publish_activate_action(self):
         """Publishes activation request to actions topic"""
-        message = DeviceAction("activation_request", self.client_id, DEVICE_ID, datetime.now().isoformat()).to_json()
+        message = DeviceAction("activation_request", self.client_id, DEVICE_ID, datetime.utcnow().isoformat()).to_json()
         self.client.publish(topic=BROKER_DEVICE_ACTIONS_TOPIC, payload=message)
         LOGGER.info("%s activate_request sent to topic %s: %s" % (self.identified, BROKER_DEVICE_ACTIONS_TOPIC, message))
         self.activating = True

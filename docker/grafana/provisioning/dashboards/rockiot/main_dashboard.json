@@ -760,7 +760,7 @@
     },
     {
       "datasource": "PostgreSQL",
-      "description": "Average PM25",
+      "description": "Average PM2_5",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -809,7 +809,7 @@
           "group": [],
           "metricColumn": "device_id",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  pm25\nFROM sensor_data_rollup_15m\nWHERE\n  $__timeFilter(time)\nORDER BY 1,2",
+          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  pm2_5\nFROM sensor_data_rollup_15m\nWHERE\n  $__timeFilter(time)\nORDER BY 1,2",
           "refId": "A",
           "select": [
             [
@@ -843,7 +843,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Average Air Quality: PM25",
+      "title": "Average Air Quality: PM2_5",
       "type": "stat"
     }
   ],
