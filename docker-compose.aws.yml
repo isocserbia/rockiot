@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+
+  rockiot:
+    env_file:
+      - rockiot.aws.env
+
+  rockiot_ingest:
+    env_file:
+      - rockiot.aws.env
+
+  rockiot_demo:
+    env_file:
+      - rockiot.aws.env

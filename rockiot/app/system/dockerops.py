@@ -69,9 +69,11 @@ class DockerOps:
                         container.stop()
                         container.remove()
                         logger.info(f"Device {device.device_id} container stopped [name: {container.name}]")
-                else:
-                    logger.info(f"Device {device.device_id} container not found [name: {name}]")
-                return True
+                    return True
+
+                logger.info(f"Device {device.device_id} container not found [name: {name}]")
+                return False
+
             except:
                 logger.error("Error stopping container", sys.exc_info()[0])
                 return False
