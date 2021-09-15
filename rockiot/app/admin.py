@@ -205,6 +205,7 @@ class DeviceAdmin(OSMGeoAdmin):
 
     state.admin_order_field = 'unknown'
     activation_status.admin_order_field = 'unknown'
+    activation_status.short_description = 'Status'
     register.short_description = "Register"
     activate.short_description = "Activate"
     deactivate.short_description = "Deactivate"

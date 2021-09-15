@@ -252,13 +252,13 @@ class SensorDataAbstract(models.Model):
     time = models.DateTimeField(primary_key=True)
     device_id = models.CharField(max_length=30)
     client_id = models.CharField(max_length=30)
-    temperature = models.DecimalField(decimal_places=2, max_digits=8)
-    humidity = models.DecimalField(decimal_places=2, max_digits=8)
-    no2 = models.DecimalField(decimal_places=2, max_digits=8)
-    so2 = models.DecimalField(decimal_places=2, max_digits=8)
-    pm1 = models.DecimalField(decimal_places=2, max_digits=8)
-    pm10 = models.DecimalField(decimal_places=2, max_digits=8)
-    pm25 = models.DecimalField(decimal_places=2, max_digits=8)
+    temperature = models.DecimalField(decimal_places=4, max_digits=8)
+    humidity = models.DecimalField(decimal_places=4, max_digits=8)
+    no2 = models.DecimalField(decimal_places=4, max_digits=8)
+    so2 = models.DecimalField(decimal_places=4, max_digits=8)
+    pm1 = models.DecimalField(decimal_places=4, max_digits=8)
+    pm10 = models.DecimalField(decimal_places=4, max_digits=8)
+    pm25 = models.DecimalField(decimal_places=4, max_digits=8)
 
     class Meta:
         abstract = True
@@ -278,13 +278,13 @@ class SensorData(SensorDataAbstract):
 class SensorsDataRollupAbstract(models.Model):
     time = models.DateTimeField(primary_key=True)
     device_id = models.CharField(max_length=30)
-    temperature = models.DecimalField(decimal_places=2, max_digits=8)
-    humidity = models.DecimalField(decimal_places=2, max_digits=8)
-    no2 = models.DecimalField(decimal_places=2, max_digits=8)
-    so2 = models.DecimalField(decimal_places=2, max_digits=8)
-    pm1 = models.DecimalField(decimal_places=2, max_digits=8)
-    pm10 = models.DecimalField(decimal_places=2, max_digits=8)
-    pm25 = models.DecimalField(decimal_places=2, max_digits=8)
+    temperature = models.DecimalField(decimal_places=4, max_digits=8)
+    humidity = models.DecimalField(decimal_places=4, max_digits=8)
+    no2 = models.DecimalField(decimal_places=4, max_digits=8)
+    so2 = models.DecimalField(decimal_places=4, max_digits=8)
+    pm1 = models.DecimalField(decimal_places=4, max_digits=8)
+    pm10 = models.DecimalField(decimal_places=4, max_digits=8)
+    pm25 = models.DecimalField(decimal_places=4, max_digits=8)
 
     class Meta:
         abstract = True
@@ -354,7 +354,7 @@ class SensorDataLastValues(SensorDataAbstract):
 class LagDiffAbstract(models.Model):
     time = models.DateTimeField(primary_key=True)
     device_id = models.CharField(max_length=30)
-    diff_perc = models.DecimalField(decimal_places=2, max_digits=8)
+    diff_perc = models.DecimalField(decimal_places=4, max_digits=8)
 
     class Meta:
         abstract = True

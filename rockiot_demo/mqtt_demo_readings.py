@@ -14,13 +14,13 @@ def random_sensor_data(client_id):
         "client_id": client_id,
         "sent_at": datetime.utcnow(),
         "data": {
-            "temperature": ("%.2f" % uniform(10.0 * multi, 10.0 * multi)),
-            "humidity": ("%.1f" % uniform(1.0 * multi, 2.0 * multi)),
-            "NO2": ("%.1f" % uniform(1.0 * multi, 2.0 * multi)),
-            "SO2": ("%.1f" % uniform(1.0 * multi, 2.0 * multi)),
-            "PM1": ("%.1f" % triangular(1.0 * multi, 2.0 * multi)),
-            "PM10": ("%.1f" % triangular(1.0 * multi, 2.0 * multi)),
-            "PM25": ("%.1f" % triangular(1.0 * multi, 2.0 * multi))
+            "temperature": round(uniform(10.0 * multi, 10.0 * multi), 4),
+            "humidity": round(uniform(1.0 * multi, 2.0 * multi), 4),
+            "NO2": round(uniform(1.0 * multi, 2.0 * multi), 4),
+            "SO2": round(uniform(1.0 * multi, 2.0 * multi), 4),
+            "PM1": round(triangular(1.0 * multi, 2.0 * multi), 4),
+            "PM10": round(triangular(1.0 * multi, 2.0 * multi), 4),
+            "PM25": round(triangular(1.0 * multi, 2.0 * multi), 4)
         }
     }
     return json.dumps(message,

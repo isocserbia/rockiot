@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('time', models.DateTimeField(primary_key=True, serialize=False)),
                 ('device_id', models.CharField(max_length=30)),
-                ('diff_perc', models.DecimalField(decimal_places=2, max_digits=8)),
+                ('diff_perc', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'LagDiffNO2',
@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('time', models.DateTimeField(primary_key=True, serialize=False)),
                 ('device_id', models.CharField(max_length=30)),
-                ('diff_perc', models.DecimalField(decimal_places=2, max_digits=8)),
+                ('diff_perc', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'LagDiffPM10',
@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('time', models.DateTimeField(primary_key=True, serialize=False)),
                 ('device_id', models.CharField(max_length=30)),
-                ('diff_perc', models.DecimalField(decimal_places=2, max_digits=8)),
+                ('diff_perc', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'LagDiffPM25',
@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('time', models.DateTimeField(primary_key=True, serialize=False)),
                 ('device_id', models.CharField(max_length=30)),
-                ('diff_perc', models.DecimalField(decimal_places=2, max_digits=8)),
+                ('diff_perc', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'LagDiffSO2',
@@ -72,12 +72,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('bucket', models.DateTimeField(primary_key=True, serialize=False)),
                 ('device_id', models.CharField(max_length=30)),
-                ('avg_temperature', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_humidity', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_no2', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_so2', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_pm10', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_pm25', models.DecimalField(decimal_places=2, max_digits=8)),
+                ('avg_temperature', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_humidity', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_no2', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_so2', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_pm10', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_pm25', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'SensorsSummary15Minute',
@@ -90,12 +90,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('bucket', models.DateTimeField(primary_key=True, serialize=False)),
                 ('device_id', models.CharField(max_length=30)),
-                ('avg_temperature', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_humidity', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_no2', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_so2', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_pm10', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_pm25', models.DecimalField(decimal_places=2, max_digits=8)),
+                ('avg_temperature', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_humidity', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_no2', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_so2', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_pm10', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_pm25', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'SensorsSummary4Hour',
@@ -108,12 +108,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('bucket', models.DateTimeField(primary_key=True, serialize=False)),
                 ('device_id', models.CharField(max_length=30)),
-                ('avg_temperature', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_humidity', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_no2', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_so2', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_pm10', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_pm25', models.DecimalField(decimal_places=2, max_digits=8)),
+                ('avg_temperature', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_humidity', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_no2', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_so2', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_pm10', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_pm25', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'SensorsSummaryDay',
@@ -126,12 +126,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('bucket', models.DateTimeField(primary_key=True, serialize=False)),
                 ('device_id', models.CharField(max_length=30)),
-                ('avg_temperature', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_humidity', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_no2', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_so2', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_pm10', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_pm25', models.DecimalField(decimal_places=2, max_digits=8)),
+                ('avg_temperature', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_humidity', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_no2', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_so2', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_pm10', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_pm25', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'SensorsSummaryHour',
