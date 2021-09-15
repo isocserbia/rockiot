@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('no2', models.DecimalField(decimal_places=4, max_digits=8)),
                 ('so2', models.DecimalField(decimal_places=4, max_digits=8)),
                 ('pm10', models.DecimalField(decimal_places=4, max_digits=8)),
-                ('pm25', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('pm2_5', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'SensorsDataRollup1h',
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('no2', models.DecimalField(decimal_places=4, max_digits=8)),
                 ('so2', models.DecimalField(decimal_places=4, max_digits=8)),
                 ('pm10', models.DecimalField(decimal_places=4, max_digits=8)),
-                ('pm25', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('pm2_5', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'SensorsDataRollup24h',
@@ -57,7 +57,7 @@ class Migration(migrations.Migration):
                 ('no2', models.DecimalField(decimal_places=4, max_digits=8)),
                 ('so2', models.DecimalField(decimal_places=4, max_digits=8)),
                 ('pm10', models.DecimalField(decimal_places=4, max_digits=8)),
-                ('pm25', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('pm2_5', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'SensorsDataRollup4h',
@@ -76,7 +76,7 @@ class Migration(migrations.Migration):
                 ('no2', models.DecimalField(decimal_places=4, max_digits=8)),
                 ('so2', models.DecimalField(decimal_places=4, max_digits=8)),
                 ('pm10', models.DecimalField(decimal_places=4, max_digits=8)),
-                ('pm25', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('pm2_5', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'SensorsDataRollup5m',

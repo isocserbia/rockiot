@@ -64,25 +64,25 @@ class FacilitySerializer(serializers.GeoFeatureModelSerializer):
 class SensorDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = SensorData
-        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm25"]
+        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
 
 
 class SensorsDataRollupSerializer(serializers.ModelSerializer):
     class Meta:
         model = SensorsDataRollup1h
-        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm25"]
+        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
 
 
 class SensorsDataRollupWithDeviceSerializer(serializers.ModelSerializer):
     class Meta:
         model = SensorsDataRollup1h
-        fields = ["device_id", "time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm25"]
+        fields = ["device_id", "time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
 
 
 class SensorDataLastValuesSerializer(serializers.ModelSerializer):
     class Meta:
         model = SensorDataLastValues
-        fields = ["device_id", "time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm25"]
+        fields = ["device_id", "time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
 
 
 class CronJobSerializer(serializers.ModelSerializer):

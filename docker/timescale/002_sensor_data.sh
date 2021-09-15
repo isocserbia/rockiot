@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS sensor_data (
   so2           DOUBLE PRECISION  NOT NULL,
   pm1           DOUBLE PRECISION  NOT NULL,
   pm10          DOUBLE PRECISION  NOT NULL,
-  pm25          DOUBLE PRECISION  NOT NULL
+  PM2_5          DOUBLE PRECISION  NOT NULL
 );
 
 SELECT create_hypertable('sensor_data', 'time');

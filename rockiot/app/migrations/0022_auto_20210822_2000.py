@@ -40,15 +40,15 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='LagDiffPM25',
+            name='LagDiffPM2_5',
             fields=[
                 ('time', models.DateTimeField(primary_key=True, serialize=False)),
                 ('device_id', models.CharField(max_length=30)),
                 ('diff_perc', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
-                'verbose_name_plural': 'LagDiffPM25',
-                'db_table': 'lag_diff_pm25',
+                'verbose_name_plural': 'LagDiffPM2_5',
+                'db_table': 'lag_diff_pm2_5',
                 'abstract': False,
                 'managed': False,
             },
@@ -77,7 +77,7 @@ class Migration(migrations.Migration):
                 ('avg_no2', models.DecimalField(decimal_places=4, max_digits=8)),
                 ('avg_so2', models.DecimalField(decimal_places=4, max_digits=8)),
                 ('avg_pm10', models.DecimalField(decimal_places=4, max_digits=8)),
-                ('avg_pm25', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_pm2_5', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'SensorsSummary15Minute',
@@ -95,7 +95,7 @@ class Migration(migrations.Migration):
                 ('avg_no2', models.DecimalField(decimal_places=4, max_digits=8)),
                 ('avg_so2', models.DecimalField(decimal_places=4, max_digits=8)),
                 ('avg_pm10', models.DecimalField(decimal_places=4, max_digits=8)),
-                ('avg_pm25', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_pm2_5', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'SensorsSummary4Hour',
@@ -113,7 +113,7 @@ class Migration(migrations.Migration):
                 ('avg_no2', models.DecimalField(decimal_places=4, max_digits=8)),
                 ('avg_so2', models.DecimalField(decimal_places=4, max_digits=8)),
                 ('avg_pm10', models.DecimalField(decimal_places=4, max_digits=8)),
-                ('avg_pm25', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_pm2_5', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'SensorsSummaryDay',
@@ -131,7 +131,7 @@ class Migration(migrations.Migration):
                 ('avg_no2', models.DecimalField(decimal_places=4, max_digits=8)),
                 ('avg_so2', models.DecimalField(decimal_places=4, max_digits=8)),
                 ('avg_pm10', models.DecimalField(decimal_places=4, max_digits=8)),
-                ('avg_pm25', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_pm2_5', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'SensorsSummaryHour',

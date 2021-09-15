@@ -34,10 +34,10 @@ class DeviceEvent:
     @classmethod
     def construct_status(cls, previous_status, new_status, message):
         return DeviceEvent(previous_status, new_status, message,
-                           datetime.now().isoformat(), "status")
+                           datetime.utcnow().isoformat(), "status")
 
     @classmethod
     def construct_activation(cls, previous_status, new_status, message):
         return DeviceEvent(previous_status, new_status, message,
-                           datetime.now().isoformat(), "activation")
+                           datetime.utcnow().isoformat(), "activation")
 

@@ -115,22 +115,22 @@ CREATE OR REPLACE VIEW public.lag_diff_pm10
   ORDER BY diff_perc DESC;
 
 
-CREATE OR REPLACE VIEW public.lag_diff_pm25
+CREATE OR REPLACE VIEW public.lag_diff_pm2_5
  AS
  SELECT
  	date_trunc('minute'::text, sd."time") AS "time",
     sd.device_id,
-    sd.pm25,
+    sd.pm2_5,
     round(sd.diff::numeric, 2) AS diff,
-    round((sd.diff / sd.pm25 * 100::double precision)::numeric, 2) AS diff_perc
+    round((sd.diff / sd.pm2_5 * 100::double precision)::numeric, 2) AS diff_perc
    FROM ( SELECT
 		    ROW_NUMBER() OVER (PARTITION BY sensor_data.device_id ORDER BY sensor_data."time" DESC) as rnum,
 		 	sensor_data."time",
             sensor_data.device_id,
-            sensor_data.pm25,
-            abs(sensor_data.pm25 - lag(sensor_data.pm25, 1) OVER (PARTITION BY sensor_data.device_id ORDER BY sensor_data."time")) AS diff
+            sensor_data.pm2_5,
+            abs(sensor_data.pm2_5 - lag(sensor_data.pm2_5, 1) OVER (PARTITION BY sensor_data.device_id ORDER BY sensor_data."time")) AS diff
            FROM sensor_data
-           WHERE sensor_data.pm25 != 0) sd
+           WHERE sensor_data.pm2_5 != 0) sd
   WHERE sd."time" >= (now() - '00:05:00'::interval) AND sd."time" <= now() AND sd.rnum < 2
   ORDER BY diff_perc DESC;
 
@@ -145,7 +145,7 @@ CREATE OR REPLACE VIEW public.lag_diff_device
 		  lds.diff_perc as so2_diff_perc,
 		  ldp1.diff_perc as pm1_diff_perc,
 		  ldp10.diff_perc as pm10_diff_perc,
-		  ldp25.diff_perc as pm25_diff_perc,
+		  ldp25.diff_perc as pm2_5_diff_perc,
 		  msle.minutes_since_last_entry
 	  from lag_diff_humidity ldh
 	  join lag_diff_temperature ldt on ldh.device_id = ldt.device_id
@@ -153,7 +153,7 @@ CREATE OR REPLACE VIEW public.lag_diff_device
 	  join lag_diff_so2 lds on ldh.device_id = lds.device_id
 	  join lag_diff_pm1 ldp1 on ldh.device_id = ldp1.device_id
 	  join lag_diff_pm10 ldp10 on ldh.device_id = ldp10.device_id
-	  join lag_diff_pm25 ldp25 on ldh.device_id = ldp25.device_id
+	  join lag_diff_pm2_5 ldp25 on ldh.device_id = ldp25.device_id
 	  join minutes_since_last_entry msle on ldh.device_id = msle.device_id
 	  order by device_id desc;
 

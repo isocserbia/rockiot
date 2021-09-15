@@ -15,7 +15,7 @@ def generate_superuser(apps, schema_editor):
     superuser = User.objects.create_superuser(su_name,
                                               email=su_email,
                                               password=su_pass,
-                                              last_login=make_aware(datetime.now()))
+                                              last_login=make_aware(datetime.utcnow()))
     superuser.save()
 
 
