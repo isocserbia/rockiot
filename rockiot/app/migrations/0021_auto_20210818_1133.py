@@ -17,10 +17,10 @@ class Migration(migrations.Migration):
             fields=[
                 ('slug', models.CharField(max_length=30)),
                 ('bucket', models.DateTimeField(primary_key=True, serialize=False)),
-                ('avg_temp', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_humidity', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_co', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_smoke', models.DecimalField(decimal_places=2, max_digits=8)),
+                ('avg_temp', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_humidity', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_co', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_smoke', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'FacilitySensorsSummaryMinute',
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('time', models.DateTimeField(primary_key=True, serialize=False)),
                 ('device_id', models.CharField(max_length=30)),
-                ('diff_perc', models.DecimalField(decimal_places=2, max_digits=8)),
+                ('diff_perc', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'LagDiffCo',
@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('time', models.DateTimeField(primary_key=True, serialize=False)),
                 ('device_id', models.CharField(max_length=30)),
-                ('diff_perc', models.DecimalField(decimal_places=2, max_digits=8)),
+                ('diff_perc', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'LagDiffHumidity',
@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('time', models.DateTimeField(primary_key=True, serialize=False)),
                 ('device_id', models.CharField(max_length=30)),
-                ('diff_perc', models.DecimalField(decimal_places=2, max_digits=8)),
+                ('diff_perc', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'LagDiffSmoke',
@@ -76,7 +76,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('time', models.DateTimeField(primary_key=True, serialize=False)),
                 ('device_id', models.CharField(max_length=30)),
-                ('diff_perc', models.DecimalField(decimal_places=2, max_digits=8)),
+                ('diff_perc', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'LagDiffTemperatures',
@@ -90,10 +90,10 @@ class Migration(migrations.Migration):
             fields=[
                 ('bucket', models.DateTimeField(primary_key=True, serialize=False)),
                 ('device_id', models.CharField(max_length=30)),
-                ('avg_temp', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_humidity', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_co', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('avg_smoke', models.DecimalField(decimal_places=2, max_digits=8)),
+                ('avg_temp', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_humidity', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_co', models.DecimalField(decimal_places=4, max_digits=8)),
+                ('avg_smoke', models.DecimalField(decimal_places=4, max_digits=8)),
             ],
             options={
                 'verbose_name_plural': 'SensorsSummaryMinute',
