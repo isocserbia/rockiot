@@ -1,16 +1,25 @@
+import django_celery_results
 from django.contrib import admin, messages
 from django.contrib.admin import ModelAdmin
 from django.contrib.gis.admin import OSMGeoAdmin
 from django.db import models
+
 from django.forms import TextInput, Textarea
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.utils.html import format_html
 from django_celery_beat.models import SolarSchedule, ClockedSchedule
-from django_celery_results.models import GroupResult
+from django_celery_results.models import GroupResult, TaskResult
+from django_celery_results.admin import TaskResultAdmin
+from simple_history.utils import update_change_reason
 
+from django.apps import apps
 from app.models import Facility, Device, Municipality, PlatformAttribute, Platform, \
     FacilityMembership, DeviceConnection, CronJobExecution, CronJob
 from app.system.dockerops import DockerOps
 from app.tasks import register_device, activate_device, deactivate_device, terminate_device
+
+from simple_history.admin import SimpleHistoryAdmin
 
 
 def get_form_field_overrides():
@@ -133,38 +142,89 @@ class DeviceConnectionInlineAdmin(admin.TabularInline):
         return False
 
 
-@admin.register(Device)
-class DeviceAdmin(OSMGeoAdmin):
+HistoricalDevice = apps.get_model("app", "HistoricalDevice")
 
+
+@admin.register(HistoricalDevice)
+class HistoricalDeviceAdmin(admin.ModelAdmin):
+    model = HistoricalDevice
+
+    def history_change(self, obj):
+        qry = HistoricalDevice.objects.filter(device_id=obj.device_id)
+        new_record = qry.first()
+        old_record = qry.first().prev_record
+        model_delta = new_record.diff_against(old_record)
+        return "%s" % [f"{c.field} changed ({c.old} -> {c.new})" for c in model_delta.changes]
+
+    list_display = ('device_id', 'history_date', 'history_user', 'history_type', 'history_change_reason')
+    list_display_links = ('device_id', 'history_date',)
+    list_filter = ('device_id', 'history_type', 'history_user')
+    readonly_fields = ['device_id', 'history_type', 'history_date', 'history_user', "history_change"]
+    formfield_overrides = get_form_field_overrides()
+    fieldsets = [
+        (None, {'fields': (
+            'device_id',
+            'history_date',
+            'history_user',
+            'history_type'
+        )}),
+        ('Changes', {'fields': ['history_change']}),
+        ('Reason', {'fields': ['history_change_reason']}),
+    ]
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(Device)
+class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
     actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container']
 
     def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
-        # register_device.apply_async((obj.device_id,))
+        print(f"change device request: {request}, change: {change}")
+        if 'continue' in request.POST and "change_reason" in request.POST:
+            super().save_model(request, obj, form, change)
+            update_change_reason(obj, request.POST["change_reason"])
+            self.message_user(request, "Device changes saved")
+            return HttpResponseRedirect(request.get_full_path())
+        return render(request, 'admin/device_change_comment.html')
 
     def register(self, request, queryset):
         for device in queryset:
             register_device.apply_async((device.device_id,))
             device.status = Device.REGISTERED
             device.save()
+            update_change_reason(device, "Device registered")
 
     def activate(self, request, queryset):
         for device in queryset:
             activate_device.apply_async((device.device_id,))
             device.status = Device.ACTIVATED
             device.save()
+            update_change_reason(device, "Device activated")
 
     def deactivate(self, request, queryset):
         for device in queryset:
             deactivate_device.apply_async((device.device_id,))
             device.status = Device.DEACTIVATED
             device.save()
+            update_change_reason(device, "Device deactivated")
 
     def terminate(self, request, queryset):
         for device in queryset:
             terminate_device.apply_async((device.device_id,))
             device.status = Device.TERMINATED
             device.save()
+            update_change_reason(device, "Device terminated")
 
     def start_container(self, request, queryset):
         for device in queryset:
@@ -184,7 +244,7 @@ class DeviceAdmin(OSMGeoAdmin):
         return obj.municipality_name()
 
     def state(self, obj):
-        connection = DeviceConnection.objects.filter(device=obj).first()
+        connection = DeviceConnection.objects.filter(device=obj).last()
         s = "UNKNOWN" if not connection else connection.state
         colors = {
             'RUNNING': '#44B78B',
@@ -201,10 +261,9 @@ class DeviceAdmin(OSMGeoAdmin):
             'DEACTIVATED': '#A41515',
             'TERMINATED': '#A41515',
         }
-        return format_html('<b style="color:{};">{}</b>', colors[obj.status], obj.status,)
+        return format_html('<b style="color:{};">{}</b>', colors[obj.status], obj.status, )
 
-    state.admin_order_field = 'unknown'
-    activation_status.admin_order_field = 'unknown'
+    state.short_description = 'State'
     activation_status.short_description = 'Status'
     register.short_description = "Register"
     activate.short_description = "Activate"
@@ -220,8 +279,10 @@ class DeviceAdmin(OSMGeoAdmin):
 
     list_display = ('device_id', 'name', 'facility', 'municipality', 'activation_status', 'state')
     list_display_links = ('device_id', 'name')
-    list_filter = ('status', )
+    list_filter = ('status',)
     readonly_fields = ['status', 'created_at', 'updated_at', 'state']
+    history_list_display = ["status"]
+
     fieldsets = [
         (None, {'fields': (
             'device_id',
@@ -229,7 +290,7 @@ class DeviceAdmin(OSMGeoAdmin):
             ('description', 'facility')
         )}),
         ('Location', {'fields': ('location',)}),
-        ('Confidential', {'fields': ('device_pass',), 'classes': ['collapse']}),
+        ('Confidential', {'fields': ('device_pass',), 'classes': ['collapse']})
     ]
 
     inlines = [DeviceConnectionInlineAdmin, ]
@@ -347,3 +408,16 @@ class PlatformAdmin(ModelAdmin):
 admin.site.unregister(SolarSchedule)
 admin.site.unregister(ClockedSchedule)
 admin.site.unregister(GroupResult)
+admin.site.unregister(TaskResult)
+
+
+class MyTaskResultAdmin(TaskResultAdmin):
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+admin.site.register(TaskResult, MyTaskResultAdmin)

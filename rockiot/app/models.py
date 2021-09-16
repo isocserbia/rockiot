@@ -7,6 +7,7 @@ from django.contrib.gis.db import models as gismodels
 from django.db import models
 from django.db.models import JSONField
 from django.utils.text import slugify
+from simple_history.models import HistoricalRecords
 
 logger = logging.getLogger(__name__)
 
@@ -113,10 +114,11 @@ class Device(models.Model):
 
     DEFAULT = 'DEFAULT'
     CALIBRATION = 'CALIBRATION'
+    PRODUCTION = 'PRODUCTION'
     MODES = (
         (DEFAULT, 'DEFAULT'),
         (CALIBRATION, 'CALIBRATION'),
-        (CALIBRATION, 'PRODUCTION')
+        (PRODUCTION, 'PRODUCTION')
     )
 
     name = models.CharField(max_length=30, null=False)
@@ -133,6 +135,10 @@ class Device(models.Model):
     metadata = JSONField(default=default_device_metadata)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    history = HistoricalRecords(
+        history_change_reason_field=models.TextField(null=True),
+    )
 
     class Meta:
         ordering = ['name']
