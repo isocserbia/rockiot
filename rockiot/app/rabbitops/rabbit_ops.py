@@ -8,6 +8,7 @@ from django.conf import settings
 from django.db.models import Q
 from pyrabbit2 import api
 from requests import HTTPError
+from simple_history.utils import update_change_reason
 
 from app.models import Device, DeviceConnection
 from app.rabbitops import rabbit_events
@@ -80,11 +81,13 @@ def update_connections():
                 new_dc.update_from_rabbitmq_connection(list(conn.values())[0])
                 new_dc.save()
                 logger.info("%s new connection created" % device.device_id)
+                update_change_reason(dc, "Device re-connected")
             del connection_map[device.device_id]
         else:
             dc.state = "TERMINATED"
             dc.terminated_at = datetime.datetime.utcnow()
             dc.save()
+            update_change_reason(dc, "Device disconnected")
             logger.info("%s connection terminated" % device.device_id)
 
     for did in list(connection_map.keys()):
@@ -93,6 +96,7 @@ def update_connections():
             new_dc.device = Device.objects.get(device_id=did)
             new_dc.update_from_rabbitmq_connection(connection_map[did][cid])
             new_dc.save()
+            update_change_reason(new_dc.device, "Device connected")
             logger.info(f"{did} new connection created [client: {cid}]")
     return True
 
@@ -244,6 +248,7 @@ class RabbitOps:
             if update_status:
                 device.status = Device.ACTIVATED
                 device.save()
+                update_change_reason(device, 'Device self-activated')
                 logger.info("Device status updated [device-id: %s] [status: %s]" % (device_id, Device.ACTIVATED))
 
             event = rabbit_events.DeviceEvent.construct_activation(Device.REGISTERED, Device.ACTIVATED,
@@ -255,6 +260,7 @@ class RabbitOps:
         except HTTPError as err:
             device.status = Device.REGISTERED
             device.save()
+            update_change_reason(device, 'Device activation failed')
             raise RuntimeError("Device ingest user not activated", err.args)
 
         except Exception as ex:

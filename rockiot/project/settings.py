@@ -32,7 +32,6 @@ DEBUG = True
 # ALLOWED_HOSTS = ['localhost', '0.0.0.0', 'rockiot', 'rabbit', 'http://0.0.0.0:8000']
 ALLOWED_HOSTS = ['*']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -49,6 +48,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'app',
     'tasks',
+    'simple_history',
     # 'admin_reorder',
     'rest_framework',
     'rest_framework_gis',
@@ -60,11 +60,12 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'admin_reorder.middleware.ModelAdminReorder',
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 REST_FRAMEWORK = {
@@ -147,7 +148,6 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'app', 'locale_extra'),
 )
 
-
 ROOT_URLCONF = 'project.urls'
 
 TEMPLATES = [
@@ -162,7 +162,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            'libraries' : {
+            'libraries': {
                 'staticfiles': 'django.templatetags.static',
             }
         },
@@ -321,3 +321,11 @@ LOGGING = {
 #     # make all loggers use the console.
 #     for logger in LOGGING['loggers']:
 #         LOGGING['loggers'][logger]['handlers'] = ['console']
+
+
+SIMPLE_HISTORY_REVERT_DISABLED = True
+# SIMPLE_HISTORY_REVERT_DISABLED = False
+SIMPLE_HISTORY_HISTORY_CHANGE_REASON_USE_TEXT_FIELD = True
+SIMPLE_HISTORY_EDIT = True
+
+X_FRAME_OPTIONS = 'ALLOW-FROM http://localhost'

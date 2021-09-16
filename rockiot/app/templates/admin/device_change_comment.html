@@ -1,0 +1,16 @@
+# 'admin/device_change_comment.html'
+{% extends "admin/base_site.html" %}
+{% block content %}
+<form action="" method="post">
+{% csrf_token %}
+<p>
+Please describe the meaning of the change:
+</p>
+<p>
+  <input type="text" name="change_reason" value="" />
+</p>
+<input type="hidden" name="action" value="update_status" />
+<input type="submit" name="cancel" value="Cancel"/>
+<input type="submit" name="continue" value="Continue"/>
+</form>
+{% endblock %}

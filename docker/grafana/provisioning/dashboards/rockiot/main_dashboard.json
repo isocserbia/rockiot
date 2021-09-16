@@ -16,169 +16,9 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1631660801418,
+  "iteration": 1631741709769,
   "links": [],
   "panels": [
-    {
-      "datasource": "PostgreSQL",
-      "description": "Message Count",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": null
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 12,
-        "x": 0,
-        "y": 0
-      },
-      "id": 8,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "7.1.5",
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  count(*)\nFROM sensor_data;",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "avg_lpg"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "air_quality_summary_minute",
-          "timeColumn": "bucket",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Total Message Count",
-      "transparent": true,
-      "type": "stat"
-    },
-    {
-      "datasource": "PostgreSQL",
-      "description": "Raw Data Count for selected Period",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": null
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 12,
-        "x": 12,
-        "y": 0
-      },
-      "id": 17,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "7.1.5",
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  count(*)\nFROM sensor_data\nWHERE\n  $__timeFilter(time);",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "avg_lpg"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "air_quality_summary_minute",
-          "timeColumn": "bucket",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Raw Data Count",
-      "transparent": true,
-      "type": "stat"
-    },
     {
       "datasource": "PostgreSQL",
       "fieldConfig": {
@@ -208,7 +48,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 5
+        "y": 0
       },
       "id": 16,
       "options": {
@@ -281,6 +121,163 @@
       "title": "Average Air Quality: Temperature",
       "transparent": true,
       "type": "stat"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "PostgreSQL",
+      "description": "Ingested Raw Data during selected Period",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 5,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 17,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "percentage": false,
+      "pluginVersion": "7.1.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "metricColumn": "device_id",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  device_id AS metric,\n  avg(count(humidity)) OVER (PARTITION BY device_id ORDER BY $__timeGroup(\"time\",$__interval) ROWS 5 PRECEDING) AS \"humidity\"\nFROM sensor_data\nWHERE\n  $__timeFilter(\"time\")\nGROUP BY 1,2\nORDER BY 1,2",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "humidity"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "avg",
+                  "5"
+                ],
+                "type": "moving_window"
+              },
+              {
+                "params": [
+                  "humidity"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "sensor_data",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Sensor Readings Count",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transparent": true,
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:519",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:520",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "datasource": "PostgreSQL",
@@ -414,7 +411,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 15
+        "y": 10
       },
       "id": 13,
       "options": {
@@ -609,7 +606,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 25
+        "y": 20
       },
       "id": 11,
       "options": {
@@ -857,22 +854,48 @@
         "allValue": null,
         "current": {
           "selected": false,
+          "text": "Beograd",
+          "value": "Beograd"
+        },
+        "datasource": "PostgreSQL",
+        "definition": "select distinct name from app_municipality",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Municipality",
+        "multi": false,
+        "name": "municipality",
+        "options": [],
+        "query": "select distinct name from app_municipality",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
           "text": "All",
           "value": "$__all"
         },
         "datasource": "PostgreSQL",
-        "definition": "select name from app_facility",
+        "definition": "select name from app_facility where municipality_id = (select id from app_municipality where name = $municipality or $municipality is NULL)",
         "hide": 0,
         "includeAll": true,
         "label": "Facility",
         "multi": false,
-        "name": "School",
+        "name": "facility",
         "options": [],
-        "query": "select name from app_facility",
-        "refresh": 1,
+        "query": "select name from app_facility where municipality_id = (select id from app_municipality where name = $municipality or $municipality is NULL)",
+        "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
+        "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
         "tagsQuery": "",
@@ -903,5 +926,5 @@
   "timezone": "browser",
   "title": "ROCKIOT MAIN Dashboard",
   "uid": "C8H6Trmgz",
-  "version": 2
+  "version": 5
 }

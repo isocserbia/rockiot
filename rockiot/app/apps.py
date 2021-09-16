@@ -55,3 +55,25 @@ class AppConfig(AppConfig):
                                         task='app.tasks.export_raw_data_to_csv')
 
             print("Initialized scheduled system tasks ...")
+
+        from django.dispatch import receiver
+
+        from simple_history.signals import (
+            pre_create_historical_record,
+            post_create_historical_record
+        )
+
+        @receiver(pre_create_historical_record)
+        def pre_create_historical_record_callback(sender, **kwargs):
+            print([f'{key}:{val}' for key, val in kwargs.items()])
+            print(f'{sender}: Sent before saving historical record')
+
+        @receiver(post_create_historical_record)
+        def post_create_historical_record_callback(sender, **kwargs):
+            print([f'{key}:{val}' for key, val in kwargs.items()])
+            print(f'{sender}Sent after saving historical record')
+            new_record, old_record = sender.history.all()
+            delta = new_record.diff_against(old_record)
+            for change in delta.changes:
+                print("{} changed from {} to {}".format(change.field, change.old, change.new))
+
