@@ -81,13 +81,11 @@ def update_connections():
                 new_dc.update_from_rabbitmq_connection(list(conn.values())[0])
                 new_dc.save()
                 logger.info("%s new connection created" % device.device_id)
-                update_change_reason(dc, "Device re-connected")
             del connection_map[device.device_id]
         else:
             dc.state = "TERMINATED"
             dc.terminated_at = datetime.datetime.utcnow()
             dc.save()
-            update_change_reason(dc, "Device disconnected")
             logger.info("%s connection terminated" % device.device_id)
 
     for did in list(connection_map.keys()):
@@ -96,7 +94,6 @@ def update_connections():
             new_dc.device = Device.objects.get(device_id=did)
             new_dc.update_from_rabbitmq_connection(connection_map[did][cid])
             new_dc.save()
-            update_change_reason(new_dc.device, "Device connected")
             logger.info(f"{did} new connection created [client: {cid}]")
     return True
 
