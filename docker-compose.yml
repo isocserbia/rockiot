@@ -165,7 +165,7 @@ services:
       - common.env
     environment:
       - WAIT_HOSTS=timescaledb:5432,rockiot:8000
-      - GF_INSTALL_PLUGINS=flant-statusmap-panel,grafana-piechart-panel
+      - GF_INSTALL_PLUGINS=grafana-worldmap-panel,flant-statusmap-panel,grafana-piechart-panel
     networks:
       - app-tier
     volumes:
