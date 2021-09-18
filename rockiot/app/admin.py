@@ -244,7 +244,7 @@ class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
         return obj.municipality_name()
 
     def state(self, obj):
-        connection = DeviceConnection.objects.filter(device=obj).last()
+        connection = DeviceConnection.objects.filter(device=obj).first()
         s = "UNKNOWN" if not connection else connection.state
         colors = {
             'RUNNING': '#44B78B',

@@ -12,13 +12,13 @@ CREATE TABLE IF NOT EXISTS sensor_data (
   time          TIMESTAMP         NOT NULL,
   device_id     TEXT              NOT NULL,
   client_id     TEXT              NOT NULL,
-  temperature   DOUBLE PRECISION  NOT NULL,
-  humidity      DOUBLE PRECISION  NOT NULL,
-  no2           DOUBLE PRECISION  NOT NULL,
-  so2           DOUBLE PRECISION  NOT NULL,
-  pm1           DOUBLE PRECISION  NOT NULL,
-  pm10          DOUBLE PRECISION  NOT NULL,
-  PM2_5          DOUBLE PRECISION  NOT NULL
+  temperature   DOUBLE PRECISION,
+  humidity      DOUBLE PRECISION,
+  no2           DOUBLE PRECISION,
+  so2           DOUBLE PRECISION,
+  pm1           DOUBLE PRECISION,
+  pm10          DOUBLE PRECISION,
+  PM2_5         DOUBLE PRECISION
 );
 
 SELECT create_hypertable('sensor_data', 'time');
