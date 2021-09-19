@@ -468,3 +468,20 @@ class CronJobExecution(models.Model):
 
     def __str__(self):
         return str(self.jobid)
+
+
+# def default_model():
+#     m = [0, 1, 0]
+#     return {"temperature": m, "humidity": m, "co2": m, "so2": m, "no2": m, "pm1": m, "pm2_5": m, "pm10": m}
+#
+#
+# class DeviceCalibrationModel(models.Model):
+#     model = JSONField(default=default_model)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+#     device = models.ForeignKey(Device, related_name='calibration_models',
+#                                db_column='device_id', on_delete=models.CASCADE)
+#
+#     class Meta:
+#         ordering = ['-created_at']
+#         verbose_name_plural = "Device Calibration Models"

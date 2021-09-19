@@ -2,7 +2,7 @@ import logging
 from datetime import date
 
 from app.rabbitops import rabbit_ops
-from app.system import dbops
+from app.system import dbops, pipeline
 from tasks.celery import app
 
 logger = logging.getLogger(__name__)
@@ -60,3 +60,9 @@ def terminate_device(self, did):
 def export_raw_data_to_csv(self, dat=date.today().isoformat()):
     logger.debug(f'Export raw data request: {self.request!r}')
     return dbops.export_raw_data_to_csv(dat)
+
+
+@app.task(bind=True, ignore_result=False, max_retries=3)
+def clean_and_calibrate(self):
+    logger.debug(f'Clean and Calibrate Request: {self.request!r}')
+    return pipeline.clean_and_calibrate_dataframe()

@@ -38,6 +38,10 @@ class AppConfig(AppConfig):
                                         name='RabbitMQ connections sync',
                                         task='app.tasks.update_connections')
 
+            PeriodicTask.objects.create(interval=schedule,
+                                        name='Clean and Calibrate raw data',
+                                        task='app.tasks.clean_and_calibrate')
+
             schedule2, created2 = IntervalSchedule.objects.get_or_create(every=30, period=IntervalSchedule.SECONDS)
             PeriodicTask.objects.create(interval=schedule2,
                                         name='RabbitMQ health check',
