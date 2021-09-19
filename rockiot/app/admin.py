@@ -189,15 +189,6 @@ class HistoricalDeviceAdmin(admin.ModelAdmin):
 class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
     actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container']
 
-    def save_model(self, request, obj, form, change):
-        print(f"change device request: {request}, change: {change}")
-        if 'continue' in request.POST and "change_reason" in request.POST:
-            super().save_model(request, obj, form, change)
-            update_change_reason(obj, request.POST["change_reason"])
-            self.message_user(request, "Device changes saved")
-            return HttpResponseRedirect(request.get_full_path())
-        return render(request, 'admin/device_change_comment.html')
-
     def register(self, request, queryset):
         for device in queryset:
             register_device.apply_async((device.device_id,))
