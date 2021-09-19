@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'app',
     'tasks',
     'simple_history',
+    'django_json_widget',
     # 'admin_reorder',
     'rest_framework',
     'rest_framework_gis',

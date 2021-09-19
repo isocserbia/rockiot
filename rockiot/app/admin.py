@@ -1,25 +1,22 @@
-import django_celery_results
+from django.apps import apps
+from django.contrib import admin, messages
 from django.contrib import admin, messages
 from django.contrib.admin import ModelAdmin
 from django.contrib.gis.admin import OSMGeoAdmin
 from django.db import models
-
 from django.forms import TextInput, Textarea
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.utils.html import format_html
 from django_celery_beat.models import SolarSchedule, ClockedSchedule
-from django_celery_results.models import GroupResult, TaskResult
 from django_celery_results.admin import TaskResultAdmin
+from django_celery_results.models import GroupResult, TaskResult
+from django_json_widget.widgets import JSONEditorWidget
+from simple_history.admin import SimpleHistoryAdmin
 from simple_history.utils import update_change_reason
 
-from django.apps import apps
 from app.models import Facility, Device, Municipality, PlatformAttribute, Platform, \
     FacilityMembership, DeviceConnection, CronJobExecution, CronJob
 from app.system.dockerops import DockerOps
 from app.tasks import register_device, activate_device, deactivate_device, terminate_device
-
-from simple_history.admin import SimpleHistoryAdmin
 
 
 def get_form_field_overrides():
@@ -27,7 +24,8 @@ def get_form_field_overrides():
         models.CharField: {'widget': TextInput(attrs={'size': '40'})},
         models.EmailField: {'widget': TextInput(attrs={'size': '40'})},
         models.GenericIPAddressField: {'widget': TextInput(attrs={'size': '40'})},
-        models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})}
+        models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},
+        models.JSONField: {'widget': JSONEditorWidget},
     }
 
 
@@ -150,11 +148,14 @@ class HistoricalDeviceAdmin(admin.ModelAdmin):
     model = HistoricalDevice
 
     def history_change(self, obj):
-        qry = HistoricalDevice.objects.filter(device_id=obj.device_id)
-        new_record = qry.first()
-        old_record = qry.first().prev_record
-        model_delta = new_record.diff_against(old_record)
-        return "%s" % [f"{c.field} changed ({c.old} -> {c.new})" for c in model_delta.changes]
+        # qry = HistoricalDevice.objects.filter(device_id=obj.device_id)
+        new_record = obj
+        old_record = new_record.prev_record
+        if new_record and old_record:
+            model_delta = new_record.diff_against(old_record, excluded_fields=["metadata", "history_change"])
+            return "%s" % [f"{c.field} changed ({c.old} -> {c.new})" for c in model_delta.changes]
+        else:
+            return "[]"
 
     list_display = ('device_id', 'history_date', 'history_user', 'history_type', 'history_change_reason')
     list_display_links = ('device_id', 'history_date',)
@@ -281,6 +282,7 @@ class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
             ('description', 'facility')
         )}),
         ('Location', {'fields': ('location',)}),
+        ('Metadata', {'fields': ('metadata',), 'classes': ['collapse']}),
         ('Confidential', {'fields': ('device_pass',), 'classes': ['collapse']})
     ]
 
