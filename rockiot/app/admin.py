@@ -1,20 +1,18 @@
 from django.apps import apps
 from django.contrib import admin, messages
-from django.contrib import admin, messages
 from django.contrib.admin import ModelAdmin
 from django.contrib.gis.admin import OSMGeoAdmin
 from django.db import models
-from django.forms import TextInput, Textarea
+from django.forms import TextInput, Textarea, JSONField, ModelForm
 from django.utils.html import format_html
 from django_celery_beat.models import SolarSchedule, ClockedSchedule
 from django_celery_results.admin import TaskResultAdmin
 from django_celery_results.models import GroupResult, TaskResult
-from django_json_widget.widgets import JSONEditorWidget
 from simple_history.admin import SimpleHistoryAdmin
 from simple_history.utils import update_change_reason
 
 from app.models import Facility, Device, Municipality, PlatformAttribute, Platform, \
-    FacilityMembership, DeviceConnection, CronJobExecution, CronJob
+    FacilityMembership, DeviceConnection, CronJobExecution, CronJob, DeviceCalibrationModel
 from app.system.dockerops import DockerOps
 from app.tasks import register_device, activate_device, deactivate_device, terminate_device
 
@@ -24,8 +22,7 @@ def get_form_field_overrides():
         models.CharField: {'widget': TextInput(attrs={'size': '40'})},
         models.EmailField: {'widget': TextInput(attrs={'size': '40'})},
         models.GenericIPAddressField: {'widget': TextInput(attrs={'size': '40'})},
-        models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},
-        models.JSONField: {'widget': JSONEditorWidget},
+        models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})}
     }
 
 
@@ -140,6 +137,22 @@ class DeviceConnectionInlineAdmin(admin.TabularInline):
         return False
 
 
+class AlwaysChangedModelForm(ModelForm):
+    def has_changed(self):
+        return True
+
+
+class DeviceCalibrationModelInlineAdmin(admin.TabularInline):
+    model = DeviceCalibrationModel
+    can_delete = True
+    extra = 0
+    form = AlwaysChangedModelForm
+    show_change_link = False
+    readonly_fields = ['created_at', 'updated_at']
+    fields = ['temperature', 'humidity', 'no2', 'so2', 'pm1', 'pm2_5', 'pm10']
+    formfield_overrides = {models.JSONField: {'widget': TextInput(attrs={'size': '20'})}}
+
+
 HistoricalDevice = apps.get_model("app", "HistoricalDevice")
 
 
@@ -243,7 +256,7 @@ class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
             'TERMINATED': '#A41515',
             'UNKNOWN': '#0C4B33',
         }
-        return format_html('<b style="color:{};">{}</b>', colors[s], s,)
+        return format_html('<b style="color:{};">{}</b>', colors[s], s, )
 
     def activation_status(self, obj):
         colors = {
@@ -286,7 +299,7 @@ class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
         ('Confidential', {'fields': ('device_pass',), 'classes': ['collapse']})
     ]
 
-    inlines = [DeviceConnectionInlineAdmin, ]
+    inlines = [DeviceCalibrationModelInlineAdmin, DeviceConnectionInlineAdmin, ]
     formfield_overrides = get_form_field_overrides()
 
     def get_actions(self, request):

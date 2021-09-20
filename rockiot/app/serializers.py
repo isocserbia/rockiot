@@ -1,5 +1,5 @@
 import rest_framework
-from rest_framework.serializers import CharField
+from rest_framework.serializers import CharField, SerializerMethodField
 from rest_framework_gis import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -62,9 +62,59 @@ class FacilitySerializer(serializers.GeoFeatureModelSerializer):
 
 
 class SensorDataSerializer(serializers.ModelSerializer):
+    temperature = SerializerMethodField()
+    humidity = SerializerMethodField()
+    no2 = SerializerMethodField()
+    so2 = SerializerMethodField()
+    pm1 = SerializerMethodField()
+    pm10 = SerializerMethodField()
+    pm2_5 = SerializerMethodField()
+
     class Meta:
-        model = SensorData
+        model = SensorDataRaw
         fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
+
+    def get_temperature(self, obj):
+        try:
+            return obj.data['temperature']
+        except TypeError:
+            return 0.0
+
+    def get_humidity(self, obj):
+        try:
+            return obj.data['humidity']
+        except TypeError:
+            return 0.0
+
+    def get_no2(self, obj):
+        try:
+            return obj.data['no2']
+        except TypeError:
+            return 0.0
+
+    def get_so2(self, obj):
+        try:
+            return obj.data['so2']
+        except TypeError:
+            return 0.0
+
+    def get_pm1(self, obj):
+        try:
+            return obj.data['pm1']
+        except TypeError:
+            return 0.0
+
+    def get_pm10(self, obj):
+        try:
+            return obj.data['pm10']
+        except TypeError:
+            return 0.0
+
+    def get_pm2_5(self, obj):
+        try:
+            return obj.data['pm2_5']
+        except TypeError:
+            return 0.0
 
 
 class SensorsDataRollupSerializer(serializers.ModelSerializer):

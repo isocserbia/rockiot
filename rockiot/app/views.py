@@ -13,7 +13,7 @@ from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
 
 from app.models import Facility, SensorData, SensorDataLastValues, Device, Municipality, \
-    SensorsDataRollupAbstract
+    SensorsDataRollupAbstract, SensorDataRaw
 from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer, SensorDataSerializer, \
     SensorDataLastValuesSerializer, DeviceModelSerializer, \
     SensorsDataRollupSerializer, MunicipalityModelSerializer, SensorsDataRollupWithDeviceSerializer
@@ -114,7 +114,7 @@ class SensorDataList(generics.ListAPIView):
         did = self.kwargs['device_id']
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
-        qs1 = SensorData.objects.filter(device_id=did)
+        qs1 = SensorDataRaw.objects.filter(device_id=did)
         if from_date is not None:
             qs1 = qs1.filter(time__date__gt=from_date)
         if until_date is not None:

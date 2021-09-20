@@ -254,6 +254,38 @@ class DeviceConnection(models.Model):
             self.state = c["state"].upper()
 
 
+def default_model():
+    return {'a': 0.0, 'b': 1.0, 'c': 0.0}
+
+
+class DeviceCalibrationModel(models.Model):
+    device = models.ForeignKey(Device, related_name='calibration_models', db_column='device_id',
+                               on_delete=models.CASCADE)
+    temperature = JSONField(default=default_model)
+    humidity = JSONField(default=default_model)
+    no2 = JSONField(default=default_model)
+    so2 = JSONField(default=default_model)
+    pm1 = JSONField(default=default_model)
+    pm10 = JSONField(default=default_model)
+    pm2_5 = JSONField(default=default_model)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class SensorDataRaw(models.Model):
+    time = models.DateTimeField(primary_key=True)
+    device_id = models.CharField(max_length=30)
+    client_id = models.CharField(max_length=30)
+    data = JSONField(default=default_model)
+
+    class Meta:
+        managed = False
+        abstract = False
+        ordering = ['-time']
+        unique_together = ('time', 'device_id')
+        db_table = "sensor_data_raw"
+
+
 class SensorDataAbstract(models.Model):
     time = models.DateTimeField(primary_key=True)
     device_id = models.CharField(max_length=30)
@@ -468,7 +500,6 @@ class CronJobExecution(models.Model):
 
     def __str__(self):
         return str(self.jobid)
-
 
 # def default_model():
 #     m = [0, 1, 0]
