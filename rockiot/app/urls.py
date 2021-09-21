@@ -1,9 +1,9 @@
 from django.urls import path
 
 from app.views import FacilityMapView, FacilityList, MyTokenObtainPairView, FacilityView, \
-    SensorDataList, SensorDataLastValuesList, DevicesList, \
+    SensorDataRawList, SensorDataLastValuesList, DevicesList, \
     MunicipalitySensorsSummary, FacilitySensorsSummary, DeviceSensorsSummary, MunicipalityList, MunicipalityView, \
-    MyTokenRefreshView, CsvExportView
+    MyTokenRefreshView, CsvExportView, SensorDataList
 
 app_name = "app"
 
@@ -19,7 +19,8 @@ urlpatterns = [
     path('devices/data/last/', SensorDataLastValuesList.as_view(), name='device-last-values'),
     path('devices/data/daily/csv/', CsvExportView.as_view(), name='devices-raw-daily-csv'),
     path('devices/<device_id>/data/aggregate/', DeviceSensorsSummary.as_view(), name='device-data-aggregate'),
-    path('devices/<device_id>/data/raw/', SensorDataList.as_view(), name='device-raw'),
+    path('devices/<device_id>/data/raw/', SensorDataRawList.as_view(), name='device-data-raw'),
+    path('devices/<device_id>/data/', SensorDataList.as_view(), name='device-data-clean'),
     path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', MyTokenRefreshView.as_view(), name='token_refresh'),
 ]
