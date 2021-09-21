@@ -5,7 +5,7 @@ BEGIN
 INSERT INTO sensor_data_rollup_15m("time", device_id, temperature, humidity, no2, so2, pm1, pm10, pm2_5)
 SELECT
    date_trunc('seconds', (time - timestamptz 'epoch') / 900) * 900 + timestamptz 'epoch' AS mnt,
-   device_id,
+   sd.device_id,
    ROUND(avg(temperature)::numeric, 4) as temperature,
    ROUND(avg(humidity)::numeric, 4) as humidity,
    ROUND(avg(no2)::numeric, 4) as no2,
@@ -13,8 +13,11 @@ SELECT
    ROUND(avg(pm1)::numeric, 4) as pm1,
    ROUND(avg(pm10)::numeric, 4) as pm10,
    ROUND(avg(pm2_5)::numeric, 4) as pm2_5
-FROM sensor_data WHERE time >= start_time AND time <= end_time
-GROUP BY mnt, device_id
+FROM sensor_data sd
+JOIN app_device ad on sd.device_id = ad.device_id
+WHERE time >= start_time AND time <= end_time
+AND ad.mode != 'CALIBRATION'
+GROUP BY mnt, sd.device_id
 ON CONFLICT (time, device_id)
 DO UPDATE
 SET
@@ -37,7 +40,7 @@ BEGIN
 INSERT INTO sensor_data_rollup_1h("time", device_id, temperature, humidity, no2, so2, pm1, pm10, pm2_5)
 SELECT
    date_trunc('hour', time) AS hr,
-   device_id,
+   sd.device_id,
    ROUND(avg(temperature)::numeric, 4) as temperature,
    ROUND(avg(humidity)::numeric, 4) as humidity,
    ROUND(avg(no2)::numeric, 4) as no2,
@@ -45,8 +48,11 @@ SELECT
    ROUND(avg(pm1)::numeric, 4) as pm1,
    ROUND(avg(pm10)::numeric, 4) as pm10,
    ROUND(avg(pm2_5)::numeric, 4) as pm2_5
-FROM sensor_data WHERE time >= start_time AND time <= end_time
-GROUP BY hr, device_id
+FROM sensor_data sd
+JOIN app_device ad on sd.device_id = ad.device_id
+WHERE time >= start_time AND time <= end_time
+AND ad.mode != 'CALIBRATION'
+GROUP BY hr, sd.device_id
 ON CONFLICT (time, device_id)
 DO UPDATE
 SET
@@ -69,7 +75,7 @@ BEGIN
 INSERT INTO sensor_data_rollup_4h("time", device_id, temperature, humidity, no2, so2, pm1, pm10, pm2_5)
 SELECT
    date_trunc('hour', (time - timestamptz 'epoch') / 4) * 4 + timestamptz 'epoch' AS hr,
-   device_id,
+   sd.device_id,
    ROUND(avg(temperature)::numeric, 4) as temperature,
    ROUND(avg(humidity)::numeric, 4) as humidity,
    ROUND(avg(no2)::numeric, 4) as no2,
@@ -77,8 +83,11 @@ SELECT
    ROUND(avg(pm1)::numeric, 4) as pm1,
    ROUND(avg(pm10)::numeric, 4) as pm10,
    ROUND(avg(pm2_5)::numeric, 4) as pm2_5
-FROM sensor_data WHERE time >= start_time AND time <= end_time
-GROUP BY hr, device_id
+FROM sensor_data sd
+JOIN app_device ad on sd.device_id = ad.device_id
+WHERE time >= start_time AND time <= end_time
+AND ad.mode != 'CALIBRATION'
+GROUP BY hr, sd.device_id
 ON CONFLICT (time, device_id)
 DO UPDATE
 SET
@@ -100,7 +109,7 @@ BEGIN
 INSERT INTO sensor_data_rollup_24h("time", device_id, temperature, humidity, no2, so2, pm1, pm10, pm2_5)
 SELECT
    date_trunc('day', time) AS dy,
-   device_id,
+   sd.device_id,
    ROUND(avg(temperature)::numeric, 4) as temperature,
    ROUND(avg(humidity)::numeric, 4) as humidity,
    ROUND(avg(no2)::numeric, 4) as no2,
@@ -108,8 +117,10 @@ SELECT
    ROUND(avg(pm1)::numeric, 4) as pm1,
    ROUND(avg(pm10)::numeric, 4) as pm10,
    ROUND(avg(pm2_5)::numeric, 4) as pm2_5
-FROM sensor_data WHERE time >= start_time AND time <= end_time
-GROUP BY dy, device_id
+FROM sensor_data sd
+JOIN app_device ad on sd.device_id = ad.device_id
+WHERE time >= start_time AND time <= end_time
+GROUP BY dy, sd.device_id
 ON CONFLICT (time, device_id)
 DO UPDATE
 SET
