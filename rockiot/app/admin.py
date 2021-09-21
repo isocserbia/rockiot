@@ -289,9 +289,9 @@ class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
         row_actions += super(DeviceAdmin, self).get_row_actions(obj)
         return row_actions
 
-    list_display = ('device_id', 'name', 'facility', 'municipality', 'activation_status', 'state')
+    list_display = ('device_id', 'name', 'facility', 'municipality', 'mode', 'activation_status', 'state')
     list_display_links = ('device_id', 'name')
-    list_filter = ('status',)
+    list_filter = ('status', 'mode')
     readonly_fields = ['status', 'created_at', 'updated_at', 'state']
     history_list_display = ["status"]
 
