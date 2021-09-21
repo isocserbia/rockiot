@@ -12,6 +12,17 @@ from simple_history.models import HistoricalRecords
 logger = logging.getLogger(__name__)
 
 
+class CommaSeparatedStringsField(models.CharField):
+
+    def from_db_value(self, value, *args):
+        if not value:
+            return ''
+        return ','.join(value.split(sep=' '))
+
+    def get_prep_value(self, value):
+        return value.replace(',', ' ')
+
+
 class Municipality(models.Model):
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=100, null=True)
@@ -254,29 +265,29 @@ class DeviceConnection(models.Model):
             self.state = c["state"].upper()
 
 
-def default_model():
-    return {'a': 0.0, 'b': 1.0, 'c': 0.0}
-
-
 class DeviceCalibrationModel(models.Model):
     device = models.ForeignKey(Device, related_name='calibration_models', db_column='device_id',
                                on_delete=models.CASCADE)
-    temperature = JSONField(default=default_model)
-    humidity = JSONField(default=default_model)
-    no2 = JSONField(default=default_model)
-    so2 = JSONField(default=default_model)
-    pm1 = JSONField(default=default_model)
-    pm10 = JSONField(default=default_model)
-    pm2_5 = JSONField(default=default_model)
+    temperature = CommaSeparatedStringsField(max_length=20, default="0,1,0")
+    humidity = CommaSeparatedStringsField(max_length=20, default="0,1,0")
+    no2 = CommaSeparatedStringsField(max_length=20, default="0,1,0")
+    so2 = CommaSeparatedStringsField(max_length=20, default="0,1,0")
+    pm1 = CommaSeparatedStringsField(max_length=20, default="0,1,0")
+    pm10 = CommaSeparatedStringsField(max_length=20, default="0,1,0")
+    pm2_5 = CommaSeparatedStringsField(max_length=20, default="0,1,0")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+def default_data_row():
+    return {}
 
 
 class SensorDataRaw(models.Model):
     time = models.DateTimeField(primary_key=True)
     device_id = models.CharField(max_length=30)
     client_id = models.CharField(max_length=30)
-    data = JSONField(default=default_model)
+    data = JSONField(default=default_data_row)
 
     class Meta:
         managed = False
@@ -501,18 +512,3 @@ class CronJobExecution(models.Model):
     def __str__(self):
         return str(self.jobid)
 
-# def default_model():
-#     m = [0, 1, 0]
-#     return {"temperature": m, "humidity": m, "co2": m, "so2": m, "no2": m, "pm1": m, "pm2_5": m, "pm10": m}
-#
-#
-# class DeviceCalibrationModel(models.Model):
-#     model = JSONField(default=default_model)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-#     device = models.ForeignKey(Device, related_name='calibration_models',
-#                                db_column='device_id', on_delete=models.CASCADE)
-#
-#     class Meta:
-#         ordering = ['-created_at']
-#         verbose_name_plural = "Device Calibration Models"
