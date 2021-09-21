@@ -144,13 +144,20 @@ class AlwaysChangedModelForm(ModelForm):
 
 class DeviceCalibrationModelInlineAdmin(admin.TabularInline):
     model = DeviceCalibrationModel
-    can_delete = True
+    can_delete = False
     extra = 0
+    max_num = 1
     form = AlwaysChangedModelForm
     show_change_link = False
     readonly_fields = ['created_at', 'updated_at']
     fields = ['temperature', 'humidity', 'no2', 'so2', 'pm1', 'pm2_5', 'pm10']
-    formfield_overrides = {models.JSONField: {'widget': TextInput(attrs={'size': '20'})}}
+    formfield_overrides = {models.CharField: {'widget': TextInput(attrs={'size': '7'})}}
+
+    def has_add_permission(self, request, obj=None):
+        return obj and obj.calibration_models and obj.calibration_models.count() <= 1
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 HistoricalDevice = apps.get_model("app", "HistoricalDevice")

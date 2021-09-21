@@ -24,7 +24,6 @@ def clean_and_calibrate_dataframe():
             select d.device_id, dcm.temperature, dcm.humidity, dcm.no2, dcm.so2, dcm.pm1, dcm.pm2_5, dcm.pm10
             from app_devicecalibrationmodel dcm
             join app_device d on dcm.device_id = d.id
-            where d.profile = 'CALIBRATION'
             order by device_id;
         """)
         db_models = db_cursor.fetchall()
@@ -56,9 +55,10 @@ def clean_and_calibrate_dataframe():
             if row[1] in calibration_models:
                 cmodel = calibration_models[row[1]]
                 for key, val in data.items():
-                    a = cmodel.get(key, {}).get('a', 0)
-                    b = cmodel.get(key, {}).get('b', 1) * val
-                    c = cmodel.get(key, {}).get('c', 0) * val * val
+                    cmodel_str = cmodel.get(key, "0 1 0").split(sep=" ")
+                    a = cmodel_str[0]
+                    b = cmodel_str[1]
+                    c = cmodel_str[2]
                     data[key] = a + b + c
             seq = (row[0], row[1], row[2], data.get('temperature'), data.get('humidity'), data.get('no2'),
                    data.get('so2'), data.get('pm1'), data.get('pm10'), data.get('pm2_5'))
