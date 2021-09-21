@@ -14,9 +14,10 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
 
 from app.models import Facility, SensorData, SensorDataLastValues, Device, Municipality, \
     SensorsDataRollupAbstract, SensorDataRaw
-from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer, SensorDataSerializer, \
+from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer, SensorDataRawSerializer, \
     SensorDataLastValuesSerializer, DeviceModelSerializer, \
-    SensorsDataRollupSerializer, MunicipalityModelSerializer, SensorsDataRollupWithDeviceSerializer
+    SensorsDataRollupSerializer, MunicipalityModelSerializer, SensorsDataRollupWithDeviceSerializer, \
+    SensorDataSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -103,6 +104,29 @@ until_date_param = openapi.Parameter('until_date', openapi.IN_QUERY,
 
 
 class SensorDataList(generics.ListAPIView):
+    @swagger_auto_schema(operation_description="Retrieve calibrated and cleaned sensor data reading",
+                         operation_summary="Gets calibrated and cleaned Sensor data for single Device",
+                         tags=['report'],
+                         manual_parameters=[from_date_param, until_date_param])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        did = self.kwargs['device_id']
+        from_date = self.request.query_params.get('from_date', None)
+        until_date = self.request.query_params.get('until_date', None)
+        qs1 = SensorData.objects.filter(device_id=did)
+        if from_date is not None:
+            qs1 = qs1.filter(time__date__gt=from_date)
+        if until_date is not None:
+            qs1 = qs1.filter(time__date__lt=until_date)
+        return qs1
+
+    serializer_class = SensorDataSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+
+
+class SensorDataRawList(generics.ListAPIView):
     @swagger_auto_schema(operation_description="Retrieve raw sensor data reading",
                          operation_summary="Gets Raw Sensor data for single Device",
                          tags=['report'],
@@ -121,8 +145,8 @@ class SensorDataList(generics.ListAPIView):
             qs1 = qs1.filter(time__date__lt=until_date)
         return qs1
 
-    serializer_class = SensorDataSerializer
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]  # UserDevicePermission
+    serializer_class = SensorDataRawSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
 
 interval_param = openapi.Parameter('interval', openapi.IN_QUERY,

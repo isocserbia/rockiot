@@ -75,7 +75,7 @@ class FacilitySerializer(serializers.GeoFeatureModelSerializer):
         geo_field = "location"
 
 
-class SensorDataSerializer(serializers.ModelSerializer):
+class SensorDataRawSerializer(serializers.ModelSerializer):
     temperature = SerializerMethodField()
     humidity = SerializerMethodField()
     no2 = SerializerMethodField()
@@ -129,6 +129,12 @@ class SensorDataSerializer(serializers.ModelSerializer):
             return obj.data['pm2_5']
         except TypeError:
             return 0.0
+
+
+class SensorDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SensorData
+        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
 
 
 class SensorsDataRollupSerializer(serializers.ModelSerializer):

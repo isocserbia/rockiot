@@ -55,10 +55,10 @@ def clean_and_calibrate_dataframe():
             if row[1] in calibration_models:
                 cmodel = calibration_models[row[1]]
                 for key, val in data.items():
-                    cmodel_str = cmodel.get(key, "0, 1, 0").split(sep=", ")
-                    a = cmodel_str[0]
-                    b = cmodel_str[1]
-                    c = cmodel_str[2]
+                    cmodel_str = cmodel.get(key, "0 1 0").split(sep=" ")
+                    a = float(cmodel_str[0])
+                    b = float(cmodel_str[1]) * val
+                    c = float(cmodel_str[2]) * val * val
                     data[key] = a + b + c
             seq = (row[0], row[1], row[2], data.get('temperature'), data.get('humidity'), data.get('no2'),
                    data.get('so2'), data.get('pm1'), data.get('pm10'), data.get('pm2_5'))
