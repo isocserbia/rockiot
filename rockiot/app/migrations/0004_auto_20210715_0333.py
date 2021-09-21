@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('status', models.CharField(default='NEW', max_length=20)),
-                ('profile', models.CharField(default='DEFAULT', max_length=20)),
+                ('mode', models.CharField(default='DEFAULT', max_length=20)),
                 ('active', models.BooleanField(default=0)),
                 ('metadata', models.JSONField()),
             ],

@@ -27,10 +27,24 @@ class MunicipalityModelSerializer(serializers.ModelSerializer):
 class DeviceModelSerializer(serializers.ModelSerializer):
     lon = rest_framework.serializers.ReadOnlyField()
     lat = rest_framework.serializers.ReadOnlyField()
+    school_code = CharField(source='facility.code')
+    last_active_at = SerializerMethodField()
+
+    def get_last_active_at(self, obj):
+        try:
+            last_entry = SensorDataRaw.objects.filter(device_id=obj.device_id).first()
+            if last_entry and last_entry is not None:
+                return last_entry.time
+            else:
+                return None
+        except Exception as ex:
+            logger.error("error occurred during fetch of last active at", ex)
+            return 0.0
 
     class Meta:
         model = Device
-        exclude = ["id", "device_pass", "facility", "location"]
+        fields = ["name", "device_id", "school_code", "lon", "lat", "status", "mode",
+                  "last_active_at", "created_at", "updated_at"]
 
 
 class FacilityMembershipSerializer(serializers.ModelSerializer):

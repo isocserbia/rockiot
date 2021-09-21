@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterField(
             model_name='device',
-            name='profile',
+            name='mode',
             field=models.CharField(choices=[('DEFAULT', 'DEFAULT'), ('CALIBRATION', 'CALIBRATION')], default='DEFAULT',
                                    max_length=20),
         ),

@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
                 ('device_id', models.CharField(max_length=50, null=True)),
                 ('device_pass', models.CharField(max_length=128, null=True)),
                 ('status', models.CharField(choices=[('NEW', 'NEW'), ('REGISTERED', 'REGISTERED'), ('ACTIVATED', 'ACTIVATED'), ('DEACTIVATED', 'DEACTIVATED'), ('FAULTY', 'FAULTY'), ('TERMINATED', 'TERMINATED')], default='NEW', max_length=20)),
-                ('profile', models.CharField(choices=[('DEFAULT', 'DEFAULT'), ('CALIBRATION', 'CALIBRATION'), ('CALIBRATION', 'PRODUCTION')], default='DEFAULT', max_length=20)),
+                ('mode', models.CharField(choices=[('DEFAULT', 'DEFAULT'), ('CALIBRATION', 'CALIBRATION'), ('CALIBRATION', 'PRODUCTION')], default='DEFAULT', max_length=20)),
                 ('metadata', models.JSONField(default=app.models.default_device_metadata)),
                 ('created_at', models.DateTimeField(blank=True, editable=False)),
                 ('updated_at', models.DateTimeField(blank=True, editable=False)),
@@ -95,7 +95,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='device',
-            name='profile',
+            name='mode',
             field=models.CharField(choices=[('DEFAULT', 'DEFAULT'), ('CALIBRATION', 'CALIBRATION'), ('PRODUCTION', 'PRODUCTION')], default='DEFAULT', max_length=20),
         ),
         migrations.AddField(

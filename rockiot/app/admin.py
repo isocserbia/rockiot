@@ -79,7 +79,7 @@ class DeviceInlineAdmin(admin.TabularInline):
     extra = 0
     show_change_link = True
     readonly_fields = ['status', 'created_at', 'updated_at']
-    fields = ['device_id', 'name', 'profile', 'status']
+    fields = ['device_id', 'name', 'mode', 'status']
     formfield_overrides = get_form_field_overrides()
 
     def has_add_permission(self, request, obj=None):
@@ -298,7 +298,7 @@ class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
     fieldsets = [
         (None, {'fields': (
             'device_id',
-            ('name', 'profile'),
+            ('name', 'mode'),
             ('description', 'facility')
         )}),
         ('Location', {'fields': ('location',)}),
