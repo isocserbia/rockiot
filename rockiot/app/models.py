@@ -17,10 +17,10 @@ class CommaSeparatedStringsField(models.CharField):
     def from_db_value(self, value, *args):
         if not value:
             return ''
-        return ','.join(value.split(sep=' '))
+        return ', '.join(value.split(sep=' '))
 
     def get_prep_value(self, value):
-        return value.replace(',', ' ')
+        return value.replace(',', ' ').replace('  ', ' ')
 
 
 class Municipality(models.Model):
@@ -268,13 +268,13 @@ class DeviceConnection(models.Model):
 class DeviceCalibrationModel(models.Model):
     device = models.ForeignKey(Device, related_name='calibration_models', db_column='device_id',
                                on_delete=models.CASCADE)
-    temperature = CommaSeparatedStringsField(max_length=20, default="0,1,0")
-    humidity = CommaSeparatedStringsField(max_length=20, default="0,1,0")
-    no2 = CommaSeparatedStringsField(max_length=20, default="0,1,0")
-    so2 = CommaSeparatedStringsField(max_length=20, default="0,1,0")
-    pm1 = CommaSeparatedStringsField(max_length=20, default="0,1,0")
-    pm10 = CommaSeparatedStringsField(max_length=20, default="0,1,0")
-    pm2_5 = CommaSeparatedStringsField(max_length=20, default="0,1,0")
+    temperature = CommaSeparatedStringsField(max_length=20, default="0, 1, 0")
+    humidity = CommaSeparatedStringsField(max_length=20, default="0, 1, 0")
+    no2 = CommaSeparatedStringsField(max_length=20, default="0, 1, 0")
+    so2 = CommaSeparatedStringsField(max_length=20, default="0, 1, 0")
+    pm1 = CommaSeparatedStringsField(max_length=20, default="0, 1, 0")
+    pm10 = CommaSeparatedStringsField(max_length=20, default="0, 1, 0")
+    pm2_5 = CommaSeparatedStringsField(max_length=20, default="0, 1, 0")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
