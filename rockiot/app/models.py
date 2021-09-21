@@ -141,7 +141,7 @@ class Device(models.Model):
     device_pass = models.CharField(max_length=128, null=True)
 
     status = models.CharField(max_length=20, null=False, choices=STATUSES, default=NEW)
-    profile = models.CharField(max_length=20, null=False, choices=MODES, default=DEFAULT)
+    mode = models.CharField(max_length=20, null=False, choices=MODES, default=DEFAULT)
 
     metadata = JSONField(default=default_device_metadata)
     created_at = models.DateTimeField(auto_now_add=True)

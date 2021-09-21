@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='historicaldevice',
-            name='profile',
+            name='mode',
             field=models.CharField(choices=[('DEFAULT', 'DEFAULT'), ('CALIBRATION', 'CALIBRATION'), ('PRODUCTION', 'PRODUCTION')], default='DEFAULT', max_length=15),
         ),
         migrations.CreateModel(
