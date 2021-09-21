@@ -55,7 +55,7 @@ def clean_and_calibrate_dataframe():
             if row[1] in calibration_models:
                 cmodel = calibration_models[row[1]]
                 for key, val in data.items():
-                    cmodel_str = cmodel.get(key, "0 1 0").split(sep=" ")
+                    cmodel_str = cmodel.get(key, "0, 1, 0").split(sep=", ")
                     a = cmodel_str[0]
                     b = cmodel_str[1]
                     c = cmodel_str[2]
