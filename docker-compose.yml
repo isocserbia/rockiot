@@ -154,6 +154,23 @@ services:
       - WAIT_HOSTS=timescaledb:5432,rockiot:8000
     user: root
 
+  loki:
+    image: grafana/loki:2.3.0
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - app-tier
+
+  promtail:
+    image: grafana/promtail:2.3.0
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers
+      - ./docker/grafana/promtail-docker-config.yml:/etc/promtail/docker-config.yml
+    command: -config.file=/etc/promtail/docker-config.yml
+    networks:
+      - app-tier
+
   grafana:
     image: grafana/grafana:7.1.5
     container_name: rockiot_grafana
