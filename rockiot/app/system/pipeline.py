@@ -10,6 +10,8 @@ from django.conf import settings
 config = settings.DATABASES["default"]
 logger = logging.getLogger(__name__)
 
+allowed_delay = settings.ROCKIOT_CONFIG['PIPELINE_ALLOWED_DELAY_MINUTES']
+
 
 def clean_and_calibrate_dataframe():
     db_args = dict(host=config["HOST"], port=config["PORT"], dbname=config["NAME"],
@@ -42,6 +44,8 @@ def clean_and_calibrate_dataframe():
         max_date = db_cursor.fetchone()
         if not max_date or max_date is None or max_date[0] is None:
             max_date = datetime.datetime.now() - datetime.timedelta(days=365)
+        else:
+            max_date = max_date[0] - datetime.timedelta(minutes=allowed_delay)
         db_cursor.close()
 
         logger.info(f"CC: found max date: {max_date}")
