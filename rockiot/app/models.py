@@ -4,6 +4,7 @@ import uuid
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models as gismodels
+from django.contrib.gis.geos import Point
 from django.db import models
 from django.db.models import JSONField
 from django.utils.text import slugify
@@ -42,6 +43,10 @@ class Municipality(models.Model):
         super(Municipality, self).save(*args, **kwargs)
 
 
+def belgrade_location_point():
+    return Point(20.457273, 44.787197)
+
+
 class Facility(models.Model):
     ELEMENTARY_SCHOOL = 'ELEMENTARY_SCHOOL'
     HIGH_SCHOOL = 'HIGH_SCHOOL'
@@ -62,7 +67,7 @@ class Facility(models.Model):
     municipality = models.ForeignKey(Municipality, related_name='facilities',
                                      db_column='municipality_id', on_delete=models.PROTECT)
     address = models.CharField(max_length=250)
-    location = gismodels.PointField(null=True)
+    location = gismodels.PointField(null=True, default=belgrade_location_point)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -134,7 +139,7 @@ class Device(models.Model):
 
     name = models.CharField(max_length=30, null=False)
     description = models.TextField(blank=True, null=True)
-    location = gismodels.PointField(null=True)
+    location = gismodels.PointField(null=True, default=belgrade_location_point)
     facility = models.ForeignKey(Facility, related_name='devices',
                                  db_column='facility_id', on_delete=models.PROTECT)
     device_id = models.CharField(max_length=50, null=True)
