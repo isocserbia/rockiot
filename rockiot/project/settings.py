@@ -38,18 +38,17 @@ INSTALLED_APPS = [
     'admin_interface',
     'colorfield',
     'django.contrib.auth',
+    'django_celery_results',
+    'django_celery_beat',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "django.contrib.gis",
     'django.contrib.admin',
-    'django_celery_results',
-    'django_celery_beat',
     'app',
     'tasks',
     'simple_history',
-    # 'admin_reorder',
     'rest_framework',
     'rest_framework_gis',
     'rest_framework_simplejwt',
@@ -110,29 +109,6 @@ SWAGGER_SETTINGS = {
     ],
 }
 
-ADMIN_REORDER = (
-
-    # Exclude models
-    {'app': 'app', 'models': ('app.Platform', 'app.Device', 'app.Facility', 'app.Municipality')},
-
-    # Reorder app models
-    {'app': 'auth', 'label': 'Security', 'models': (
-        {'model': 'auth.User', 'label': 'Users'},
-        {'model': 'auth.Group', 'label': 'Roles'},
-    )},
-
-    # models with custom name
-    {'app': 'django_celery_results', 'label': 'Background Jobs', 'models': (
-        {'model': 'app.CronJob', 'label': 'Data tasks'},
-        {'model': 'django_celery_results.TaskResult', 'label': 'Task results'},
-        {'model': 'django_celery_beat.PeriodicJob', 'label': 'Periodic jobs'},
-        {'model': 'django_celery_beat.IntervalSchedule', 'label': 'Interval periods'},
-        {'model': 'django_celery_beat.CrontabSchedule', 'label': 'Crontab periods'},
-    )},
-
-    {'app': 'admin_interface', 'model': 'admin_interface.Theme'},
-
-)
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(hours=1),
@@ -254,9 +230,6 @@ ROCKIOT_CONFIG = {
     'PIPELINE_ALLOWED_DELAY_MINUTES': int(config('PIPELINE_ALLOWED_DELAY_MINUTES', default='2')),
 }
 
-# CELERY_RESULT_BACKEND = "db+postgresql://postgres:postgres@timescaledb/rock_iot"
-# CELERY_TASK_SERIALIZER = 'json'
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -327,7 +300,6 @@ LOGGING = {
 
 
 SIMPLE_HISTORY_REVERT_DISABLED = True
-# SIMPLE_HISTORY_REVERT_DISABLED = False
 SIMPLE_HISTORY_HISTORY_CHANGE_REASON_USE_TEXT_FIELD = True
 SIMPLE_HISTORY_EDIT = True
 
