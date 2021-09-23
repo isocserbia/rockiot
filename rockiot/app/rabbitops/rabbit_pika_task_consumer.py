@@ -338,7 +338,7 @@ class ReconnectingRabbitPikaTaskConsumer(threading.Thread):
         self._consumer = RabbitPikaTaskConsumer()
 
     def run(self):
-        time.sleep(10)
+        time.sleep(5)
         while True:
             try:
                 self._consumer.run()
