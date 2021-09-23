@@ -15,12 +15,4 @@ class AppConfig(AppConfig):
 
         os.environ['APPS_RUN_ONCE'] = 'True'
 
-        from app.models import Device
-        from django.contrib.auth.models import User
-
-        from app.rabbitops.rabbit_pika_task_consumer import ReconnectingRabbitPikaTaskConsumer
-        consumer = ReconnectingRabbitPikaTaskConsumer()
-        consumer.daemon = True
-        consumer.start()
-        print("Started rabbit pika consumer thread [name: %s]" % consumer.getName())
 

@@ -64,7 +64,7 @@ services:
     <<: *rockiotfunction
     container_name: rockiot_app_worker
     command: >
-      sh -c "/wait.sh && celery -A tasks.celery worker -Q normal -n normal@%h -l info -c 2"
+      sh -c "/wait.sh && celery -A tasks.celery worker -Q normal -n normal@%h -l info -c 2 -E"
     ports: [ ]
     depends_on:
       - timescaledb
@@ -88,24 +88,35 @@ services:
       - BROKER_EXCHANGE=amq.topic
       - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
 
-#  rockiotmonitor:
-#    <<: *rockiotfunction
-#    container_name: rockiot_app_monitor
-#    command: >
-#      sh -c "/wait.sh && celery -A tasks.celery flower"
-#    ports:
-#      - 5555:5555
-#    depends_on:
-#      - timescaledb
-#      - rabbit1
-#      - rockiot
-#    environment:
-#      - FLOWER_BROKER_API=http://rabbitmngmt:rabbitmngmt_pass@rabbit1:15672/api/
-#      - BROKER_EXCHANGE=amq.topic
-#      - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
+  rockiotlistener:
+    <<: *rockiotfunction
+    command: >
+      sh -c "/wait.sh && python manage.py listen_amqp_actions"
+    ports: [ ]
+    depends_on:
+      - timescaledb
+      - rabbit1
+      - rockiot
+    environment:
+      - BROKER_EXCHANGE=amq.topic
+      - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
+
+  rockiotmonitor:
+    <<: *rockiotfunction
+    command: >
+      sh -c "/wait.sh && celery -A tasks.celery flower"
+    ports:
+      - 5555:5555
+    depends_on:
+      - timescaledb
+      - rabbit1
+      - rockiot
+    environment:
+      - FLOWER_BROKER_API=http://rabbitmngmt:rabbitmngmt_pass@rabbit1:15672/api/
+      - BROKER_EXCHANGE=amq.topic
+      - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
 
   rockiot_ingest:
-#    container_name: rockiot_ingest
     build: rockiot_ingest
     env_file:
       - db.env
@@ -122,22 +133,22 @@ services:
     networks:
       - app-tier
 
-#  rockiot_demo:
-#    build: rockiot_demo
-#    container_name: rockiot_demo_device1
-#    env_file:
-#      - common.env
-#    environment:
-#      - DEVICE_ID=device1
-#      - DEVICE_PASS=device1pass
-#      - DEVICE_KEY=4OrcNTFSZUrYX6NqP0P3lz
-#      - DEMO_IS_SSL=True
-#      - WAIT_HOSTS=rabbit1:8883,rockiot:8000
-#    depends_on:
-#      - rockiot
-#      - rockiot_ingest
-#    networks:
-#      - app-tier
+  rockiot_demo:
+    build: rockiot_demo
+    container_name: rockiot_demo_device1
+    env_file:
+      - common.env
+    environment:
+      - DEVICE_ID=device1
+      - DEVICE_PASS=device1pass
+      - DEVICE_KEY=4OrcNTFSZUrYX6NqP0P3lz
+      - DEMO_IS_SSL=True
+      - WAIT_HOSTS=rabbit1:8883,rockiot:8000
+    depends_on:
+      - rockiot
+      - rockiot_ingest
+    networks:
+      - app-tier
 
   pgadmin:
     image: biarms/pgadmin4:4.21
