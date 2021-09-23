@@ -39,9 +39,9 @@ services:
     container_name: rockiot_app
     build:
       context: rockiot
-      dockerfile: ./Dockerfile
+      dockerfile: ./Dockerfile${ROCKIOT_ENV}
     command: >
-      sh -c "/wait.sh && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+      sh -c "/wait.sh && /start.sh"
     depends_on:
       - timescaledb
       - rabbit1
@@ -71,6 +71,7 @@ services:
       - rabbit1
       - rockiot
     environment:
+      - DEBUG=False
       - BROKER_EXCHANGE=amq.topic
       - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
 
@@ -85,11 +86,13 @@ services:
       - rabbit1
       - rockiot
     environment:
+      - DEBUG=False
       - BROKER_EXCHANGE=amq.topic
       - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
 
   rockiotlistener:
     <<: *rockiotfunction
+    container_name: rockiot_app_listener
     command: >
       sh -c "/wait.sh && python manage.py listen_amqp_actions"
     ports: [ ]
@@ -101,121 +104,121 @@ services:
       - BROKER_EXCHANGE=amq.topic
       - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
 
-  rockiotmonitor:
-    <<: *rockiotfunction
-    command: >
-      sh -c "/wait.sh && celery -A tasks.celery flower"
-    ports:
-      - 5555:5555
-    depends_on:
-      - timescaledb
-      - rabbit1
-      - rockiot
-    environment:
-      - FLOWER_BROKER_API=http://rabbitmngmt:rabbitmngmt_pass@rabbit1:15672/api/
-      - BROKER_EXCHANGE=amq.topic
-      - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
-
-  rockiot_ingest:
-    build: rockiot_ingest
-    env_file:
-      - db.env
-      - common.env
-    environment:
-      - BROKER_USER=amqpingest
-      - BROKER_PASS=amqpingest_pass
-      - BROKER_QUEUE=mq2_amqp
-      - WAIT_HOSTS=rabbit1:8883,rockiot:8000
-    depends_on:
-      - timescaledb
-      - rabbit1
-      - rockiot
-    networks:
-      - app-tier
-
-  rockiot_demo:
-    build: rockiot_demo
-    container_name: rockiot_demo_device1
-    env_file:
-      - common.env
-    environment:
-      - DEVICE_ID=device1
-      - DEVICE_PASS=device1pass
-      - DEVICE_KEY=4OrcNTFSZUrYX6NqP0P3lz
-      - DEMO_IS_SSL=True
-      - WAIT_HOSTS=rabbit1:8883,rockiot:8000
-    depends_on:
-      - rockiot
-      - rockiot_ingest
-    networks:
-      - app-tier
-
-  pgadmin:
-    image: biarms/pgadmin4:4.21
-    container_name: rockiot_pgadmin
-    ports:
-      - "5050:5050"
-    depends_on:
-      - timescaledb
-    env_file:
-      - common.env
-    environment:
-      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
-    volumes:
-      - $HOME/docker/pgadmin/data:/var/lib/pgadmin
-    networks:
-      - app-tier
-
-  prometheus:
-    image: prom/prometheus:v2.28.1
-    container_name: rockiot_prometheus
-    hostname: prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - $HOME/docker/prometheus/data:/prometheus
-      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - app-tier
-    environment:
-      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
-    user: root
-
-  loki:
-    image: grafana/loki:2.3.0
-    ports:
-      - "3100:3100"
-    command: -config.file=/etc/loki/local-config.yaml
-    networks:
-      - app-tier
-
-  promtail:
-    image: grafana/promtail:2.3.0
-    volumes:
-      - /var/lib/docker/containers:/var/lib/docker/containers
-      - ./docker/grafana/promtail-docker-config.yml:/etc/promtail/docker-config.yml
-    command: -config.file=/etc/promtail/docker-config.yml
-    networks:
-      - app-tier
-
-  grafana:
-    image: grafana/grafana:7.1.5
-    container_name: rockiot_grafana
-    ports:
-      - "3000:3000"
-    depends_on:
-      - timescaledb
-    env_file:
-      - common.env
-    environment:
-      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
-      - GF_INSTALL_PLUGINS=grafana-worldmap-panel,flant-statusmap-panel,grafana-piechart-panel
-    networks:
-      - app-tier
-    volumes:
-      - $HOME/docker/grafana/data:/var/lib/grafana
-      - ./docker/grafana/provisioning/:/etc/grafana/provisioning/
-    user: root
+#  rockiotmonitor:
+#    <<: *rockiotfunction
+#    command: >
+#      sh -c "/wait.sh && celery -A tasks.celery flower"
+#    ports:
+#      - 5555:5555
+#    depends_on:
+#      - timescaledb
+#      - rabbit1
+#      - rockiot
+#    environment:
+#      - FLOWER_BROKER_API=http://rabbitmngmt:rabbitmngmt_pass@rabbit1:15672/api/
+#      - BROKER_EXCHANGE=amq.topic
+#      - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
+#
+#  rockiot_ingest:
+#    build: rockiot_ingest
+#    env_file:
+#      - db.env
+#      - common.env
+#    environment:
+#      - BROKER_USER=amqpingest
+#      - BROKER_PASS=amqpingest_pass
+#      - BROKER_QUEUE=mq2_amqp
+#      - WAIT_HOSTS=rabbit1:8883,rockiot:8000
+#    depends_on:
+#      - timescaledb
+#      - rabbit1
+#      - rockiot
+#    networks:
+#      - app-tier
+#
+#  rockiot_demo:
+#    build: rockiot_demo
+#    container_name: rockiot_demo_device1
+#    env_file:
+#      - common.env
+#    environment:
+#      - DEVICE_ID=device1
+#      - DEVICE_PASS=device1pass
+#      - DEVICE_KEY=4OrcNTFSZUrYX6NqP0P3lz
+#      - DEMO_IS_SSL=True
+#      - WAIT_HOSTS=rabbit1:8883,rockiot:8000
+#    depends_on:
+#      - rockiot
+#      - rockiot_ingest
+#    networks:
+#      - app-tier
+#
+#  pgadmin:
+#    image: biarms/pgadmin4:4.21
+#    container_name: rockiot_pgadmin
+#    ports:
+#      - "5050:5050"
+#    depends_on:
+#      - timescaledb
+#    env_file:
+#      - common.env
+#    environment:
+#      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+#    volumes:
+#      - $HOME/docker/pgadmin/data:/var/lib/pgadmin
+#    networks:
+#      - app-tier
+#
+#  prometheus:
+#    image: prom/prometheus:v2.28.1
+#    container_name: rockiot_prometheus
+#    hostname: prometheus
+#    ports:
+#      - "9090:9090"
+#    volumes:
+#      - $HOME/docker/prometheus/data:/prometheus
+#      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+#    networks:
+#      - app-tier
+#    environment:
+#      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+#    user: root
+#
+#  loki:
+#    image: grafana/loki:2.3.0
+#    ports:
+#      - "3100:3100"
+#    command: -config.file=/etc/loki/local-config.yaml
+#    networks:
+#      - app-tier
+#
+#  promtail:
+#    image: grafana/promtail:2.3.0
+#    volumes:
+#      - /var/lib/docker/containers:/var/lib/docker/containers
+#      - ./docker/grafana/promtail-docker-config.yml:/etc/promtail/docker-config.yml
+#    command: -config.file=/etc/promtail/docker-config.yml
+#    networks:
+#      - app-tier
+#
+#  grafana:
+#    image: grafana/grafana:7.1.5
+#    container_name: rockiot_grafana
+#    ports:
+#      - "3000:3000"
+#    depends_on:
+#      - timescaledb
+#    env_file:
+#      - common.env
+#    environment:
+#      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+#      - GF_INSTALL_PLUGINS=grafana-worldmap-panel,flant-statusmap-panel,grafana-piechart-panel
+#    networks:
+#      - app-tier
+#    volumes:
+#      - $HOME/docker/grafana/data:/var/lib/grafana
+#      - ./docker/grafana/provisioning/:/etc/grafana/provisioning/
+#    user: root
 
 #  nginx:
 #    image: rockiot_nginx:latest
