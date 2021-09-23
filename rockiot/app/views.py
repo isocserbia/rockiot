@@ -151,7 +151,7 @@ class SensorDataRawList(generics.ListAPIView):
 
 interval_param = openapi.Parameter('interval', openapi.IN_QUERY,
                                    description="interval ('15m','1h','4h','24h')",
-                                   type=openapi.TYPE_STRING)
+                                   type=openapi.TYPE_STRING, default='15m')
 
 
 class DeviceSensorsSummary(generics.ListAPIView):

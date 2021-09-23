@@ -1,0 +1,4415 @@
+{
+  "rabbit_version": "3.8.21",
+  "rabbitmq_version": "3.8.21",
+  "product_name": "RabbitMQ",
+  "product_version": "3.8.21",
+  "users": [
+    {
+      "name": "device99940",
+      "password_hash": "eSGk1UmN6epADTaOGeFYBMXfNY6g8ojHDnTUYIpi0EP+FweC",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999188",
+      "password_hash": "KFXffIsgWd4Cck+RLaD3WAvo48Zpk0nuALGdIfmH+dfooZvD",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99976",
+      "password_hash": "sNrpqRellc5C3KBAokjOK0MBT4uWWSXYhc5z3D08ETwOhC3Z",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999110",
+      "password_hash": "oQ3LhvJhhU2gMKWGNcTBNZomc95nOJjeEPtx3SRxkoWdsAO/",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99980",
+      "password_hash": "/tC0h4ODc4mli78S5lbxCphfHoxNTtJeEzYg0BMLBJogZtXv",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99939",
+      "password_hash": "fP2kwuVgTqMviRJyppO+YFPHeh9vLxFFumXY0fpsEc3VjM4v",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device9992",
+      "password_hash": "VS9uOOiAQBYWBpIsUtNq/nonvHrcYYlZGDhC/xgNeVwtGZ9J",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999131",
+      "password_hash": "KWqDHTKJDvO4pMmD8qHqZfhIqsaEVU5NbUs/crrLlzL5XMah",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99987",
+      "password_hash": "6ay/eevmlGVIB0q2tVygEZUpl2gA90xhIOva3roFhQEOD39t",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99912",
+      "password_hash": "8AEdJ9RfojCwoKtf7UFHaz40aLy4qpKeVW7QQZeF5I8KOHn2",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999136",
+      "password_hash": "P9MD3oQBEhqgJ5oBeq6A9ZktDm/qk8fckqIatR3f1MCad47h",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99933",
+      "password_hash": "bpu5+Z2Rt3kOe6lhKltc+bvxHGhY2CbpwevpTnvXFVhHwPMY",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999183",
+      "password_hash": "wgWOKvRkItXK+TQCdwfvzFvBR8AEQ6jaSaLpR7XS/QoblZko",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99951",
+      "password_hash": "PwUjSHH786CjePva4FaMQ42gqwq7UkVRaKTc3QJUJWttV2M0",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99941",
+      "password_hash": "Iw7o2SLWxLtsezyamv3XRokPcLHj07HwF8IVN2kNmFjq2lwO",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99970",
+      "password_hash": "iCWXNtfT/h6iM9p36lO8uqBnujUwVlXIJt8zQrNuhKArl1i2",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99913",
+      "password_hash": "sSFQ7gxsGbu3sdRvCti7ZPw5oNyq13NJUBDbpnqVB+uBZpqk",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99944",
+      "password_hash": "Z/oeEiOp0XtMyz2PPYDzquqI9gSx2KHV5x9NEdDTU0XkY7+N",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999104",
+      "password_hash": "2GmfFvW8/2N06KaculrSSoy0YS2I6jaW8mchAHNs3Fj+tM2m",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999133",
+      "password_hash": "j1/RKuB/4hm12gqIkceHK3oTQniDX6ZV3jq1JM+PG4Mm1LOL",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999112",
+      "password_hash": "n9k85xlfXBYYCx956piMY9xOc10zqJQmVBKu5oQnhrJKwWWr",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999170",
+      "password_hash": "fG83O9LT4tKgE8HSN+q4FDuPm015LDAAHX1lSO6GSizOKC6O",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device9993",
+      "password_hash": "k7oGw3XXdoZXkNJWh6JkXz3KvJywwlipxR+6+5XUMQfVYz7R",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999186",
+      "password_hash": "WjIJ9FkescAU/4V0jcXd70vDXyRZGgQQlXdYjRlsev53XSp9",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999107",
+      "password_hash": "dWfrpBA5CWT5OMkzyPmaUBcczhA0OxyYWq6dwA8x/yZwHIb9",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99925",
+      "password_hash": "0YuJRwEImysDkqqNydyzNHT6oTdUdnQdTZ2z6vbuLAKCA/9k",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99955",
+      "password_hash": "tnw0lib823eZ+sVt+blPZOc2/HK0BKP/BMGM34TUrTCn3lLm",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999129",
+      "password_hash": "w71y/62/9fjQkRqQffxKo7dg0CWvZdrqdnR93DQlXcSbkRPc",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999144",
+      "password_hash": "UyZw9+Iu6lkIEAWE/CrfHpB1H4Aeu6NI5bs6rhWplg/elEA/",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999167",
+      "password_hash": "ltOgNCYbp/6Kl/J97ButzYbLV3KZT9uNZMd5lEwTZqg5UKry",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "amqptaskconsumer",
+      "password_hash": "NppQmaEmFuCDx1hIcXWs84ya30Ij29EDS8hXjjIqdU5HOTL5",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator",
+      "limits": {}
+    },
+    {
+      "name": "device999178",
+      "password_hash": "joDNYxu+JcQnbThVmF8MF1ykxRsMKTNLlcjrYOUiad//AO5N",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999185",
+      "password_hash": "F15kbkhL3eABGne2W2xfYduooWZzMAqXrAlgoycXGnsdF+TJ",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99917",
+      "password_hash": "IhlwXlGoWDnIiZ2bNLF0C9cdd6EbwPJWxw4PlmIqXQhuArr/",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999190",
+      "password_hash": "gfZGJz63Tn1V6V48MkIQ770+p/sFj3dZvLU3/PiYjs2HjOWL",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99924",
+      "password_hash": "6Pi9M7PLK8N0QBmSpqlZzwCNx5OzFfOQHo+IRDDzcSbMT5QG",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999135",
+      "password_hash": "G4CR+h5u0jROgKRh7n00AiaNwvpry8xMCOBcZM9BqG+2Tscc",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999113",
+      "password_hash": "X/CI2Ye/h+vG+izt6vh7R0xk9Ml2veAOeij6IVtQON9l/8rT",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999192",
+      "password_hash": "ZlW5CzHUz3exCmyw/FDw51MnwzwN2gN4Lxx8WAq2BwFUkmB9",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999180",
+      "password_hash": "XV5HmN4xcv6GLOpHbFD7N7kpx6v3x4+HE50kdJArIiCfLXcU",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999150",
+      "password_hash": "Ji1HDj4cPBeBT5tKq+E8ESxQxE0RRnVvyR7tmC56WQT8uymv",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999141",
+      "password_hash": "0D2RG+Ul2BZljqyAEbGE75gdWyaLDJ5pYDJ/YtRiRauMEEbp",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99942",
+      "password_hash": "z0gOmFTifPj/8T1GAy+FPZTbAntzJS9mTX1ROCr0Ssw7NV0f",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999142",
+      "password_hash": "+rMerX3uzxLUp5RhfEvmuSV7cx2LdcwBjX2F4wrUhFZkmC1O",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99991",
+      "password_hash": "9qu7BkJTBv8gqG72eVa+lEHvp/0ehzsu7GKMfdzmQdDF+l4Y",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99964",
+      "password_hash": "cIDIQbAhUf7zV2BKpnU0MK7URmbMHEQCHRb6Deh6a4jMEVTQ",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99931",
+      "password_hash": "KUvT1RZD1fx/voyAMRgGjLfcgl7+T201+YSnYMpfyQ7MF+Nc",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99927",
+      "password_hash": "+Y5TDiytfZMK91KI0oMuMb/BIOkz1PHzg4h5kxUpFaBWG20i",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999138",
+      "password_hash": "ocjA7ym2U5T0DuYPQJHaQTEY5E3KZQqzQrKUPv73EfxtKeDM",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99968",
+      "password_hash": "e9F6rBIITsRANWa1+sI/R+8BIeqPjB6EuMEtB4wcM+PTjtMg",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999153",
+      "password_hash": "p+G5yBIKiNSwG+BYpSmMhp5Q5d+ZoJI85hbu/+Vfjv1ozKit",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999151",
+      "password_hash": "WWReNGs9N+kTs6QfEObOY64lojoMEZKFi4Mk6uxOg/ArrTsh",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99978",
+      "password_hash": "sIDQh+N/v8n9F81f4ea2FUkUtS3REcTZfX/06+blbBfZFLBL",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999176",
+      "password_hash": "CGRewhcV1n7Qey2/bETZDpX/sz4xmgw7AjQeY3RxCMSwUh4P",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99954",
+      "password_hash": "ltRyrlEWP4/93f6+qT6oRR/5abQLvMTMn6GYsF7CmvBIgg5X",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99982",
+      "password_hash": "L9lhkDfnRXmeVFk5kGg/saGM7BLvtW6DJ6ll1cqDE2KFwscp",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999132",
+      "password_hash": "3sPu6xKg2vtOcuxpP2qBL6dcSY4nnAGUEop4gz5nKTPq1OrY",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device9998",
+      "password_hash": "TUi7h5noGBVAe2FWEqinrzzYZMZjkjWb6WpDEqDBNGMnTIVM",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999122",
+      "password_hash": "VV/aizLuOwzd0V/YQgLFeU9mXhbxsrvZv5hCgQpNZgEtanua",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999163",
+      "password_hash": "jGNKfwkT+W+UvR0dgl2BEXputh9qqCKB8IYAGhkdOQ+VQrmf",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999162",
+      "password_hash": "Q1/+Gzsun2c+sB9/fa0F52dhTbGjbVEhluE43lv9gDUKzlll",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999119",
+      "password_hash": "jewMFQgi2XklVOFcEp2m2BuwO5hg1NPw8Wdth+5QTu47lcsn",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999160",
+      "password_hash": "nh6nHKzrX+tMsqW4gslI8HzklrydstZO9ReZk9R7swo87iB9",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device9991",
+      "password_hash": "rla0gkscRQKXMyRHXAc1oaZkWKoowyDLUmMCd/rN36G406ff",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999197",
+      "password_hash": "CxB4lcmIT0ejFwnPZIYOCw1yeIm40xqoNoZoWdRubxF89KfH",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99963",
+      "password_hash": "xvl9QNTpjpcWw/w+jdj+vNiiG9N3msvntDUd5S9/U+L+Id1o",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999154",
+      "password_hash": "EjTsIhlWfp0LC9EMyRE3s0HoYkP/SXG2PiqaVUFkH+EJL68j",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99946",
+      "password_hash": "3vfxWVMcN9L/Wkm3oOeOVv/EXuBYcaiaz0BLhipS9PB0MuTH",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "rabbitmngmt",
+      "password_hash": "VqwJRT2QsT/zzPlT7xNUYtRBqd8mtIs6FBGxyoC3sFhNpiMM",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator",
+      "limits": {}
+    },
+    {
+      "name": "device99992",
+      "password_hash": "VTICUXVoV63A2PlV05gzb1WcaG79bU69D61ce4/LVNQFZtYX",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99959",
+      "password_hash": "as8kmoil+R/cTWHx6eriGGPDBTbD6HEpdogJU9K2BuYDru5Y",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999171",
+      "password_hash": "Bk5uvrVUftiiswqYsNYBPuDVCDHSaQ4iGGadMBYKLCQc7KGj",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999166",
+      "password_hash": "oUmwkPeTbLJCYQGbf9HiibGltf1CqiFS5SBQuq03pMysibAI",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "mqtteventproducer",
+      "password_hash": "ENrX84wdaGdtf4/MvE7VTShxlssERZ5KB2T+ILVBPhd3gApB",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator",
+      "limits": {}
+    },
+    {
+      "name": "device999159",
+      "password_hash": "jn0aJoun9+rLObqPrxhrVjuZeoArS+sgL6nh9Df99JBYB03h",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99983",
+      "password_hash": "4o6KEiE0tVIQETp3yfdJ8Vl6BwcISgfFRnh8f5/MfOXLXahR",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999124",
+      "password_hash": "y5trYdC0P7HF8gohB8ran1CdQ/kln4RO9vfCVt4rERwPl5dT",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999117",
+      "password_hash": "YLZksn4nLNlvcspwogpcrKLu6I9xmjAlCmqbox8M0RuaAkA2",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99950",
+      "password_hash": "Sj37P7mvea3OdIZJ0x4UrqwlqvZspQZhI2azG3bzZ/PUclqh",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99962",
+      "password_hash": "m7s6plYKcdU7LJjXmhnH0AVudowxQnbyVrhPvfP9/98YSmKZ",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999146",
+      "password_hash": "bPoNfZJnYPLhjlo+7Kh7oZ4wlUulyN96+ouBqutf6jiU1QtX",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99957",
+      "password_hash": "4xh2m6voDt5tcmlUnswpjG+ZUOdLKGMo/CSsy/tMUIVNTJlf",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999111",
+      "password_hash": "O+RzE7gwyMTycNovW+P0kRxdrrl0+lJYai5XmT6mVbetAz0h",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999116",
+      "password_hash": "CvqFLWfMhY5WfB7wt5RxfeQjjCHEQXoEEkPB2MkQb9dOMMTF",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999123",
+      "password_hash": "dmoj106hBvod13TpL5sUofCkISo6cbQgUdPlsQ5Q79t5JIAW",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999172",
+      "password_hash": "vkwyLVJuM+vas253ODZGXKjwZi/rfVXicJMjavEqv7fKiWtY",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999158",
+      "password_hash": "p08i/ATwsWcSLcBxnVSgogepy3QLJlTtqMC9YBtnDyInfCzi",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999147",
+      "password_hash": "I7rGpjfea9Lif+U9SBAdtiHV8GSTri0OsdlmlVD88J9I3dfR",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999103",
+      "password_hash": "W/v7bBtk1onh/ztNFAg6mdgV0fEKBbgIcDdjtTg4VQ/5c+A/",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999100",
+      "password_hash": "KEZ38MMsiu7rXJdw5SQY1EzANKoR72/nWk7wmQ+AHBVY31Vd",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99936",
+      "password_hash": "fAIqeDvhDyCcW54ZVF9mPnIS/cBQKA7dWd4rHxiqRJp+x5W4",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99910",
+      "password_hash": "cs0sXDhO9a7gnyItgu/D6+eqBRimXzZB2r62wDZUiv+FWXvx",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999181",
+      "password_hash": "WNKd+Rf3nLCYhaL/1SsIYSIcmWuhpsj5DxrsnNcpshomgHFJ",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999164",
+      "password_hash": "tl2RLd5hMK/HZv/gHPMgz2MSVeNyydN2liVSfsxyPzdYZMlI",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99974",
+      "password_hash": "/lD6vAIrYEgukT4C7+HVW1nr42TV9gUKgXItjJLrx5+WuHhf",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999165",
+      "password_hash": "xmgHskHLiPU0Y3uQ6aHt24Mm/wIX/gBEwHomlF/bFFDQTqAZ",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999145",
+      "password_hash": "dzXWSE2GlqvlayVSwN4d9QVmElluSuNsp+JXA7x2U97OHU/w",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99977",
+      "password_hash": "FXGu5r3kXbh+Eo/AafKwTkCOC/QauJsggnCs5Zr/A3WhwFOs",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999184",
+      "password_hash": "WFNC5ZQfofpkR9TwCa52ZkTPCSR5e/toCL9monmsL+6eBd2M",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999127",
+      "password_hash": "lzjMUJHeGx+CEAyST9pw+Ee+7VxAvQq9+XDvtIutll5EJeKa",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99918",
+      "password_hash": "+EHu3ReODTrtzcBfkkZ+Z/mrdy+QAmBOrV8p8d9cKWMx1hB2",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99995",
+      "password_hash": "NNyJ9CZrhVJce+ru3JfwwhhKlddGl2ylkN0/dtDs79Ct/XrY",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99956",
+      "password_hash": "RFNF0ByyuT1C7NikuNg2vjSSw8yJELCGURQuBC0mdG5u/njd",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99997",
+      "password_hash": "h/uhF9U7r/b2Be34KEmW7cbV2OENwOovjhP3+i8U9JSAn126",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99911",
+      "password_hash": "GcM8rtcEj+jxdfeTm5d5jI8OJ/ruiqLELmiHlaYEd9a5qpxU",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99919",
+      "password_hash": "0vrjPs2Oqw96ZH3u7eSh9huNmBeet+tLo3kczIfXamA3LFuK",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999198",
+      "password_hash": "0rE/jOxHWXpyxdccJi9Ai4WwdiTl9hmnxZ55M8Fzt4D33vAC",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999137",
+      "password_hash": "B7Hvcs+ZNO0OwjX+ixOGDmyysXbOrdaB3iRFvUG70hwuys8c",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99943",
+      "password_hash": "DEpuP6sT68cx9eSs0vl4UPHI/slSqeQpE8BOnRxbtL2ZmPca",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999195",
+      "password_hash": "EITk9fGIH5FAWJG2gul9LUGfvaY3PgjLLh121Uas3IcrKJPQ",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999143",
+      "password_hash": "8r08NRoey7ENA5BiCGXYjc0nOvBKYFic9I3AhfPGOwoFBQFs",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999130",
+      "password_hash": "QW+3bz0L+i+xOxmpd1Rj6njM45S4thN2o3n9BPtyN3KAO2c9",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99971",
+      "password_hash": "IatNWLBGwX0rNd2TeHc27mzWtDUeX7ndM+AhmmOu0cV990E8",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999148",
+      "password_hash": "IbFwJyH3H9xkQKxhYKHb1iubCMK/fsKy5OEqBNjf228xtzBI",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "guest",
+      "password_hash": "n5shg0JG1EtNzz/JXMCuC+znmj6acHeseQMlJSWmN3h/FAQh",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator",
+      "limits": {}
+    },
+    {
+      "name": "device999118",
+      "password_hash": "qSzBSrbVqyOZWs9kt+FiikbwIQGc/9KR9h31N1QUzxMCcCD8",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "rabbitcelery",
+      "password_hash": "REXJt2b0nDSCIU5RnHD84+iFu8FesLPerJ4+OF3S8Wd2jtSy",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator",
+      "limits": {}
+    },
+    {
+      "name": "device999139",
+      "password_hash": "odhwb2ahp+rxuG/Ys56uMES0EPPRVvBrmUOaV0MGUsAXijv5",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999128",
+      "password_hash": "ARkx4+Rl4hNqfTwOxY4RnARBQGCPziL6Z+SWqw4dC97ePt9Y",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99937",
+      "password_hash": "6TJka8j9qFjYC58PTg2PA4O/HbTuH6EOZFKuX6ql5IVTUZfx",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999149",
+      "password_hash": "/QuL98gNiMYEJWmjmL236NYVtXXNdaviJIM89FHpNLEDq0JJ",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999191",
+      "password_hash": "YYc8oGSE5wDD5G52pRX2YTRqPSlsryEYReMpbAwQXYyOBSwL",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99953",
+      "password_hash": "6RdK8LEscUt5V0Mw/7/4Zn2xHVF/rO9Np65CXUWi7mwRvRZn",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99930",
+      "password_hash": "ReJ8AtoRqPw2VOpEVW+TU3GnzV55yCMWe9QPezZ05Gpgi+Bs",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999108",
+      "password_hash": "wkrvCBObBDeeBcgnr++6s9zijCjAG/KAHU6IspYDlC5ToLtG",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99969",
+      "password_hash": "KmpLoF52+/cvARznqvVWosBOezpJbW7ZbGSL+392asQZ6yDp",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999101",
+      "password_hash": "BOu7uw4G8KnZyolIq2amRZxRaN7AjjG9MK1E+cozOIhQFU4x",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99981",
+      "password_hash": "OAPH21sUpiFppMgIbuebsdzUXm5jX/LBl1b6NSBFt3qOh68K",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999121",
+      "password_hash": "YnRnCYhGXbUQk9L1JEGiaSx4F2nJuFA6WZHG6IEZo/vbrcsc",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99958",
+      "password_hash": "qvDGVSpcF9/+1QFwa6crw2V53GOhypoGsX+ri5lxSGpq2W3U",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99994",
+      "password_hash": "eBDUIxPnBlluWOHRsocBlWN7FW8guWLjfBJ/x6Ww3a+DqN+P",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999196",
+      "password_hash": "zB9zo9YQL9AcJcO0SYtnQ/VWJx1ncngRniZDm4OWEnNHnQzd",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999102",
+      "password_hash": "djkjjCZaL0O+AMaepcLbIGqWoMIOtndB8ohMq4MoTv/oUqlS",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999168",
+      "password_hash": "QkcXZC5btCMXg7rteeYdy20NLC3g5pGankubz/UUlgyHKqK2",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99996",
+      "password_hash": "BoieOpzLXTdx+OHuT1HDzeUzEKJ6v8QtIjHZCuu6Hh8GxTz4",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99985",
+      "password_hash": "59k9KGYVtqcAWvsQgjF7m/jzoo+dZatM3h6ydWfRrOxTC7iT",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99967",
+      "password_hash": "uY6g0cORd8X1m7Y0uPof+PdmYBejtYARPrle7jt3W12zS4RX",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999140",
+      "password_hash": "spPxns5+5NMF5Apaue5Db3le9VFp9ZpIZnqFYX5QGCkHE5oK",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999199",
+      "password_hash": "PqjWuCAoM4Tj4i8veJHyLNqgKWMnX/Ykvl0dP9YzK5HyAwRX",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999174",
+      "password_hash": "z9DsSuxfvbpPxVYzhhld8qPCn8iVE420eOK2m7xQTYYjXMnp",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99922",
+      "password_hash": "zWdYSuVf5Z9yC8dcKQUlmhBRfQtYZJw/EARUO6QcaHXc7YZ5",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999179",
+      "password_hash": "9ZE/7lB1ZAdca9jqnEZaAFjAG5PTu831o3/wdR/6tn+sQnZ1",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99986",
+      "password_hash": "jPe/nGKfGXAed4d0zmyS7YLNxdRO7xGA2pJyWogf9s5EuwpB",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99945",
+      "password_hash": "StckXDhr14HZ2h3QdOZXHeEnqPUr6kKzk5Cu/Hpr4PthtSdz",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99990",
+      "password_hash": "JIBxBwt9ncsQzWPX5SR7NeiR98oNWA62GiTqcWEfxxwwiUxU",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99938",
+      "password_hash": "P04zzqZRM2cxtBh3Z9y881ggjJg1toR6/2CtlnaU+0vVUqRP",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999169",
+      "password_hash": "u4NsgyuXFwRhEYLj6bDQHvPl/Zb04iKMCyRurZHONc0RjVZ0",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99926",
+      "password_hash": "xmnLH01zLgeJCy5dtfsFjPgCnPj8pDO45kJMdNjeoxHZPR2p",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99998",
+      "password_hash": "d4amxcyh0tTUMwdbZ/GNHbHLE2ClHH+ZP6ulxoymkpILynen",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999120",
+      "password_hash": "8X7LZdBdcUJAM/LD0/pA+Sb6d4YVGckwdpLFans///7v5dZH",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device9996",
+      "password_hash": "rBp6tg238MjwKFzbLexLiRF0dgI3vmdNSU8nj9oARg4fzfHA",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99928",
+      "password_hash": "fMAai7U5T5hJSQx0xbvZ7kXg365bH2jPWdSJaha/2JSrCe11",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999105",
+      "password_hash": "OIfFHpzWvTlEb7Aqees1emilcJ+wo7GrifQKjuhoDi0P8EEt",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99973",
+      "password_hash": "os/Muiusty/clg0G3vKYe1vag1m6VFFYDDdmu5c6wjXpv5iI",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999194",
+      "password_hash": "jjSzShsin6KMmFsyTsQi1rTE7S9e8fES+MGz3t6ZdqyLylum",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99915",
+      "password_hash": "in927BYFXVQk0znJ3XtW1CfBsg6q4O8gATmayOxvIYKyHBP5",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999156",
+      "password_hash": "IvRPSV2iyRAN1212zWxD7paLE608onJHF7IyyldJnp55iOTv",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999177",
+      "password_hash": "qWZl9W7QxQ7yH0IYY9Fw5kHNlNAZ7G0rCR61dZZ23BtClmVj",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999187",
+      "password_hash": "UFwYjKAveOK+1yOkQS91g6FskJuOIT9oDbSIgZ9pIwXZvPeg",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99929",
+      "password_hash": "swRaene8iILlFdwzoYvkaaBxdqR9X5L9h0Jw98teS+Rprg8m",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99932",
+      "password_hash": "+H2vpN6QQprfk0AeSlhP4jspFJQxbH5jlpnIwEDk4jZjN7QT",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99975",
+      "password_hash": "VDBiZU2fR6d0BD6CQ8HKLmUxT4Rk+5JcybF6jHlYxvd+KHX+",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999182",
+      "password_hash": "y4sUyMiumQE0lWPG92twrIrGAED6hXUQODCwDT88c+o9zNkX",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999126",
+      "password_hash": "jr+EoIfepLLkjI7joIAYlL5+gVRxU1IK1gT9CkKlSK/VzzkS",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99916",
+      "password_hash": "/GO4ONea56kwTL9BLM8VA/k45FuZnsHmSAyj71KlgagaOopR",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99923",
+      "password_hash": "pzTqZkivPqJOTVcVXzfjgYmUKtlPNyn8psxoNEs8gVRu238K",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99934",
+      "password_hash": "QMafw1an2lzppvqcHFyfLC/OEgwLZQSYMtNzYA2H8CaRf3Aw",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device9994",
+      "password_hash": "gYCn7zdg9Eoe5zygkEP5PcI7kjgMbE/fWAV5d9js844unSwa",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999115",
+      "password_hash": "7t4kblglrGs8n41ZwPi8YA6fc3Nv++vZvpArt6TB3GFrdlxg",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99921",
+      "password_hash": "eC1ixFrD4UA7bcdh6Tp3DRc/Fjr3GKjAEI+BD0/bbW5c/hFD",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device9999",
+      "password_hash": "aQUa9+EqexAfX9ckX8+x6rs+YIzmtn1aRhlUqQfTFuHgRt85",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999175",
+      "password_hash": "rGLQE5Y+bWMosADUsIvzw7c1e8rP0l7yAX79kQld6Cs6atsP",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99966",
+      "password_hash": "D0glP3DZSore5GibeJdW6E0iOaG7vQmCkljZJTg1e1Xxt4OJ",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99914",
+      "password_hash": "/KVnNdXaRXb6QNK3Dyo6pH3Hf5Ut0Z/MZumBVFaz1iIRFFAP",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "amqptaskproducer",
+      "password_hash": "WQTjp8oYDJesx6r9j6QjbuJoKcKJnFl/gknHhgGAs02XCLsC",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator",
+      "limits": {}
+    },
+    {
+      "name": "device9995",
+      "password_hash": "bPpiKfTIMN66v8uHCB2AdG8fEYMMw27l8ZUa9qYQUCO9L1CY",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99952",
+      "password_hash": "9t0D4NmmHIuKj0MtZn3+auI3Ubz83ppIGuC/x0RzRft3klw4",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999106",
+      "password_hash": "AIXegFzjHXgxBtdwbj+GBY4XMqee5ybowRMPqLl2b1wqGb4S",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99960",
+      "password_hash": "ljJ4sGCg0Xat8kHOp6eeZnlxmOPsCEOwGB9wbkisLCgI0qH1",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999200",
+      "password_hash": "Q3Iqv3tP/C+R17N4h5ISWEMqVwgCUFQV9x5E6cBks62eSwJv",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99984",
+      "password_hash": "G5h81siBwZ6IeceMj6SSrKygI5ozRRpre7MGIItB1ZUDpZET",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999157",
+      "password_hash": "zHJnQns/IfGVB/jNH1vnhSYxsYlAEHHyo8tvDXQvSnuIrqLU",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99988",
+      "password_hash": "Meg53xZOTkKu/Y5IrJYm4nZ/muZQQFaAQXz/RsVd1U1LfLB2",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99961",
+      "password_hash": "pmmafNW5X6mYa+ID2sg4137EsFWIyYuj/OohRV7PTd6cm8WH",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999125",
+      "password_hash": "KDCBn5Fd6CVTpCSoI5EIKde6gkPjrof4ZpstDs+oKBm8eHni",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99999",
+      "password_hash": "KHkDyLIdb//AxogHsABJ/Dy1QYKJtgOUAWJPHbeAicgTCgsJ",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device9997",
+      "password_hash": "e19Y5azr9Hmy2ysi6X036RPAlXnT1xriaG0Rtvxh83b9+Cvr",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999155",
+      "password_hash": "QvXyt0KrCI6oBK0n7lHB2DRGz7T9Gb06fGIr4Qu4za+Z0KOA",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99920",
+      "password_hash": "cZ2xXQbD5Y5VrpmJZ0Z2LY3utrGJuBN70RFDdo6Nkf1PoLRo",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999109",
+      "password_hash": "COZjaAhwXuSikb9CPlinXKCb5CUPi354PI6j3PVokqt39flO",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999193",
+      "password_hash": "6v9VJIOuKmy9msQsSrphnHUJ0H/Ql/U0O+ZXj2XdOUjj92dL",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99947",
+      "password_hash": "KMUwb3T/w5Oh0ASvMmm4Q6MKdx7amiDIfYfnuqhwUd+fw+xL",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "amqpingest",
+      "password_hash": "Brtimk/Z4mHCER95k2cvwTErhTgcPNZ1n3xNFo1nxt08ZeT9",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator",
+      "limits": {}
+    },
+    {
+      "name": "device999134",
+      "password_hash": "sBUj7VnXdsJS7oR+msigPUhegLsjbySOIILwAh+BbonFo3Vc",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999189",
+      "password_hash": "VxM2TBo2OwGGyvdnOoWpJgQ0s8mU/IXvZ/+70p++AgZmlHak",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999173",
+      "password_hash": "1utRF1zi2q07q0oYbXdYg+L4wcRCscfNJF42eQ8u1SdlF5rU",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99979",
+      "password_hash": "CQA4Mwk7qGuUWz636wkNs9nvrw6Lcx8a0/LzJBi5ObczvMXj",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99948",
+      "password_hash": "8Am00Qj0vRw9gBr6rkQ93uPMI5FGjp+Btz1lp3daz45uC/Xm",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99935",
+      "password_hash": "A+ULeb+bWZ246WZTMbB4ATuMSIL34Dj5NThJK7tMwohJqfyr",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999114",
+      "password_hash": "cVBCRe3AS/j7YhUMm6wx+JDjyxbjZAMSZyGM3posfGRv3Ura",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99993",
+      "password_hash": "CTkIipAC0whn0i6eAgROc8NjiPeifwE3o0eXDO17s4Gf+HLx",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999152",
+      "password_hash": "qRCNeHPm/4htFGFo+tats9LtQqZaXnDtAroDPA6w8kq1LZQO",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99989",
+      "password_hash": "AiTFMM4qIKxIBQHkZSWOCHhMsY+TMnRKKLWd+5OfIhS7iR+T",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99965",
+      "password_hash": "QI78LDr19V0x/9qZ7NBcs+A9ylNxnRNd4NYWGyAkzI5nHnWa",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99949",
+      "password_hash": "ZUqir+8K4ejranHsM/T+3T110F/e2FQB1tzy0C/rQgYdTBF4",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device99972",
+      "password_hash": "xzJLww+EWtPzZa74blcR7Iv+R425ZknW7U3F3aNZ7udZQcp0",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    },
+    {
+      "name": "device999161",
+      "password_hash": "GIo/+TwOnx9XC0r+uXu7Ld3C+Z0B0s9ppnhS/nc4btlPaoeD",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "device",
+      "limits": {}
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "/"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "device99997",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99910",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999190",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999116",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999166",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999112",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99946",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "amqpingest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999164",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999135",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999129",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99953",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999158",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999115",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99992",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999109",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99972",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99965",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999173",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9992",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999171",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999189",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999149",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999130",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "rabbitcelery",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99954",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99933",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999136",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999132",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999104",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99982",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999192",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999178",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99925",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999113",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99929",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999187",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999157",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99988",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999143",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99958",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999167",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "mqtteventproducer",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999165",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999139",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999184",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999142",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999195",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99926",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999168",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999160",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999186",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99918",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999200",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999111",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "guest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999140",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999172",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99938",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9998",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99966",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999108",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99986",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999101",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99990",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99959",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999150",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99936",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99970",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99978",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99955",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99947",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999151",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999114",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999141",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99912",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99937",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "rabbitmngmt",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99973",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999156",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999137",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99944",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999123",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999128",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99977",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99961",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99943",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99952",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99935",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99916",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99991",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999148",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99975",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99917",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999198",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99983",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99995",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999174",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99939",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999125",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999155",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999131",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99920",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999106",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99932",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99974",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99948",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999100",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9996",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999193",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999110",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99923",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999144",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99922",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999127",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99934",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99960",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999162",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999105",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99993",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999180",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999161",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99919",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999133",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999169",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999107",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999182",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9999",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99957",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999146",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99963",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9993",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999102",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99950",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99913",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999176",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999159",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99928",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999199",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999120",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99967",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999134",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99931",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999194",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99968",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999175",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999119",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "amqptaskproducer",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9994",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99987",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999183",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99989",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99971",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9995",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99964",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99979",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99915",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999196",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99914",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999163",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99985",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99951",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99949",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99969",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999191",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99980",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99921",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999152",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99994",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99942",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999121",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999118",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99911",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9997",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999122",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99930",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99984",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99976",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999145",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999185",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999177",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999138",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99999",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999179",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999117",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999147",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99956",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99924",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99998",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999124",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99945",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99941",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999197",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99996",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999188",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9991",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99981",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999103",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "amqptaskconsumer",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99927",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999170",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99940",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999126",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99962",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999181",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999154",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999153",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "topic_permissions": [
+    {
+      "user": "device99989",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99935",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999145",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99999",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99939",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999171",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999163",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99976",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99925",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999197",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999155",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999113",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999164",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999111",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999173",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99994",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999152",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99956",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999174",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999125",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99991",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99966",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999198",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999149",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999185",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99959",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999120",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99934",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999121",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99988",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99945",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999160",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999139",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999107",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99953",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99948",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99940",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99922",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999181",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99937",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "rabbitcelery",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99912",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99949",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999167",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99916",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999126",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99978",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999132",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999102",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99983",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99928",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99923",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999187",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99920",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99996",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99911",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9998",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999189",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999168",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999106",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9993",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999133",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99964",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999143",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999147",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999148",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99950",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999156",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999116",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99951",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99924",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999186",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99944",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99932",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999180",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999161",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99969",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999101",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99977",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999150",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99919",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999169",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "mqtteventproducer",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999182",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99933",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999175",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999123",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99957",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "rabbitmngmt",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999172",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99936",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999119",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999103",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99984",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99930",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99954",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99979",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999196",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99942",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99981",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999192",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999200",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999195",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99990",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999199",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999105",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999104",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99974",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "amqpingest",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999176",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99992",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9997",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99993",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9999",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999130",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99971",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999194",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99998",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "amqptaskproducer",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999177",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99955",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99910",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99968",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9994",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999162",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999137",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99982",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999141",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999115",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9992",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99970",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999193",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999157",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99918",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99995",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999100",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999188",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999179",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99946",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99980",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99967",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999191",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "amqptaskconsumer",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999170",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999110",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999109",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99915",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99913",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999159",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999129",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999153",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999108",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9995",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999114",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99926",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99947",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99986",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999166",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9991",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999135",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99975",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99973",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999142",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99963",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99952",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999140",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99960",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99943",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999165",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99929",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99965",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99917",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999134",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999151",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999144",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999128",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99941",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999112",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999158",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999124",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99931",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99914",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999154",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99921",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999184",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99985",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999117",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999146",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99997",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99972",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999138",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999131",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999183",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999178",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999118",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999122",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99961",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999190",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99987",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device9996",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99958",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999127",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99927",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99938",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device99962",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "device999136",
+      "vhost": "/",
+      "exchange": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "parameters": [],
+  "global_parameters": [
+    {
+      "name": "cluster_name",
+      "value": "rabbit@rabbit1"
+    }
+  ],
+  "policies": [],
+  "queues": [
+    {
+      "name": "mq2_amqp",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "tasks_amqp",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "aliveness-test",
+      "vhost": "/",
+      "durable": false,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "exchanges": [],
+  "bindings": [
+    {
+      "source": "amq.direct",
+      "vhost": "/",
+      "destination": "tasks_amqp",
+      "destination_type": "queue",
+      "routing_key": "tasks.amqp",
+      "arguments": {}
+    },
+    {
+      "source": "amq.topic",
+      "vhost": "/",
+      "destination": "mq2_amqp",
+      "destination_type": "queue",
+      "routing_key": "v1.devices.#.actions.ingest",
+      "arguments": {}
+    },
+    {
+      "source": "amq.topic",
+      "vhost": "/",
+      "destination": "tasks_amqp",
+      "destination_type": "queue",
+      "routing_key": "v1.devices.actions",
+      "arguments": {}
+    }
+  ]
+}

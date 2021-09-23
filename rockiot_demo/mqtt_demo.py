@@ -12,7 +12,7 @@ import paho.mqtt.client as paho
 import mqtt_demo_readings
 from mqtt_events import DeviceAction, DeviceEvent
 
-BROKER_HOST = os.getenv("BROKER_HOST", default='127.0.0.1')
+BROKER_HOST = os.getenv("BROKER_HOST", default='localhost')
 BROKER_MQTT_PORT = int(os.getenv("BROKER_MQTT_PORT", default="1883"))
 BROKER_MQTT_SSL_PORT = int(os.getenv("BROKER_MQTT_SSL_PORT", default="8883"))
 BROKER_VHOST = os.getenv("BROKER_VHOST", default='/')
@@ -26,7 +26,7 @@ DEVICE_ID = os.getenv("DEVICE_ID", default='device1')
 DEVICE_PASS = os.getenv("DEVICE_PASS", default='device1pass')
 
 DEMO_SLEEP_SECONDS = int(os.getenv("DEMO_SLEEP_SECONDS", default='60'))
-DEMO_IS_SSL = bool(os.getenv("DEMO_IS_SSL", default='True'))
+DEMO_IS_SSL = bool(os.getenv("DEMO_IS_SSL", default='False'))
 
 LOG_FORMAT = '%(levelname)s %(asctime)s %(module)s %(name)s %(process)d %(thread)d %(message)s'
 LOGGER = logging.getLogger(__name__)
@@ -185,7 +185,12 @@ class MqttDemo(object):
 if __name__ == '__main__':
     try:
         logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
+        if len(sys.argv) > 2:
+            DEVICE_ID = sys.argv[1]
+            DEVICE_PASS = sys.argv[2]
+            print(f"DEVICE ID {DEVICE_ID}    DEVICE PASS {DEVICE_PASS}")
         MqttDemo()
+
     except KeyboardInterrupt:
         LOGGER.warning('Interrupted')
         try:

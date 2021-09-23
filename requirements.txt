@@ -19,3 +19,5 @@ django_celery_beat
 drf-yasg
 sqlalchemy==1.3.23
 django-simple-history
+flower
+applescript

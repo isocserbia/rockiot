@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import collections
 import datetime
+import json
 import logging
 
 import psycopg2
@@ -19,6 +20,7 @@ def clean_and_calibrate_dataframe():
     db_conn = psycopg2.connect(**db_args)
     db_cursor = db_conn.cursor()
 
+    response = {}
     try:
 
         calibration_models = collections.defaultdict(lambda: collections.defaultdict(dict))
@@ -82,9 +84,12 @@ def clean_and_calibrate_dataframe():
         logger.info(f"CC: Inserted {len(clean_records)} clean records")
         db_cursor.close()
         db_conn.commit()
+        response["records"] = len(clean_records)
 
     except psycopg2.Error as e:
         logger.error("Error running clean and calibrate sensor data", e)
         db_conn.rollback()
+        response["message"] = "error"
 
     db_conn.close()
+    return json.dumps(response)
