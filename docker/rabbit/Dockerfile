@@ -4,7 +4,10 @@ RUN apt-get update && apt-get install -y curl unzip
 
 ADD ./certs /etc/ssl/certs/
 ADD rabbitmq-ssl.config /etc/rabbitmq/rabbitmq.config
-ADD definitions.json /etc/rabbitmq/definitions.json
+# ADD definitions.json /etc/rabbitmq/definitions.json
+ADD definitions-demo.json /etc/rabbitmq/definitions.json
+ADD demo.sh /demo.sh
+RUN chmod +x /demo.sh
 
 RUN mkdir -p /var/log/rabbitmq/log
 RUN chown -R rabbitmq:rabbitmq /var/log/rabbitmq

@@ -44,7 +44,7 @@ def deactivate_device(self, did):
     return rabbit_ops.deactivate_device(did)
 
 
-@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='20/m')
+@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='30/m')
 def handle_activation_request(self, did):
     logger.debug(f'Handle Activation Request: {self.request!r}')
     return rabbit_ops.handle_activation_request(did)
