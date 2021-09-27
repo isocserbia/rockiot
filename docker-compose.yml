@@ -104,8 +104,24 @@ services:
       - BROKER_EXCHANGE=amq.topic
       - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
 
+#  rockiotanalysis:
+#    build:
+#      context: rockiot_analysis
+#      dockerfile: ./Dockerfile
+#    command: >
+#      sh -c "/wait.sh && celery -A tasks worker --loglevel=INFO -B -c 4"
+#    depends_on:
+#      - timescaledb
+#      - rabbit1
+#      - rockiot
+#    networks:
+#      - app-tier
+#    volumes:
+#      - rockiot-data:/data
+
 #  rockiotmonitor:
 #    <<: *rockiotfunction
+#    container_name: rockiot_app_monitor
 #    command: >
 #      sh -c "/wait.sh && celery -A tasks.celery flower"
 #    ports:
@@ -118,57 +134,57 @@ services:
 #      - FLOWER_BROKER_API=http://rabbitmngmt:rabbitmngmt_pass@rabbit1:15672/api/
 #      - BROKER_EXCHANGE=amq.topic
 #      - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
-#
-#  rockiot_ingest:
-#    build: rockiot_ingest
-#    env_file:
-#      - db.env
-#      - common.env
-#    environment:
-#      - BROKER_USER=amqpingest
-#      - BROKER_PASS=amqpingest_pass
-#      - BROKER_QUEUE=mq2_amqp
-#      - WAIT_HOSTS=rabbit1:8883,rockiot:8000
-#    depends_on:
-#      - timescaledb
-#      - rabbit1
-#      - rockiot
-#    networks:
-#      - app-tier
-#
-#  rockiot_demo:
-#    build: rockiot_demo
-#    container_name: rockiot_demo_device1
-#    env_file:
-#      - common.env
-#    environment:
-#      - DEVICE_ID=device1
-#      - DEVICE_PASS=device1pass
-#      - DEVICE_KEY=4OrcNTFSZUrYX6NqP0P3lz
-#      - DEMO_IS_SSL=True
-#      - WAIT_HOSTS=rabbit1:8883,rockiot:8000
-#    depends_on:
-#      - rockiot
-#      - rockiot_ingest
-#    networks:
-#      - app-tier
-#
-#  pgadmin:
-#    image: biarms/pgadmin4:4.21
-#    container_name: rockiot_pgadmin
-#    ports:
-#      - "5050:5050"
-#    depends_on:
-#      - timescaledb
-#    env_file:
-#      - common.env
-#    environment:
-#      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
-#    volumes:
-#      - $HOME/docker/pgadmin/data:/var/lib/pgadmin
-#    networks:
-#      - app-tier
-#
+
+  rockiot_ingest:
+    build: rockiot_ingest
+    env_file:
+      - db.env
+      - common.env
+    environment:
+      - BROKER_USER=amqpingest
+      - BROKER_PASS=amqpingest_pass
+      - BROKER_QUEUE=mq2_amqp
+      - WAIT_HOSTS=rabbit1:8883,rockiot:8000
+    depends_on:
+      - timescaledb
+      - rabbit1
+      - rockiot
+    networks:
+      - app-tier
+
+  rockiot_demo:
+    build: rockiot_demo
+    container_name: rockiot_demo_device1
+    env_file:
+      - common.env
+    environment:
+      - DEVICE_ID=device1
+      - DEVICE_PASS=device1pass
+      - DEVICE_KEY=4OrcNTFSZUrYX6NqP0P3lz
+      - DEMO_IS_SSL=True
+      - WAIT_HOSTS=rabbit1:8883,rockiot:8000
+    depends_on:
+      - rockiot
+      - rockiot_ingest
+    networks:
+      - app-tier
+
+  pgadmin:
+    image: biarms/pgadmin4:4.21
+    container_name: rockiot_pgadmin
+    ports:
+      - "5050:5050"
+    depends_on:
+      - timescaledb
+    env_file:
+      - common.env
+    environment:
+      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+    volumes:
+      - $HOME/docker/pgadmin/data:/var/lib/pgadmin
+    networks:
+      - app-tier
+
 #  prometheus:
 #    image: prom/prometheus:v2.28.1
 #    container_name: rockiot_prometheus

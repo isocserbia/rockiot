@@ -2,7 +2,7 @@ import logging
 from datetime import date
 
 from app.rabbitops import rabbit_ops
-from app.system import dbops, pipeline, anomaly
+from app.system import dbops, pipeline
 from tasks.celery import app
 
 logger = logging.getLogger(__name__)
@@ -67,8 +67,3 @@ def clean_and_calibrate(self):
     logger.debug(f'Clean and Calibrate Request: {self.request!r}')
     return pipeline.clean_and_calibrate_dataframe()
 
-
-@app.task(bind=True, ignore_result=False, max_retries=3)
-def detect_anomalies(self):
-    logger.debug(f'Detect anomalies Request: {self.request!r}')
-    return anomaly.detect_anomalies()
