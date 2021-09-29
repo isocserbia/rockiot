@@ -185,56 +185,56 @@ services:
     networks:
       - app-tier
 
-#  prometheus:
-#    image: prom/prometheus:v2.28.1
-#    container_name: rockiot_prometheus
-#    hostname: prometheus
-#    ports:
-#      - "9090:9090"
-#    volumes:
-#      - $HOME/docker/prometheus/data:/prometheus
-#      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-#    networks:
-#      - app-tier
-#    environment:
-#      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
-#    user: root
-#
-#  loki:
-#    image: grafana/loki:2.3.0
-#    ports:
-#      - "3100:3100"
-#    command: -config.file=/etc/loki/local-config.yaml
-#    networks:
-#      - app-tier
-#
-#  promtail:
-#    image: grafana/promtail:2.3.0
-#    volumes:
-#      - /var/lib/docker/containers:/var/lib/docker/containers
-#      - ./docker/grafana/promtail-docker-config.yml:/etc/promtail/docker-config.yml
-#    command: -config.file=/etc/promtail/docker-config.yml
-#    networks:
-#      - app-tier
-#
-#  grafana:
-#    image: grafana/grafana:7.1.5
-#    container_name: rockiot_grafana
-#    ports:
-#      - "3000:3000"
-#    depends_on:
-#      - timescaledb
-#    env_file:
-#      - common.env
-#    environment:
-#      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
-#      - GF_INSTALL_PLUGINS=grafana-worldmap-panel,flant-statusmap-panel,grafana-piechart-panel
-#    networks:
-#      - app-tier
-#    volumes:
-#      - $HOME/docker/grafana/data:/var/lib/grafana
-#      - ./docker/grafana/provisioning/:/etc/grafana/provisioning/
-#    user: root
+  prometheus:
+    image: prom/prometheus:v2.28.1
+    container_name: rockiot_prometheus
+    hostname: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - $HOME/docker/prometheus/data:/prometheus
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - app-tier
+    environment:
+      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+    user: root
+
+  loki:
+    image: grafana/loki:2.3.0
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - app-tier
+
+  promtail:
+    image: grafana/promtail:2.3.0
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers
+      - ./docker/grafana/promtail-docker-config.yml:/etc/promtail/docker-config.yml
+    command: -config.file=/etc/promtail/docker-config.yml
+    networks:
+      - app-tier
+
+  grafana:
+    image: grafana/grafana:7.1.5
+    container_name: rockiot_grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - timescaledb
+    env_file:
+      - common.env
+    environment:
+      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+      - GF_INSTALL_PLUGINS=grafana-worldmap-panel,flant-statusmap-panel,grafana-piechart-panel
+    networks:
+      - app-tier
+    volumes:
+      - $HOME/docker/grafana/data:/var/lib/grafana
+      - ./docker/grafana/provisioning/:/etc/grafana/provisioning/
+    user: root
 
 #  nginx:
 #    image: rockiot_nginx:latest
