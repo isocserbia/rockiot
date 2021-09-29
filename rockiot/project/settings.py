@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_gis',
     'rest_framework_simplejwt',
-    'drf_yasg'
+    'drf_yasg',
+    'import_export'
 ]
 
 MIDDLEWARE = [

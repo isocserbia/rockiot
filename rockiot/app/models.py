@@ -154,6 +154,9 @@ class Device(models.Model):
 
     history = HistoricalRecords(
         history_change_reason_field=models.TextField(null=True),
+        custom_model_name="DeviceLogEntry",
+        verbose_name="Devices log",
+
     )
 
     class Meta:

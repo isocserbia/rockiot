@@ -3,6 +3,7 @@ djangorestframework
 djangorestframework-gis
 djangorestframework-simplejwt
 django-admin-interface
+django-import-export
 psycopg2-binary
 configparser
 python-decouple
