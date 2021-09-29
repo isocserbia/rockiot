@@ -23,3 +23,13 @@ datasources:
     isDefault: false
     version: 1
     editable: false
+  - name: Loki
+    type: loki
+    orgId: 1
+    url: loki:3100
+    access: proxy
+    isDefault: false
+    version: 1
+    editable: false
+    jsonData:
+      maxLines: 1000

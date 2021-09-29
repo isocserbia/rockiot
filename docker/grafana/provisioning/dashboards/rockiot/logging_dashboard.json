@@ -16,8 +16,7 @@
   "editable": true,
   "gnetId": 12611,
   "graphTooltip": 0,
-  "id": 6,
-  "iteration": 1632307621418,
+  "iteration": 1632939548966,
   "links": [],
   "panels": [
     {
@@ -77,15 +76,15 @@
           "calcs": [
             "sum"
           ],
-          "fields": "/^{}$/",
+          "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "textMode": "value_and_name"
       },
       "pluginVersion": "7.1.5",
       "targets": [
         {
-          "expr": "sum(count_over_time(({container_name=\"$container_name\", stream=~\"$stream\", pod_name=~\"$pod_name\"})[$__interval]))",
+          "expr": "sum(count_over_time(({container_name=~\"$container_name|all\", stream=~\"$stream\"})[$__interval]))",
           "hide": false,
           "legendFormat": "",
           "refId": "A"
@@ -162,7 +161,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(count_over_time(({container_name=\"$container_name\", pod_name=~\"$pod_name\"})[$__interval]))",
+          "expr": "sum(count_over_time(({container_name=~\"$container_name|all\"})[$__interval]))",
           "hide": false,
           "legendFormat": "",
           "refId": "A"
@@ -188,6 +187,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:383",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -196,6 +196,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:384",
           "format": "short",
           "label": "",
           "logBase": 1,
@@ -252,7 +253,7 @@
       "strokeWidth": "0.4",
       "targets": [
         {
-          "expr": "sum(count_over_time(({container_name=\"$container_name\", pod_name=~\"$pod_name\", stream=~\"$stream\"} |~ \"(?i)$searchable_pattern\")[$__interval]))",
+          "expr": "sum(count_over_time(({container_name=~\"$container_name|all\", stream=~\"$stream\"} |~ \"(?i)$searchable_pattern\")[$__interval]))",
           "legendFormat": "",
           "refId": "A"
         }
@@ -290,7 +291,7 @@
       "id": 18,
       "interval": "1m",
       "legend": {
-        "alignAsTable": true,
+        "alignAsTable": false,
         "avg": false,
         "current": true,
         "hideEmpty": false,
@@ -320,7 +321,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(count_over_time(({container_name=\"$container_name\", pod_name=~\"$pod_name\", stream=~\"$stream\"} |~ \"(?i)$searchable_pattern\")[$__interval])) by (pod_name)",
+          "expr": "sum(count_over_time(({container_name=~\"$container_name|all\", stream=~\"$stream\"} |~ \"(?i)$searchable_pattern\")[$__interval])) by (container_name)",
+          "legendFormat": "{{container_name}}",
           "refId": "A"
         }
       ],
@@ -344,6 +346,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:541",
           "decimals": 0,
           "format": "short",
           "label": "Count",
@@ -353,6 +356,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:542",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -390,7 +394,7 @@
       },
       "targets": [
         {
-          "expr": "{container_name=\"$container_name\", pod_name=~\"$pod_name\", stream=~\"$stream\"} |~ \"(?i)$searchable_pattern\" ",
+          "expr": "{container_name=~\"$container_name|all\", stream=~\"$stream\"} |~ \"(?i)$searchable_pattern\" ",
           "hide": false,
           "legendFormat": "",
           "refId": "A"
@@ -415,13 +419,13 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "rockiot_demo_device1",
-          "value": "rockiot_demo_device1"
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": "Loki",
         "definition": "label_values({container_name=~\".+\"}, container_name)",
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "label": "Service",
         "multi": false,
         "name": "container_name",
@@ -531,5 +535,5 @@
   "timezone": "",
   "title": "Rockiot Logging Dashboard",
   "uid": "fRIvzUZMz",
-  "version": 2
+  "version": 3
 }
