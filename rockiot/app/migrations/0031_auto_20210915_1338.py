@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='HistoricalDevice',
+            name='DeviceLogEntry',
             fields=[
                 ('id', models.BigIntegerField(auto_created=True, blank=True, db_index=True, verbose_name='ID')),
                 ('name', models.CharField(max_length=30)),
@@ -72,7 +72,7 @@ class Migration(migrations.Migration):
                 ('history_type', models.CharField(choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')], max_length=1)),
             ],
             options={
-                'verbose_name': 'historical device',
+                'verbose_name': 'device log',
                 'ordering': ('-history_date', '-history_id'),
                 'get_latest_by': 'history_date',
             },
@@ -99,12 +99,12 @@ class Migration(migrations.Migration):
             field=models.CharField(choices=[('DEFAULT', 'DEFAULT'), ('CALIBRATION', 'CALIBRATION'), ('PRODUCTION', 'PRODUCTION')], default='DEFAULT', max_length=20),
         ),
         migrations.AddField(
-            model_name='historicaldevice',
+            model_name='devicelogentry',
             name='facility',
             field=models.ForeignKey(blank=True, db_column='facility_id', db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='app.facility'),
         ),
         migrations.AddField(
-            model_name='historicaldevice',
+            model_name='devicelogentry',
             name='history_user',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL),
         ),

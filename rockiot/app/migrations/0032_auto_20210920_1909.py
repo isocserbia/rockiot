@@ -29,12 +29,12 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.AlterField(
-            model_name='historicaldevice',
+            model_name='devicelogentry',
             name='history_change_reason',
             field=models.TextField(null=True),
         ),
         migrations.AlterField(
-            model_name='historicaldevice',
+            model_name='devicelogentry',
             name='mode',
             field=models.CharField(choices=[('DEFAULT', 'DEFAULT'), ('CALIBRATION', 'CALIBRATION'), ('PRODUCTION', 'PRODUCTION')], default='DEFAULT', max_length=15),
         ),

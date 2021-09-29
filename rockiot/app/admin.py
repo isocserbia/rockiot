@@ -1,20 +1,54 @@
+from django import forms
 from django.apps import apps
 from django.contrib import admin, messages
 from django.contrib.admin import ModelAdmin
 from django.contrib.gis.admin import OSMGeoAdmin
 from django.db import models
-from django.forms import TextInput, Textarea, JSONField, ModelForm
+from django.forms import TextInput, Textarea, ModelForm
 from django.utils.html import format_html
 from django_celery_beat.models import SolarSchedule, ClockedSchedule
 from django_celery_results.admin import TaskResultAdmin
 from django_celery_results.models import GroupResult, TaskResult
+from import_export import resources
+from import_export.admin import ExportActionModelAdmin
+from import_export.fields import Field
 from simple_history.admin import SimpleHistoryAdmin
 from simple_history.utils import update_change_reason
 
 from app.models import Facility, Device, Municipality, PlatformAttribute, Platform, \
     FacilityMembership, DeviceConnection, CronJobExecution, CronJob, DeviceCalibrationModel
+from app.system.decorators import action_form
 from app.system.dockerops import DockerOps
 from app.tasks import register_device, activate_device, deactivate_device, terminate_device
+
+DeviceLogEntry = apps.get_model("app", "DeviceLogEntry")
+
+
+class DeviceLogEntryResource(resources.ModelResource):
+    object_action = Field(column_name="action")
+    object_user = Field(column_name="user")
+    object_change = Field(column_name="change")
+
+    def dehydrate_object_action(self, entry):
+        types = {'+': 'Created', '~': 'Changed', '-': 'Deleted'}
+        return types.get(entry.history_type, 'Changed')
+
+    def dehydrate_object_user(self, entry):
+        return entry.history_user.username
+
+    def dehydrate_object_change(self, entry):
+        new_record = entry
+        old_record = new_record.prev_record
+        if new_record and old_record:
+            model_delta = new_record.diff_against(old_record, excluded_fields=["metadata", "history_change"])
+            return "%s" % [f"{c.field} ({c.old} -> {c.new})" for c in model_delta.changes]
+        else:
+            return None
+
+    class Meta:
+        model = DeviceLogEntry
+        fields = ('device_id', 'object_action', 'history_date', 'object_user', 'object_change', 'history_change_reason')
+        export_order = ('device_id', 'object_action', 'object_change', 'history_change_reason', 'object_user', 'history_date')
 
 
 def get_form_field_overrides():
@@ -160,20 +194,19 @@ class DeviceCalibrationModelInlineAdmin(admin.TabularInline):
         return False
 
 
-HistoricalDevice = apps.get_model("app", "HistoricalDevice")
+@admin.register(DeviceLogEntry)
+class DeviceLogEntryAdmin(ExportActionModelAdmin):
+    model = DeviceLogEntry
 
-
-@admin.register(HistoricalDevice)
-class HistoricalDeviceAdmin(admin.ModelAdmin):
-    model = HistoricalDevice
+    date_hierarchy = 'history_date'
+    resource_class = DeviceLogEntryResource
 
     def history_change(self, obj):
-        # qry = HistoricalDevice.objects.filter(device_id=obj.device_id)
         new_record = obj
         old_record = new_record.prev_record
         if new_record and old_record:
             model_delta = new_record.diff_against(old_record, excluded_fields=["metadata", "history_change"])
-            return "%s" % [f"{c.field} changed ({c.old} -> {c.new})" for c in model_delta.changes]
+            return "%s" % [f"{c.field} ({c.old} -> {c.new})" for c in model_delta.changes]
         else:
             return "[]"
 
@@ -206,37 +239,50 @@ class HistoricalDeviceAdmin(admin.ModelAdmin):
         return False
 
 
+class DeviceChangeComment(forms.Form):
+    title = 'Please add comment to describe change'
+    comment = forms.CharField(max_length=40)
+
+
 @admin.register(Device)
 class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
     actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container']
 
-    def register(self, request, queryset):
+    @action_form(DeviceChangeComment, initial_value="Device registered")
+    def register(self, request, queryset, form):
+        comment = form.cleaned_data['comment']
         for device in queryset:
             register_device.apply_async((device.device_id,))
             device.status = Device.REGISTERED
             device.save()
-            update_change_reason(device, "Device registered")
+            update_change_reason(device, comment)
 
-    def activate(self, request, queryset):
+    @action_form(DeviceChangeComment, initial_value="Device activated")
+    def activate(self, request, queryset, form):
+        comment = form.cleaned_data['comment']
         for device in queryset:
             activate_device.apply_async((device.device_id,))
             device.status = Device.ACTIVATED
             device.save()
-            update_change_reason(device, "Device activated")
+            update_change_reason(device, comment)
 
-    def deactivate(self, request, queryset):
+    @action_form(DeviceChangeComment, initial_value="Device deactivated")
+    def deactivate(self, request, queryset, form):
+        comment = form.cleaned_data['comment']
         for device in queryset:
             deactivate_device.apply_async((device.device_id,))
             device.status = Device.DEACTIVATED
             device.save()
-            update_change_reason(device, "Device deactivated")
+            update_change_reason(device, comment)
 
-    def terminate(self, request, queryset):
+    @action_form(DeviceChangeComment, initial_value="Device terminated")
+    def terminate(self, request, queryset, form):
+        comment = form.cleaned_data['comment']
         for device in queryset:
             terminate_device.apply_async((device.device_id,))
             device.status = Device.TERMINATED
             device.save()
-            update_change_reason(device, "Device terminated")
+            update_change_reason(device, comment)
 
     def start_container(self, request, queryset):
         for device in queryset:
