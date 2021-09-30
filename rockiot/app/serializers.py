@@ -1,9 +1,20 @@
+from datetime import timezone
+
 import rest_framework
-from rest_framework.serializers import CharField, SerializerMethodField
+from rest_framework.serializers import CharField, SerializerMethodField, DateTimeField
 from rest_framework_gis import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from app.models import *
+from django.apps import apps
+
+
+class DateTimeTzAwareField(DateTimeField):
+
+    def to_native(self, value):
+        value = timezone.fromutc(value)
+        native = super(DateTimeTzAwareField, self).to_native(value)
+        return native
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -16,6 +27,10 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class MunicipalityModelSerializer(serializers.ModelSerializer):
+    # dtz = pytz.timezone('Europe/Belgrade')
+    # created_at = DateTimeTzAwareField(default_timezone=dtz, format='%Y-%m-%d %H:%M')
+    # updated_at = DateTimeTzAwareField(default_timezone=dtz, format='%Y-%m-%d %H:%M')
+
     def validate(self, attrs):
         pass
 
@@ -47,6 +62,46 @@ class DeviceModelSerializer(serializers.ModelSerializer):
                   "last_active_at", "created_at", "updated_at"]
 
 
+DeviceLogEntry = apps.get_model("app", "DeviceLogEntry")
+
+
+class DeviceLogEntrySerializer(serializers.ModelSerializer):
+    # dtz = pytz.timezone('Europe/Belgrade')
+    action = SerializerMethodField()
+    change = SerializerMethodField()
+    user = SerializerMethodField()
+    # history_date = DateTimeTzAwareField(default_timezone=dtz, format='%Y-%m-%d %H:%M:%S')
+
+    class Meta:
+        model = DeviceLogEntry
+        fields = ['device_id', 'action', 'change', 'history_change_reason', 'user', 'history_date']
+
+    def get_action(self, obj):
+        try:
+            types = {'+': 'Created', '~': 'Changed', '-': 'Deleted'}
+            return types.get(obj.history_type, 'Changed')
+        except TypeError:
+            return "/"
+
+    def get_change(self, obj):
+        try:
+            new_record = obj
+            old_record = new_record.prev_record
+            if new_record and old_record:
+                model_delta = new_record.diff_against(old_record, excluded_fields=["metadata", "history_change"])
+                return "%s" % [f"{c.field} ({c.old} -> {c.new})" for c in model_delta.changes]
+            else:
+                return None
+        except TypeError:
+            return "/"
+
+    def get_user(self, obj):
+        try:
+            return obj.history_user.username
+        except TypeError:
+            return "/"
+
+
 class FacilityMembershipSerializer(serializers.ModelSerializer):
     user_email = CharField(source='user.email')
 
@@ -76,6 +131,7 @@ class FacilitySerializer(serializers.GeoFeatureModelSerializer):
 
 
 class SensorDataRawSerializer(serializers.ModelSerializer):
+    mode = CharField(source='device.mode')
     temperature = SerializerMethodField()
     humidity = SerializerMethodField()
     no2 = SerializerMethodField()
@@ -86,7 +142,7 @@ class SensorDataRawSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SensorDataRaw
-        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
+        fields = ["mode", "time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
 
     def get_temperature(self, obj):
         try:

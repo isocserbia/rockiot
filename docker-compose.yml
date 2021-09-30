@@ -228,6 +228,10 @@ services:
       - common.env
     environment:
       - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_NAME=Main Org.
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
       - GF_INSTALL_PLUGINS=grafana-worldmap-panel,flant-statusmap-panel,grafana-piechart-panel
     networks:
       - app-tier

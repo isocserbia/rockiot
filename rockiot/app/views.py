@@ -1,6 +1,6 @@
 """Markers view."""
 import logging
-from datetime import date
+from datetime import date, datetime
 
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
@@ -8,7 +8,7 @@ from django.views.generic.base import TemplateView
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, views
-from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
+from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, IsAuthenticatedOrReadOnly
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
 
@@ -17,13 +17,24 @@ from app.models import Facility, SensorData, SensorDataLastValues, Device, Munic
 from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer, SensorDataRawSerializer, \
     SensorDataLastValuesSerializer, DeviceModelSerializer, \
     SensorsDataRollupSerializer, MunicipalityModelSerializer, SensorsDataRollupWithDeviceSerializer, \
-    SensorDataSerializer
+    SensorDataSerializer, DeviceLogEntrySerializer
 
 logger = logging.getLogger(__name__)
 
 
 class FacilityMapView(TemplateView):
     template_name = "map.html"
+
+
+from_date_param = openapi.Parameter('from_date', openapi.IN_QUERY,
+                                    description="Starting from date",
+                                    type=openapi.TYPE_STRING,
+                                    format=openapi.FORMAT_DATETIME)
+
+until_date_param = openapi.Parameter('until_date', openapi.IN_QUERY,
+                                     description="Until date",
+                                     type=openapi.TYPE_STRING,
+                                     format=openapi.FORMAT_DATETIME)
 
 
 class DevicesList(generics.ListAPIView):
@@ -36,6 +47,28 @@ class DevicesList(generics.ListAPIView):
     queryset = Device.objects.all()
     serializer_class = DeviceModelSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+
+
+class DeviceChangeLogList(generics.ListAPIView):
+    @swagger_auto_schema(operation_description="Retrieve Device changelog",
+                         operation_summary="Get device changelog",
+                         tags=['report'],
+                         manual_parameters=[from_date_param])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        did = self.kwargs['device_id']
+        device = get_object_or_404(Device, device_id=did)
+        from_date = self.request.query_params.get('from_date', None)
+        if from_date is not None:
+            from_date_date = datetime.fromisoformat(from_date)
+            return device.history.filter(history_date__date__gte=from_date_date)
+        else:
+            return device.history.all()
+
+    serializer_class = DeviceLogEntrySerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
 
 
 class MunicipalityView(generics.RetrieveAPIView):
@@ -92,17 +125,6 @@ class FacilityList(generics.ListAPIView):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
 
-from_date_param = openapi.Parameter('from_date', openapi.IN_QUERY,
-                                    description="Starting from date",
-                                    type=openapi.TYPE_STRING,
-                                    format=openapi.FORMAT_DATETIME)
-
-until_date_param = openapi.Parameter('until_date', openapi.IN_QUERY,
-                                     description="Until date",
-                                     type=openapi.TYPE_STRING,
-                                     format=openapi.FORMAT_DATETIME)
-
-
 class SensorDataList(generics.ListAPIView):
     @swagger_auto_schema(operation_description="Retrieve calibrated and cleaned sensor data reading",
                          operation_summary="Gets calibrated and cleaned Sensor data for single Device",
@@ -138,7 +160,7 @@ class SensorDataRawList(generics.ListAPIView):
         did = self.kwargs['device_id']
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
-        qs1 = SensorDataRaw.objects.filter(device_id=did)
+        qs1 = SensorDataRaw.objectsfilter(device_id=did)
         if from_date is not None:
             qs1 = qs1.filter(time__date__gt=from_date)
         if until_date is not None:
