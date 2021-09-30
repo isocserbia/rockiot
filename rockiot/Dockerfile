@@ -12,12 +12,11 @@ RUN apk add --no-cache geos proj gdal binutils
 RUN apk add postgresql-libs
 RUN apk add gcc musl-dev postgresql-dev python3-dev
 
-RUN pip install --upgrade pip
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait.sh
 
+RUN pip install --upgrade pip
 COPY requirements.txt /requirements.txt
 RUN pip install --no-cache-dir -r /requirements.txt
-
-ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait.sh
 
 COPY . /
 RUN mkdir -p /rockiot-data

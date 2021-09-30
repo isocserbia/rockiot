@@ -153,7 +153,7 @@ class Device(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     history = HistoricalRecords(
-        history_change_reason_field=models.TextField(null=True),
+        history_change_reason_field=models.TextField(blank=True, null=True, default="Values changed"),
         custom_model_name="DeviceLogEntry",
         verbose_name="Devices log",
 

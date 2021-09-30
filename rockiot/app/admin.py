@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django import forms
 from django.apps import apps
 from django.contrib import admin, messages
@@ -10,7 +12,7 @@ from django_celery_beat.models import SolarSchedule, ClockedSchedule
 from django_celery_results.admin import TaskResultAdmin
 from django_celery_results.models import GroupResult, TaskResult
 from import_export import resources
-from import_export.admin import ExportActionModelAdmin
+from import_export.admin import ExportActionModelAdmin, ImportExportModelAdmin
 from import_export.fields import Field
 from simple_history.admin import SimpleHistoryAdmin
 from simple_history.utils import update_change_reason
@@ -195,9 +197,9 @@ class DeviceCalibrationModelInlineAdmin(admin.TabularInline):
 
 
 @admin.register(DeviceLogEntry)
-class DeviceLogEntryAdmin(ExportActionModelAdmin):
-    model = DeviceLogEntry
+class DeviceLogEntryAdmin(ImportExportModelAdmin):
 
+    model = DeviceLogEntry
     date_hierarchy = 'history_date'
     resource_class = DeviceLogEntryResource
 
@@ -238,17 +240,24 @@ class DeviceLogEntryAdmin(ExportActionModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
+    def has_import_permission(self, request):
+        return False
+
+    def get_export_filename(self, request, queryset, file_format):
+        date_str = datetime.now().strftime('%Y-%m-%d')
+        return f"devices-changelog-{date_str}.{file_format.get_extension()}"
+
 
 class DeviceChangeComment(forms.Form):
     title = 'Please add comment to describe change'
-    comment = forms.CharField(max_length=40)
+    comment = forms.CharField(max_length=128)
 
 
 @admin.register(Device)
 class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
     actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container']
 
-    @action_form(DeviceChangeComment, initial_value="Device registered")
+    @action_form(DeviceChangeComment, initial_value="Status changed to: REGISTERED")
     def register(self, request, queryset, form):
         comment = form.cleaned_data['comment']
         for device in queryset:
@@ -257,7 +266,7 @@ class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
             device.save()
             update_change_reason(device, comment)
 
-    @action_form(DeviceChangeComment, initial_value="Device activated")
+    @action_form(DeviceChangeComment, initial_value="Status changed to: ACTIVATED")
     def activate(self, request, queryset, form):
         comment = form.cleaned_data['comment']
         for device in queryset:
@@ -266,7 +275,7 @@ class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
             device.save()
             update_change_reason(device, comment)
 
-    @action_form(DeviceChangeComment, initial_value="Device deactivated")
+    @action_form(DeviceChangeComment, initial_value="Status changed to: DEACTIVATED")
     def deactivate(self, request, queryset, form):
         comment = form.cleaned_data['comment']
         for device in queryset:
@@ -275,7 +284,7 @@ class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
             device.save()
             update_change_reason(device, comment)
 
-    @action_form(DeviceChangeComment, initial_value="Device terminated")
+    @action_form(DeviceChangeComment, initial_value="Status changed to: TERMINATED")
     def terminate(self, request, queryset, form):
         comment = form.cleaned_data['comment']
         for device in queryset:
@@ -338,8 +347,13 @@ class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
     list_display = ('device_id', 'name', 'facility', 'municipality', 'mode', 'activation_status', 'state')
     list_display_links = ('device_id', 'name')
     list_filter = ('status', 'mode')
-    readonly_fields = ['status', 'created_at', 'updated_at', 'state']
     history_list_display = ["status"]
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ['device_id', 'status', 'created_at', 'updated_at', 'state']
+        else:
+            return ['status', 'created_at', 'updated_at', 'state']
 
     fieldsets = [
         (None, {'fields': (
@@ -359,7 +373,27 @@ class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
         actions = super().get_actions(request)
         if 'delete_selected' in actions:
             del actions['delete_selected']
+
         return actions
+
+    def save_model(self, request, obj, form, change):
+        if change:
+            reason = ""
+            if 'mode' in form.changed_data:
+                initial = form.get_initial_for_field(form.fields['mode'], 'mode')
+                if obj.mode != initial:
+                    reason = f"Mode changed to: {form.cleaned_data['mode']}"
+            if 'facility' in form.changed_data:
+                initial = form.get_initial_for_field(form.fields['facility'], 'facility')
+                if obj.facility != initial:
+                    if len(reason) > 0:
+                        reason += "\n"
+                    reason += f"Location changed to: {form.cleaned_data['facility']}"
+            if len(reason) == 0:
+                reason = "Values changed"
+        super(DeviceAdmin, self).save_model(request, obj, form, change)
+        if change:
+            update_change_reason(obj, reason)
 
 
 class CronJobExecutionAdmin(admin.TabularInline):
@@ -440,7 +474,6 @@ class AttributesAdminInline(admin.TabularInline):
 
 @admin.register(Platform)
 class PlatformAdmin(ModelAdmin):
-    change_list_template = "admin/platform_changelist.html"
     list_display = ('name', 'description')
     list_display_links = ('name',)
     fieldsets = [
