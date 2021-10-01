@@ -20,7 +20,7 @@ def export_raw_data_to_csv(dat=date.today().isoformat()):
     db_conn = psycopg2.connect(**db_args)
     db_cursor = db_conn.cursor()
 
-    query = f"SELECT * FROM sensor_data WHERE date_trunc('day', time) = '{dat}'"
+    query = f"SELECT date_trunc('second', time::timestamp) as time, device_id, client_id, temperature, humidity, no2, so2, pm1, pm2_5, pm10 FROM sensor_data WHERE date_trunc('day', time) = '{dat}'"
     query_csv = "COPY ({0}) TO STDOUT WITH CSV HEADER".format(query)
 
     try:
