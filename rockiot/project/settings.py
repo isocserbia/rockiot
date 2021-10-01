@@ -88,7 +88,8 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '100/day',
         'user': '1000/day'
-    }
+    },
+    'DATETIME_FORMAT': "%Y-%m-%dT%H:%M:%S",
 }
 
 SWAGGER_SETTINGS = {
