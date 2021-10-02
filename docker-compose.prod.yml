@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+
+  rockiot:
+    build:
+      context: rockiot
+      dockerfile: ./Dockerfile.prod
+    env_file:
+      - db.prod.env
+      - rockiot.prod.env
+
+  rockiot_ingest:
+    env_file:
+      - db.prod.env
+      - rockiot.prod.env

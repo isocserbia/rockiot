@@ -1,6 +1,6 @@
 ### Requirements
 
-Python 3.7 or greater as well as Python pip3
+Python 3.7 or greater. Python pip3.
 
 ### Setting up environment
 
