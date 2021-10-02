@@ -1,35 +1,17 @@
-
-# RockIOT platform
-
-Data ingest platform for IOT devices with analytics capabilities for Scientific institutions.
+RockIOT platform
+===
 
 ---
-## Docs
+Data ingest and management platform for IOT devices, with analytics capabilities for scientific institutions, and public API for data insights.
+
+---
+
 [Development setup](./docs/DEVELOPMENT.md)
 
----
-## Run
+[Installation guide](./docs/INSTALLATION.md)
 
-Example configuration is avaiable in `.env` files. Copy them and rename, or introduce new environment profiles.
+[Deployment guide](./docs/DEPLOYMENT.md)
 
-### Local profile
+### License
 
-Run complete platform or separate services py adding service name at the end:
-```
-docker compose up
-```
-or
-```
-docker compose up rockiot_demo
-```
-
-### AWS profile
-
-For AWS profile there are separate compose and `.env` files.
-```
-docker compose -f docker-compose.yml -f docker-compose.aws.yml up -d
-```
-or
-```
-docker compose -f docker-compose.yml -f docker-compose.aws.yml up -d rockiot_demo
-```
+[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B27902%2Fgit%40github-rockiot.com%3Ani5ni6%2Frockiot.git.svg?type=shield)](https://app.fossa.com/projects/custom%2B27902%2Fgit%40github-rockiot.com%3Ani5ni6%2Frockiot.git?ref=badge_shield)
