@@ -2,14 +2,84 @@ version: '3'
 
 services:
 
+  timescaledb:
+    container_name: rockiot_timescale
+    build:
+      context: ./docker/timescale
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USERNAME: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "rock_iot"
+      PG_DATA: "$HOME/docker/postgres/data"
+    volumes:
+      - $HOME/docker/postgres/data:/var/lib/postgresql/data
+    networks:
+      - app-tier
+
   rockiot:
+    build:
+      context: rockiot
+      dockerfile: ./Dockerfile.prod
     env_file:
       - rockiot.aws.env
+    depends_on:
+      - timescaledb
+      - rabbit1
+
+  rockiotworker:
+    depends_on:
+      - timescaledb
+      - rabbit1
+      - rockiot
+
+  rockiotbeat:
+    depends_on:
+      - timescaledb
+      - rabbit1
+      - rockiot
+
+  rockiotlistener:
+    depends_on:
+      - timescaledb
+      - rabbit1
+      - rockiot
 
   rockiot_ingest:
     env_file:
       - rockiot.aws.env
 
   rockiot_demo:
+    build: rockiot_demo
+    container_name: rockiot_demo_device1
     env_file:
+      - common.env
       - rockiot.aws.env
+    environment:
+      - DEVICE_ID=device1
+      - DEVICE_PASS=device1pass
+      - DEVICE_KEY=4OrcNTFSZUrYX6NqP0P3lz
+      - DEMO_IS_SSL=True
+      - WAIT_HOSTS=rabbit1:8883,rockiot:8000
+    depends_on:
+      - rockiot
+      - rockiot_ingest
+    networks:
+      - app-tier
+
+  pgadmin:
+    image: biarms/pgadmin4:4.21
+    container_name: rockiot_pgadmin
+    ports:
+      - "5050:5050"
+    depends_on:
+      - timescaledb
+    env_file:
+      - common.env
+    environment:
+      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+    volumes:
+      - $HOME/docker/pgadmin/data:/var/lib/pgadmin
+    networks:
+      - app-tier

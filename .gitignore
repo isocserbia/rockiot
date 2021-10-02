@@ -158,3 +158,6 @@ rockiot.aws.env
 
 .DS_Store
 .idea/
+/db.prod.env
+/rockiot.prod.env
+/rockiot.dev.env
