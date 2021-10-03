@@ -160,7 +160,7 @@ class SensorDataRawList(generics.ListAPIView):
         did = self.kwargs['device_id']
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
-        qs1 = SensorDataRaw.objectsfilter(device_id=did)
+        qs1 = SensorDataRaw.objects.filter(device_id=did)
         if from_date is not None:
             qs1 = qs1.filter(time__date__gt=from_date)
         if until_date is not None:
