@@ -1,9 +1,3 @@
-#!/bin/bash
-
-psql --username "postgres" <<EOF
-
-\c rock_iot
-
 CREATE OR REPLACE VIEW public.lag_diff_temperature
  AS
  SELECT date_trunc('minute'::text, sd."time") AS "time",
@@ -156,5 +150,3 @@ CREATE OR REPLACE VIEW public.lag_diff_device
 	  join lag_diff_pm2_5 ldp25 on ldh.device_id = ldp25.device_id
 	  join minutes_since_last_entry msle on ldh.device_id = msle.device_id
 	  order by device_id desc;
-
-EOF

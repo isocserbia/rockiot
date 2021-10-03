@@ -1,9 +1,3 @@
-#!/bin/bash
-
-psql --username "postgres" <<EOF
-
-\c rock_iot
-
 CREATE TABLE IF NOT EXISTS sensor_data_rollup_15m (
   time          TIMESTAMP         NOT NULL,
   device_id     TEXT              NOT NULL,
@@ -70,6 +64,3 @@ CREATE TABLE IF NOT EXISTS sensor_data_rollup_24h (
 
 SELECT create_hypertable('sensor_data_rollup_24h', 'time');
 CREATE INDEX IF NOT EXISTS sensor_data_rollup_24h_device_id_time_ind ON sensor_data (device_id, time DESC);
-
-
-EOF
