@@ -72,7 +72,7 @@ def update_connections():
                 dc.save()
                 logger.info(f"{device.device_id} connection updated")
             else:
-                dc.state = "TERMINATED"
+                dc.state = Device.TERMINATED
                 dc.terminated_at = datetime.datetime.utcnow()
                 dc.save()
                 logger.info("%s connection changed, terminating ... " % device.device_id)
@@ -83,7 +83,7 @@ def update_connections():
                 logger.info("%s new connection created" % device.device_id)
             del connection_map[device.device_id]
         else:
-            dc.state = "TERMINATED"
+            dc.state = Device.TERMINATED
             dc.terminated_at = datetime.datetime.utcnow()
             dc.save()
             logger.info("%s connection terminated" % device.device_id)
@@ -245,7 +245,7 @@ class RabbitOps:
             if update_status:
                 device.status = Device.ACTIVATED
                 device.save()
-                update_change_reason(device, 'Device self-activated')
+                update_change_reason(device, 'Status changed to: ACTIVATED (by device)')
                 logger.info("Device status updated [device-id: %s] [status: %s]" % (device_id, Device.ACTIVATED))
 
             event = rabbit_events.DeviceEvent.construct_activation(Device.REGISTERED, Device.ACTIVATED,
