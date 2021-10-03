@@ -1,0 +1,3 @@
+CREATE DATABASE rock_iot WITH OWNER postgres;
+GRANT ALL PRIVILEGES ON DATABASE rock_iot TO postgres;
+

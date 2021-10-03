@@ -1,9 +1,3 @@
-#!/bin/bash
-
-psql --username "postgres" <<EOF
-
-\c rock_iot
-
 CREATE OR REPLACE VIEW public.minutes_since_last_entry
  AS
  SELECT blah.device_id,
@@ -17,5 +11,3 @@ CREATE OR REPLACE VIEW sensors_last_values AS
 SELECT DISTINCT ON (device_id) device_id, client_id, time, temperature, humidity, no2, so2, pm1, pm10, pm2_5
 FROM sensor_data
 ORDER BY device_id, time DESC;
-
-EOF

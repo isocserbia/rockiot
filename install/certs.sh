@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [[ ! -d ~/docker/certificates ]]; then
   mkdir -p ~/docker/certificates

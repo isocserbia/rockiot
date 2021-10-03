@@ -1,10 +1,3 @@
-#!/bin/bash
-
-psql --username "postgres" <<EOF
-CREATE DATABASE rock_iot WITH OWNER postgres;
-GRANT ALL PRIVILEGES ON DATABASE rock_iot TO postgres;
-
-\c rock_iot
 CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 CREATE EXTENSION IF NOT EXISTS postgis;
 
@@ -16,7 +9,6 @@ CREATE TABLE IF NOT EXISTS sensor_data_raw (
   CONSTRAINT sensor_data_raw_unique UNIQUE (device_id, "time")
 );
 CREATE INDEX IF NOT EXISTS sensor_data_raw_device_id_time_ind ON sensor_data_raw (device_id, time DESC);
-
 
 CREATE TABLE IF NOT EXISTS sensor_data (
   time          TIMESTAMP         NOT NULL,
@@ -31,10 +23,5 @@ CREATE TABLE IF NOT EXISTS sensor_data (
   PM2_5         DOUBLE PRECISION,
   CONSTRAINT sensor_data_unique UNIQUE (device_id, "time")
 );
-
 SELECT create_hypertable('sensor_data', 'time');
 CREATE INDEX IF NOT EXISTS sensor_data_device_id_time_ind ON sensor_data (device_id, time DESC);
-
-
-
-EOF
