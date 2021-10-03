@@ -134,7 +134,6 @@ class FacilitySerializer(serializers.GeoFeatureModelSerializer):
 
 
 class SensorDataRawSerializer(serializers.ModelSerializer):
-    mode = CharField(source='device.mode')
     temperature = SerializerMethodField()
     humidity = SerializerMethodField()
     no2 = SerializerMethodField()
@@ -145,7 +144,7 @@ class SensorDataRawSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SensorDataRaw
-        fields = ["mode", "time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
+        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
 
     def get_temperature(self, obj):
         try:
