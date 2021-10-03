@@ -49,39 +49,6 @@ services:
     env_file:
       - rockiot.dev.env
 
-  rockiotanalysis:
-    build:
-      context: rockiot_analysis
-      dockerfile: ./Dockerfile
-    command: >
-      sh -c "/wait.sh && celery -A tasks worker --loglevel=INFO -B -c 4"
-    env_file:
-      - rockiot.dev.env
-    depends_on:
-      - timescaledb
-      - rabbit1
-      - rockiot
-    networks:
-      - app-tier
-    volumes:
-      - rockiot-data:/data
-
-#  rockiotmonitor:
-#    <<: *rockiotfunction
-#    container_name: rockiot_app_monitor
-#    command: >
-#      sh -c "/wait.sh && celery -A tasks.celery flower"
-#    ports:
-#      - 5555:5555
-#    depends_on:
-#      - timescaledb
-#      - rabbit1
-#      - rockiot
-#    environment:
-#      - FLOWER_BROKER_API=http://rabbitmngmt:rabbitmngmt_pass@rabbit1:15672/api/
-#      - BROKER_EXCHANGE=amq.topic
-#      - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
-
   rockiot_demo:
     build: rockiot_demo
     container_name: rockiot_demo_device1
