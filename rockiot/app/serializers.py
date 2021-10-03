@@ -97,7 +97,10 @@ class DeviceLogEntrySerializer(serializers.ModelSerializer):
 
     def get_user(self, obj):
         try:
-            return obj.history_user.username
+            if obj.history_user:
+                return obj.history_user.username
+            else:
+                return "/"
         except TypeError:
             return "/"
 
