@@ -11,7 +11,7 @@ COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY . /
-COPY certs /certs
+RUN mkdir -p /certs
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait.sh
 RUN chmod +x /wait.sh

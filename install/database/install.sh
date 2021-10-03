@@ -24,6 +24,8 @@ CREATE DATABASE rock_iot WITH OWNER postgres;
 GRANT ALL PRIVILEGES ON DATABASE rock_iot TO postgres;
 EOF
 
+
+
 systemctl stop postgresql
 
 chmod 644 /etc/postgresql/12/main/postgresql.conf

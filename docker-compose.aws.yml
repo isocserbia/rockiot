@@ -65,6 +65,8 @@ services:
     depends_on:
       - rockiot
       - rockiot_ingest
+    volumes:
+      - $HOME/docker/certificates/:/certs/
     networks:
       - app-tier
 
