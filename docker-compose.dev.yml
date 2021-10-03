@@ -69,37 +69,69 @@ services:
     networks:
       - app-tier
 
-#  pgadmin:
-#    image: biarms/pgadmin4:4.21
-#    container_name: rockiot_pgadmin
-#    ports:
-#      - "5050:5050"
-#    depends_on:
-#      - timescaledb
-#    env_file:
-#      - common.env
-#      - rockiot.dev.env
-#    environment:
-#      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
-#    volumes:
-#      - $HOME/docker/pgadmin/data:/var/lib/pgadmin
-#    networks:
-#      - app-tier
-#
-#  prometheus:
-#    image: prom/prometheus:v2.28.1
-#    container_name: rockiot_prometheus
-#    hostname: prometheus
-#    ports:
-#      - "9090:9090"
-#    volumes:
-#      - $HOME/docker/prometheus/data:/prometheus
-#      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-#    networks:
-#      - app-tier
-#    environment:
-#      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
-#    user: root
+  pgadmin:
+    image: biarms/pgadmin4:4.21
+    container_name: rockiot_pgadmin
+    ports:
+      - "5050:5050"
+    depends_on:
+      - timescaledb
+    env_file:
+      - common.env
+      - rockiot.dev.env
+    environment:
+      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+    volumes:
+      - $HOME/docker/pgadmin/data:/var/lib/pgadmin
+    networks:
+      - app-tier
+
+  postgresexporter:
+    image: quay.io/prometheuscommunity/postgres-exporter
+    container_name: postgres_exporter
+    ports:
+      - "9187:9187"
+    depends_on:
+      - timescaledb
+      - rockiot
+    env_file:
+      - db.env
+      - common.env
+      - rockiot.dev.env
+    environment:
+      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+      - DATA_SOURCE_USER=postgres
+      - DATA_SOURCE_PASS=postgres
+      - DATA_SOURCE_URI=timescaledb:5432/postgres?sslmode=disable
+    networks:
+      - app-tier
+
+  alertmanager:
+    image: bitnami/alertmanager:latest
+    volumes:
+      - ./docker/prometheus/alertmanager.yml:/opt/bitnami/alertmanager/conf/config.yml
+    expose:
+      - "9093:9093"
+    networks:
+      - app-tier
+
+  prometheus:
+    image: prom/prometheus:v2.28.1
+    container_name: rockiot_prometheus
+    hostname: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - $HOME/docker/prometheus/data:/prometheus
+      - ./docker/prometheus/system_rules.yml:/etc/prometheus/system_rules.yml
+      - ./docker/prometheus/rabbitmq_rules.yml:/etc/prometheus/rabbitmq_rules.yml
+      - ./docker/prometheus/postgres_rules.yml:/etc/prometheus/postgres_rules.yml
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - app-tier
+    environment:
+      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+    user: root
 #
 #  loki:
 #    image: grafana/loki:2.3.0

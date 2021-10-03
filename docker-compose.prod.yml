@@ -14,3 +14,20 @@ services:
     env_file:
       - db.prod.env
       - rockiot.prod.env
+
+  postgresexporter:
+    image: quay.io/prometheuscommunity/postgres-exporter
+    container_name: postgres_exporter
+    ports:
+      - "9187:9187"
+    env_file:
+      - common.env
+      - db.prod.env
+      - rockiot.prod.env
+    environment:
+      - WAIT_HOSTS=rockiot:8000
+      - DATA_SOURCE_USER=postgres
+      - DATA_SOURCE_PASS=postgres
+      - DATA_SOURCE_URI=${TS_HOST}:5432/postgres?sslmode=disable
+    networks:
+      - app-tier
