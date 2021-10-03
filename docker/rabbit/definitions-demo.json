@@ -4354,7 +4354,23 @@
       "read": ".*"
     }
   ],
-  "parameters": [],
+  "parameters": [
+    {
+      "value": {
+        "pattern": ".*amqp.*",
+        "definition": {
+          "delivery-limit": 3,
+          "max-length": 10000,
+          "message-ttl": 120000
+        },
+        "priority": 0,
+        "apply-to": "queues"
+      },
+      "vhost": "/",
+      "component": "operator_policy",
+      "name": "default_queue_policy"
+    }
+  ],
   "global_parameters": [
     {
       "name": "cluster_name",
