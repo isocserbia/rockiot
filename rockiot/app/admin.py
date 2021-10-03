@@ -65,7 +65,10 @@ class DeviceLogEntryResource(resources.ModelResource):
         return types.get(entry.history_type, 'Changed')
 
     def dehydrate_object_user(self, entry):
-        return entry.history_user.username
+        if entry.history_user:
+            return entry.history_user.username
+        else:
+            return ""
 
     def dehydrate_object_change(self, entry):
         new_record = entry
