@@ -1,0 +1,65 @@
+groups:
+  - name: postgresql
+    rules:
+      - alert: PostgresqlDown
+        expr: pg_up == 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: Postgresql down (instance {{ $labels.instance }})
+          description: "Postgresql instance is down"
+
+      - alert: PostgresqlTooManyConnections
+        expr: sum by (datname) (pg_stat_activity_count{datname="rock_iot"}) > pg_settings_max_connections * 0.8
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: Postgresql too many connections (instance {{ $labels.instance }})
+          description: "Postgres instance has too many connections ({{ $value }}> 80%) "
+
+      - alert: PostgresqlDeadLocks
+        expr: increase(pg_stat_database_deadlocks{datname="rock_iot"}[1m]) > 5
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: Postgresql dead locks (instance {{ $labels.instance }})
+          description: "Postgres has dead-locks {{ $value }}"
+
+      - alert: PostgresqlSlowQueries
+        expr: pg_slow_queries > 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: Postgresql slow queries (instance {{ $labels.instance }})
+          description: "Postgres executes slow queries {{ $value }}"
+
+      - alert: PostgresqlCommitRateLow
+        expr: rate(pg_stat_database_xact_commit{datname="rock_iot"}[2m]) < 1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: Postgresql commit rate low (instance {{ $labels.instance }})
+          description: "Postgres seems to be processing very few transactions {{ $value }}"
+
+      - alert: PostgresqlHighRateDeadlock
+        expr: increase(postgresql_errors_total{type="deadlock_detected"}[1m]) > 1
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: Postgresql high rate deadlock (instance {{ $labels.instance }})
+          description: "Postgres detected deadlocks {{ $value }}"
+
+      - alert: PostgresqlTooManyLocksAcquired
+        expr: ((sum (pg_locks_count)) / (pg_settings_max_locks_per_transaction * pg_settings_max_connections)) > 0.20
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: Postgresql too many locks acquired (instance {{ $labels.instance }})
+          description: "Too many locks acquired on the database. If this alert happens frequently, we may need to increase the postgres setting max_locks_per_transaction {{ $value }}"

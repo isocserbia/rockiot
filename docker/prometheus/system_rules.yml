@@ -1,0 +1,101 @@
+groups:
+  - name: system
+    rules:
+      - alert: HostOutOfMemory
+        expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: Host out of memory (instance {{ $labels.instance }})
+          description: "Node memory is filling up ({{ $value }}< 10% left)"
+
+      - alert: HostMemoryUnderMemoryPressure
+        expr: rate(node_vmstat_pgmajfault[1m]) > 1000
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: Host memory under memory pressure (instance {{ $labels.instance }})
+          description: "The node is under heavy memory pressure. High rate of major page faults {{ $value }}"
+
+      - alert: HostUnusualNetworkThroughputIn
+        expr: sum by (instance) (rate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 100
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Host unusual network throughput in (instance {{ $labels.instance }})
+          description: "Host network interfaces are probably receiving too much data ({{ $value }}> 100 MB/s)"
+
+      - alert: HostUnusualNetworkThroughputOut
+        expr: sum by (instance) (rate(node_network_transmit_bytes_total[2m])) / 1024 / 1024 > 100
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Host unusual network throughput out (instance {{ $labels.instance }})
+          description: "Host network interfaces are probably sending too much data ({{ $value }}> 100 MB/s)"
+
+      - alert: HostUnusualDiskReadRate
+        expr: sum by (instance) (rate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > 50
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Host unusual disk read rate (instance {{ $labels.instance }})
+          description: "Disk is probably reading too much data ({{ $value }}> 50 MB/s)"
+
+      - alert: HostUnusualDiskWriteRate
+        expr: sum by (instance) (rate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > 50
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: Host unusual disk write rate (instance {{ $labels.instance }})
+          description: "Disk is probably writing too much data ({{ $value }} > 50 MB/s)"
+
+      - alert: HostOutOfDiskSpace
+        expr: (node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: Host out of disk space (instance {{ $labels.instance }})
+          description: "Disk is almost full ({{ $value }} < 10% left)"
+
+      - alert: HostHighCpuLoad
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 80
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: Host high CPU load (instance {{ $labels.instance }})
+          description: "CPU load is {{ $value }} > 80%"
+
+      - alert: HostSwapIsFillingUp
+        expr: (1 - (node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes)) * 100 > 80
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: Host swap is filling up (instance {{ $labels.instance }})
+          description: "Swap is filling up ({{ $value }} > 80%)"
+
+      - alert: HostPhysicalComponentTooHot
+        expr: node_hwmon_temp_celsius > 75
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Host physical component too hot (instance {{ $labels.instance }})
+          description: "Physical hardware component too hot {{ $value }}"
+
+      - alert: HostOomKillDetected
+        expr: increase(node_vmstat_oom_kill[1m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: Host OOM kill detected (instance {{ $labels.instance }})
+          description: "OOM kill detected {{ $value }}"
