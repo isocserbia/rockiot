@@ -45,6 +45,7 @@ Example configuration files `.env.example` are located in the root folder of thi
 #### Dev
 - db.env
 - django.env
+- rockiot.dev.env
 
 #### AWS
 - db.env

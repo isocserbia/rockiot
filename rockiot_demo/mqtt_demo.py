@@ -52,8 +52,8 @@ class MqttDemo(object):
     def establish_connection(self, set_ssl=True):
         """Configures MQTT client and establishes connection with the server"""
         if DEMO_IS_SSL and set_ssl:
-            self.client.tls_set(ca_certs="certs/ca_certificate.pem", certfile="certs/client_certificate.pem",
-                                keyfile="certs/client_key.pem", cert_reqs=ssl.CERT_REQUIRED,
+            self.client.tls_set(ca_certs="/certs/ca_certificate.pem", certfile="/certs/client_certificate.pem",
+                                keyfile="/certs/client_key.pem", cert_reqs=ssl.CERT_REQUIRED,
                                 tls_version=ssl.PROTOCOL_TLSv1_2, ciphers=None)
             # skip verification of server hostname for now
             self.client.tls_insecure_set(True)

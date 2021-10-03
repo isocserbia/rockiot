@@ -10,6 +10,7 @@ services:
     volumes:
       - ./docker/rabbit/rabbitmq_enabled_plugins:/etc/rabbitmq/enabled_plugins
       - $HOME/docker/rabbitmq/data:/var/lib/rabbitmq/mnesia/
+      - $HOME/docker/certificates/:/etc/ssl/certs/
     networks:
       - app-tier
     ports:
