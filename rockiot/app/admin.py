@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from datetime import datetime
 
 from django import forms
@@ -12,7 +13,7 @@ from django_celery_beat.models import SolarSchedule, ClockedSchedule
 from django_celery_results.admin import TaskResultAdmin
 from django_celery_results.models import GroupResult, TaskResult
 from import_export import resources
-from import_export.admin import ExportActionModelAdmin, ImportExportModelAdmin
+from import_export.admin import ImportExportModelAdmin
 from import_export.fields import Field
 from simple_history.admin import SimpleHistoryAdmin
 from simple_history.utils import update_change_reason
@@ -22,6 +23,34 @@ from app.models import Facility, Device, Municipality, PlatformAttribute, Platfo
 from app.system.decorators import action_form
 from app.system.dockerops import DockerOps
 from app.tasks import register_device, activate_device, deactivate_device, terminate_device
+
+DEFAULT_CHOICE_DASH = []
+
+
+class ActionMixin(object):
+
+    def get_action_choices(self, request, default_choices=DEFAULT_CHOICE_DASH):
+        choices = super().get_action_choices(request, default_choices)
+        action_to_group = dict([
+            (action_name, group_name)
+            for group_name, params in self.action_groups_map.items()
+            for action_name in params['actions']
+        ])
+        no_group = []
+        groups = OrderedDict([
+            (group_name, []) for group_name in self.action_groups_map.keys()
+        ])
+        for action_name, action_label in choices:
+            group_name = action_to_group.get(action_name)
+            if not group_name:
+                no_group.append((action_name, action_label))
+            else:
+                groups[group_name].append((action_name, action_label))
+        return no_group + [
+            (self.action_groups_map[group_name]['label'], choices)
+            for group_name, choices in groups.items() if choices
+        ]
+
 
 DeviceLogEntry = apps.get_model("app", "DeviceLogEntry")
 
@@ -254,8 +283,24 @@ class DeviceChangeComment(forms.Form):
 
 
 @admin.register(Device)
-class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
-    actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container']
+class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
+
+    actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container', 'mode_default', 'mode_calibration', 'mode_production']
+
+    action_groups_map = OrderedDict({
+        'Status': {
+            'label': 'Device status',
+            'actions': ('register', 'activate', 'deactivate', 'terminate')
+        },
+        'Mode': {
+            'label': 'Device mode',
+            'actions': ('mode_default', 'mode_calibration', 'mode_production')
+        },
+        'Demo': {
+            'label': 'Device demo',
+            'actions': ('start_container', 'stop_container')
+        },
+    })
 
     @action_form(DeviceChangeComment, initial_value="Status changed to: REGISTERED")
     def register(self, request, queryset, form):
@@ -290,6 +335,30 @@ class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
         for device in queryset:
             terminate_device.apply_async((device.device_id,))
             device.status = Device.TERMINATED
+            device.save()
+            update_change_reason(device, comment)
+
+    @action_form(DeviceChangeComment, initial_value="Mode changed to: DEFAULT")
+    def mode_default(self, request, queryset, form):
+        comment = form.cleaned_data['comment']
+        for device in queryset.exclude(mode=Device.DEFAULT):
+            device.mode = Device.DEFAULT
+            device.save()
+            update_change_reason(device, comment)
+
+    @action_form(DeviceChangeComment, initial_value="Mode changed to: CALIBRATION")
+    def mode_calibration(self, request, queryset, form):
+        comment = form.cleaned_data['comment']
+        for device in queryset.exclude(mode=Device.CALIBRATION):
+            device.mode = Device.CALIBRATION
+            device.save()
+            update_change_reason(device, comment)
+
+    @action_form(DeviceChangeComment, initial_value="Mode changed to: PRODUCTION")
+    def mode_production(self, request, queryset, form):
+        comment = form.cleaned_data['comment']
+        for device in queryset.exclude(mode=Device.PRODUCTION):
+            device.mode = Device.PRODUCTION
             device.save()
             update_change_reason(device, comment)
 
@@ -336,8 +405,11 @@ class DeviceAdmin(OSMGeoAdmin, SimpleHistoryAdmin):
     activate.short_description = "Activate"
     deactivate.short_description = "Deactivate"
     terminate.short_description = "Terminate"
-    start_container.short_description = "Start (demo)"
-    stop_container.short_description = "Stop (demo)"
+    mode_default.short_description = "Reset"
+    mode_calibration.short_description = "Calibrate"
+    mode_production.short_description = "Production"
+    start_container.short_description = "Start"
+    stop_container.short_description = "Stop"
 
     def get_row_actions(self, obj):
         row_actions = []

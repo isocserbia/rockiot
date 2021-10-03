@@ -27,8 +27,8 @@ def action_form(form_class=None, initial_value="Change reason"):
             if 'confirm' in request.POST and request.POST:
                 form = form_class(request.POST)
                 if form.is_valid():
-                    obj_count = func(self, request, queryset, form)
-                    self.message_user(request, '%s objects updated' % obj_count)
+                    func(self, request, queryset, form)
+                    self.message_user(request, 'Action performed')
                     return None
 
             form = form_class(initial={'comment': initial_value})
