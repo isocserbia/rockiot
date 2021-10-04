@@ -1,4 +1,4 @@
-from datetime import timezone
+from datetime import timezone, time
 
 import rest_framework
 from rest_framework.serializers import CharField, SerializerMethodField, DateTimeField
@@ -49,7 +49,7 @@ class DeviceModelSerializer(serializers.ModelSerializer):
         try:
             last_entry = SensorDataRaw.objects.filter(device_id=obj.device_id).first()
             if last_entry and last_entry is not None:
-                return last_entry.time
+                return last_entry.time.strftime('%Y-%m-%dT%H:%M:%S')
             else:
                 return None
         except Exception as ex:
