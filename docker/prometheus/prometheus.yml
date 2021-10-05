@@ -26,9 +26,9 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  - job_name: 'node-exporter'
+  - job_name: 'nodeexporter'
     static_configs:
-      - targets: [ 'node-exporter:9100' ]
+      - targets: [ 'nodeexporter:9100' ]
 
   - job_name: 'rabbitmq-exporter'
     static_configs:
