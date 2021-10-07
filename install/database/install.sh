@@ -30,7 +30,7 @@ chmod 644 /etc/postgresql/12/main/postgresql.conf
 
 timescaledb-tune -yes
 
-echo "host    all             postgres        172.31.46.61/32         trust" >> pg_hba.conf
+echo "host    all             postgres        172.31.46.61/32         trust" >> /etc/postgresql/12/main/pg_hba.conf
 echo "listen_addresses = '*'" >> /etc/postgresql/12/main/postgresql.conf
 echo "shared_preload_libraries = 'timescaledb,pg_cron'" >> /etc/postgresql/12/main/postgresql.conf
 echo "cron.database_name = 'rock_iot'" >> /etc/postgresql/12/main/postgresql.conf
@@ -51,6 +51,8 @@ sudo -su postgres psql --username postgres -d rock_iot -f 007_sensor_data_rollup
 
 cd ../
 rm -fR ./dbscripts
+
+apt-get install -y prometheus-node-exporter prometheus-postgres-exporter
 
 sudo apt-get install pgbackrest
 exec sudo -u postgres /bin/sh - << eof

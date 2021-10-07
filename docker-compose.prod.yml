@@ -15,19 +15,55 @@ services:
       - db.prod.env
       - rockiot.prod.env
 
-  postgresexporter:
-    image: quay.io/prometheuscommunity/postgres-exporter
-    container_name: postgres_exporter
+  nodeexporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    expose:
+      - "9100:9100"
+    networks:
+      - app-tier
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.40.0
+    container_name: cadvisor
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /cgroup:/sys/fs/cgroup:ro
+    restart: unless-stopped
     ports:
-      - "9187:9187"
+      - "8080:8080"
+    networks:
+      - app-tier
+
+  pgadmin:
+    image: biarms/pgadmin4:4.21
+    container_name: rockiot_pgadmin
+    ports:
+      - "5050:5050"
+    depends_on:
+      - timescaledb
     env_file:
       - common.env
-      - db.prod.env
-      - rockiot.prod.env
+      - rockiot.dev.env
     environment:
-      - WAIT_HOSTS=rockiot:8000
-      - DATA_SOURCE_USER=postgres
-      - DATA_SOURCE_PASS=postgres
-      - DATA_SOURCE_URI=${TS_HOST}:5432/postgres?sslmode=disable
+      - WAIT_HOSTS=timescaledb:5432
+    volumes:
+      - $HOME/docker/pgadmin/data:/var/lib/pgadmin
     networks:
       - app-tier
