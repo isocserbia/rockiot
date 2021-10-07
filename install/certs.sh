@@ -1,12 +1,14 @@
 #!/bin/bash
 
 if [[ ! -d ~/docker/certificates ]]; then
+  echo 'Created certificates folder'
   mkdir -p ~/docker/certificates
 fi
 
-if [[ ! -f ~/docker/certificates/ca_certificate.pem ]]; then
+if [[ ! -f ~/docker/certificates/ca_certificate.pem ]];
+then
   echo ''
-  echo '##### Generating new certificates ...'
+  echo 'Generating new certificates ...'
   if [[ ! -d tls-gen ]]; then
     git clone https://github.com/michaelklishin/tls-gen tls-gen
   fi
@@ -16,6 +18,9 @@ if [[ ! -f ~/docker/certificates/ca_certificate.pem ]]; then
   cp result/* ~/docker/certificates/
   cd ../..
   rm -fR tls-gen
-  echo '##### New certificates generated and verified [~/docker/certificates]'
+  echo 'New certificates generated and verified [~/docker/certificates]'
+  echo ''
+else
+  echo 'Using existing certificates'
   echo ''
 fi

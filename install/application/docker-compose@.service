@@ -1,0 +1,14 @@
+[Unit]
+Description=%i service with docker compose
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+WorkingDirectory=/home/ubuntu/%i
+ExecStart=/usr/local/bin/docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+ExecStop=/home/ubuntu/%i/docker_clean.sh
+
+[Install]
+WantedBy=multi-user.target

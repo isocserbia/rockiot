@@ -13,3 +13,5 @@ curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compo
 chmod +x /usr/local/bin/docker-compose
 
 source ../certs.sh
+
+chmod 766 /home/ubuntu/docker/certificates/*
