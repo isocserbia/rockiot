@@ -67,3 +67,8 @@ def clean_and_calibrate(self):
     logger.debug(f'Clean and Calibrate Request: {self.request!r}')
     return pipeline.clean_and_calibrate_dataframe()
 
+
+@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='10/m')
+def zero_config(self, did):
+    logger.debug(f'Device zero-config Request: {self.request!r}')
+    return rabbit_ops.zero_config(did)

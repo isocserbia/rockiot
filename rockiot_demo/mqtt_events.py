@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+from typing import Optional
+
 from dataclasses_json import dataclass_json
 
 
@@ -15,7 +17,8 @@ class DeviceAction:
 @dataclass(init=True)
 class DeviceEvent:
     type: str
-    previous_status: str
-    new_status: str
-    message: str
+    previous_status: Optional[str]
+    new_status: Optional[str]
+    message: Optional[str]
     sent_at: str
+    data: Optional[dict] = None

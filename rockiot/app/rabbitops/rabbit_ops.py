@@ -142,9 +142,9 @@ def deactivate_device(did):
     try:
         return RabbitOps._deactivate_device_internal(did)
     except ValueError as ve:
-        logger.error("Error executing task: " + str(ve))
-    except RuntimeError as re:
-        logger.error("Error executing task", re)
+        logger.error("Error executing task: ", exc_info=ve)
+    except:
+        logger.error("Error executing task", exc_info=True)
     return False
 
 
@@ -153,9 +153,21 @@ def terminate_device(did):
     try:
         return RabbitOps._deactivate_device_internal(did, Device.TERMINATED)
     except ValueError as ve:
-        logger.error("Error executing task: " + str(ve))
-    except RuntimeError as re:
-        logger.error("Error executing task", re)
+        logger.error("Error executing task: ", exc_info=ve)
+    except:
+        logger.error("Error executing task", exc_info=True)
+    return False
+
+
+def zero_config(did):
+
+    logger.info("Sending Device zero-config [device-id: %s]" % did)
+    try:
+        return RabbitOps._zero_config_internal(did)
+    except ValueError as ve:
+        logger.error("Error executing task: ", exc_info=ve)
+    except:
+        logger.error("Error executing task", exc_info=True)
     return False
 
 
@@ -314,3 +326,29 @@ class RabbitOps:
             device.status = current_status
             device.save()
             raise RuntimeError("Device ingest user not " + new_status, ex.args)
+
+    @classmethod
+    def _zero_config_internal(cls, device_id):
+
+        device = Device.objects.get(device_id=device_id)
+        if not device:
+            raise ValueError("Device not found [device-id: %s]" % device_id)
+
+        if not device.can_send_zero_config():
+            raise ValueError("Device zero-config can't be sent [device-id: %s] [status: %s]" % (device_id, device.status))
+
+        try:
+            event = rabbit_events.DeviceEvent.construct_zero_config()
+            PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id,
+                                             event.to_json())
+            device.zero_config_at = datetime.datetime.now()
+            device.save()
+            update_change_reason(device, 'Zero config sent')
+            logger.info("Device zero-config sent [device-id: %s]" % device_id)
+            return True
+
+        except HTTPError as err:
+            raise RuntimeError("Device zero-config not sent", err.args)
+
+        except Exception as ex:
+            raise RuntimeError("Device zero-config not sent", ex.args)
