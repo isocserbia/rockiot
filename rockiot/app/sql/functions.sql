@@ -133,3 +133,11 @@ SET
    pm2_5 = ROUND(((sensor_data_rollup_24h.pm2_5 + excluded.pm2_5)/2)::numeric, 4);
 END;
 $function$;
+
+
+CREATE OR REPLACE FUNCTION rockiot_delete_successful_cron_jobs_executions(since_time timestamptz) RETURNS void LANGUAGE PLPGSQL AS $function$
+BEGIN
+  RAISE NOTICE 'Deleting Successful Job Executions since %', start_time;
+  DELETE FROM cron.job_run_details WHERE start_time <= since_time AND status='succeeded';
+END;
+$function$;

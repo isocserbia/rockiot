@@ -1,7 +1,7 @@
 import datetime
 import json
 import logging
-import sys
+
 from urllib.parse import quote_plus
 
 from django.conf import settings
@@ -160,7 +160,6 @@ def terminate_device(did):
 
 
 def zero_config(did):
-
     logger.info("Sending Device zero-config [device-id: %s]" % did)
     try:
         return RabbitOps._zero_config_internal(did)
@@ -212,7 +211,8 @@ class RabbitOps:
             logger.info("Device initial permissions configured [device-id: %s]" % device_id)
 
             event = rabbit_events.DeviceEvent.construct_status(Device.NEW, Device.REGISTERED, "Device registered")
-            PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id, event.to_json())
+            PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id,
+                                             event.to_json())
             logger.info("Device ingest user registered [device-id: %s]" % device_id)
             return True
 
@@ -262,7 +262,8 @@ class RabbitOps:
 
             event = rabbit_events.DeviceEvent.construct_activation(Device.REGISTERED, Device.ACTIVATED,
                                                                    "Device activated")
-            PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id, event.to_json())
+            PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id,
+                                             event.to_json())
             logger.info("Device ingest user activated [device-id: %s]" % device_id)
             return True
 
@@ -335,15 +336,13 @@ class RabbitOps:
             raise ValueError("Device not found [device-id: %s]" % device_id)
 
         if not device.can_send_zero_config():
-            raise ValueError("Device zero-config can't be sent [device-id: %s] [status: %s]" % (device_id, device.status))
+            raise ValueError(
+                "Device zero-config can't be sent [device-id: %s] [status: %s]" % (device_id, device.status))
 
         try:
             event = rabbit_events.DeviceEvent.construct_zero_config()
             PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id,
                                              event.to_json())
-            device.zero_config_at = datetime.datetime.now()
-            device.save()
-            update_change_reason(device, 'Zero config sent')
             logger.info("Device zero-config sent [device-id: %s]" % device_id)
             return True
 
