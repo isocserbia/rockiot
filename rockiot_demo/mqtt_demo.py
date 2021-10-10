@@ -123,9 +123,11 @@ class MqttDemo(object):
         if event.type == 'activation':
             self.activated = True
             self.activating = False
-            LOGGER.info(self.identified + " device activated [data: %s]" % event)
+            LOGGER.info(self.identified + " received activation event [data: %s]" % event)
         elif event.type == 'status':
             LOGGER.info(self.identified + " received status event [data: %s]" % event)
+        elif event.type == 'device_config':
+            LOGGER.info(self.identified + " received device_config event [data: %s]" % event)
         else:
             LOGGER.warning(self.identified + " received unknown event [data: %s]" % event)
         return True

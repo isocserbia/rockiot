@@ -151,6 +151,7 @@ class Device(models.Model):
     metadata = JSONField(default=default_device_metadata)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    zero_config_at = models.DateTimeField(default=None, null=True, blank=True)
 
     history = HistoricalRecords(
         history_change_reason_field=models.TextField(blank=True, null=True, default="Values changed"),
@@ -183,6 +184,9 @@ class Device(models.Model):
         return self.status != Device.FAULTY
 
     def can_deactivate(self):
+        return self.status == Device.ACTIVATED
+
+    def can_send_zero_config(self):
         return self.status == Device.ACTIVATED
 
     @property

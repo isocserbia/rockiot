@@ -8,6 +8,7 @@ from django.contrib.admin import ModelAdmin
 from django.contrib.gis.admin import OSMGeoAdmin
 from django.db import models
 from django.forms import TextInput, Textarea, ModelForm
+from django.http import HttpResponseRedirect
 from django.utils.html import format_html
 from django_celery_beat.models import SolarSchedule, ClockedSchedule
 from django_celery_results.admin import TaskResultAdmin
@@ -22,7 +23,7 @@ from app.models import Facility, Device, Municipality, PlatformAttribute, Platfo
     FacilityMembership, DeviceConnection, CronJobExecution, CronJob, DeviceCalibrationModel
 from app.system.decorators import action_form
 from app.system.dockerops import DockerOps
-from app.tasks import register_device, activate_device, deactivate_device, terminate_device
+from app.tasks import register_device, activate_device, deactivate_device, terminate_device, zero_config
 
 DEFAULT_CHOICE_DASH = []
 
@@ -288,7 +289,7 @@ class DeviceChangeComment(forms.Form):
 @admin.register(Device)
 class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
 
-    actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container', 'mode_default', 'mode_calibration', 'mode_production']
+    actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container', 'mode_default', 'mode_calibration', 'mode_production', 'zero_config']
 
     action_groups_map = OrderedDict({
         'Status': {
@@ -298,6 +299,10 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
         'Mode': {
             'label': 'Device mode',
             'actions': ('mode_default', 'mode_calibration', 'mode_production')
+        },
+        'Config': {
+            'label': 'Device config',
+            'actions': ('zero_config',)
         },
         'Demo': {
             'label': 'Device demo',
@@ -365,6 +370,11 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
             device.save()
             update_change_reason(device, comment)
 
+    @action_form(DeviceChangeComment, initial_value="Zero config sent")
+    def zero_config(self, request, queryset, form):
+        for device in queryset.filter(status=Device.ACTIVATED):
+            zero_config.apply_async((device.device_id,))
+
     def start_container(self, request, queryset):
         for device in queryset:
             DockerOps.start_demo_container(device)
@@ -411,6 +421,7 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
     mode_default.short_description = "Reset"
     mode_calibration.short_description = "Calibrate"
     mode_production.short_description = "Production"
+    zero_config.short_description = "Zero Config"
     start_container.short_description = "Start"
     stop_container.short_description = "Stop"
 
