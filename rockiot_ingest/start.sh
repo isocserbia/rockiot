@@ -1,3 +1,3 @@
 #!/bin/sh
 
-python rockiot_ingest_consumer.py
+python ingest_consumer.py

@@ -18,6 +18,9 @@ then
   cp result/* ~/docker/certificates/
   cd ../..
   rm -fR tls-gen
+  cd ~/docker/certificates/
+  cat server_certificate.pem server_key.pem > certificate.pem
+  chmod 755 *
   echo 'New certificates generated and verified [~/docker/certificates]'
   echo ''
 else

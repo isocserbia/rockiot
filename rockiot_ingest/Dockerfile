@@ -12,7 +12,7 @@ RUN pip install -r requirements.txt
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait.sh
 ADD start.sh /start.sh
-ADD rockiot_ingest_consumer.py /
+ADD ingest_consumer.py /
 
 RUN chmod +x /wait.sh
 RUN chmod +x /start.sh

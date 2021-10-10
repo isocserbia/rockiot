@@ -37,7 +37,7 @@ def check_system_health():
         logger.info("Health checks local-alarms response: %s" % resp_alarms_local)
         return json.dumps(responses)
     except Exception as ex:
-        logger.exception("Unknown exception during connection check", str(ex))
+        logger.exception("Unknown exception during connection check", exc_info=ex)
         return json.dump({})
 
 
@@ -104,8 +104,8 @@ def register_device(did):
         return RabbitOps._register_device_internal(did)
     except ValueError as ve:
         logger.error("Error executing task: " + str(ve))
-    except:
-        logger.error("Error executing task", sys.exc_info())
+    except RuntimeError as re:
+        logger.error("Error executing task", re)
     return False
 
 
@@ -114,9 +114,9 @@ def activate_device(did):
     try:
         return RabbitOps._activate_device_internal(did)
     except ValueError as ve:
-        logger.error("Error executing task: " + str(ve))
+        logger.error("Error executing task: ", exc_info=ve)
     except:
-        logger.error("Error executing task", sys.exc_info())
+        logger.error("Error executing task", exc_info=True)
     return False
 
 
@@ -131,9 +131,9 @@ def handle_activation_request(did):
         else:
             raise ValueError("Device can't be activated remotely[device-id: %s]" % did)
     except ValueError as ve:
-        logger.error("Error executing task: " + str(ve))
+        logger.error("Error executing task: ", exc_info=ve)
     except:
-        logger.error("Error executing task", sys.exc_info())
+        logger.error("Error executing task", exc_info=True)
     return False
 
 
