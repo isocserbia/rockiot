@@ -45,7 +45,6 @@ sleep 3
 
 sudo -su postgres psql --username postgres -d rock_iot -f 002_sensor_data.sql
 sudo -su postgres psql --username postgres -d rock_iot -f 003_views.sql
-sudo -su postgres psql --username postgres -d rock_iot -f 004_views.sql
 sudo -su postgres psql --username postgres -d rock_iot -f 005_grafana.sql
 sudo -su postgres psql --username postgres -d rock_iot -f 007_sensor_data_rollup_tables.sql
 

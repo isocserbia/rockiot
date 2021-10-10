@@ -369,7 +369,6 @@ class PikaConsumer(object):
                 sql = """INSERT INTO sensor_data_raw(time, device_id, client_id, data) VALUES (%s, %s, %s, %s);"""
                 cursor = conn.cursor()
                 cursor.execute(sql, (payload["sent_at"], device_id, payload["client_id"], json.dumps(payload_data),))
-                LOGGER.debug("Data inserted to db")
                 cursor.close()
                 conn.commit()
                 LOGGER.debug("Data committed to db")
@@ -378,27 +377,6 @@ class PikaConsumer(object):
                 LOGGER.error("Fatal error inserting data into db", exc_info=True)
                 conn.rollback()
                 return False
-
-    # def write_to_db(self, device_id, message):
-    #     with self.get_connection() as conn:
-    #         try:
-    #             payload = json.loads(message)
-    #             payload_data = {k.lower(): v for k, v in payload["data"].items()}
-    #             sql = """INSERT INTO sensor_data(time, device_id, client_id, temperature, humidity, NO2, SO2, PM1, PM10, PM2_5)
-    #                                      VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"""
-    #             data = (
-    #                 payload["sent_at"], device_id, payload["client_id"], payload_data.get("temperature"),
-    #                 payload_data.get("humidity"), payload_data.get("no2"), payload_data.get("so2"),
-    #                 payload_data.get("pm1"), payload_data.get("pm10"), payload_data.get("pm2_5"))
-    #             cursor = conn.cursor()
-    #             cursor.execute(sql, data)
-    #             LOGGER.debug("Data inserted to db")
-    #             cursor.close()
-    #             conn.commit()
-    #             LOGGER.debug("Data committed to db")
-    #         except:
-    #             LOGGER.error("Fatal error inserting data into db", exc_info=True)
-    #             conn.rollback()
 
 
 class ReconnectingPikaConsumer(object):
