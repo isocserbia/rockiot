@@ -372,8 +372,12 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
 
     @action_form(DeviceChangeComment, initial_value="Zero config sent")
     def zero_config(self, request, queryset, form):
+        comment = form.cleaned_data['comment']
         for device in queryset.filter(status=Device.ACTIVATED):
             zero_config.apply_async((device.device_id,))
+            device.zero_config_at = datetime.now()
+            device.save()
+            update_change_reason(device, comment)
 
     def start_container(self, request, queryset):
         for device in queryset:
