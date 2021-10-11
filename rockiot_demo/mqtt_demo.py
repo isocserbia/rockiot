@@ -116,7 +116,7 @@ class MqttDemo(object):
         Otherwise it simply logs the received event.
         """
         payload_decode = message.payload.decode('utf-8')
-        LOGGER.info(f"{self.identified}: message on topic: {message.topic}")
+        LOGGER.info(f"{self.identified} message on topic: {message.topic}")
         event = None
         try:
             event = DeviceEvent.from_json(payload_decode)
