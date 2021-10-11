@@ -10,7 +10,7 @@ from pyrabbit2 import api
 from requests import HTTPError
 from simple_history.utils import update_change_reason
 
-from app.models import Device, DeviceConnection
+from app.models import Device, DeviceConnection, PlatformAttribute
 from app.rabbitops import rabbit_events
 from app.rabbitops.rabbit_paho_publisher import PahoPublisher
 
@@ -163,6 +163,45 @@ def zero_config(did):
     logger.info("Sending Device zero-config [device-id: %s]" % did)
     try:
         return RabbitOps._zero_config_internal(did)
+    except ValueError as ve:
+        logger.error("Error executing task: ", exc_info=ve)
+    except:
+        logger.error("Error executing task", exc_info=True)
+    return False
+
+
+def save_device_metadata(did, metadata):
+    logger.info("Saving Device metadata [device-id: %s]" % did)
+    try:
+        device = Device.objects.get(device_id=did)
+        if not device:
+            raise ValueError("Device not found [device-id: %s]" % did)
+        device.metadata = metadata
+        device.save()
+        update_change_reason(device, 'Metadata saved (by device)')
+        return True
+    except ValueError as ve:
+        logger.error("Error executing task: ", exc_info=ve)
+    except:
+        logger.error("Error executing task", exc_info=True)
+    return False
+
+
+def send_device_metadata(did):
+    logger.info("Sending Device metadata [device-id: %s]" % did)
+    try:
+        return RabbitOps._send_device_metadata_internal(did)
+    except ValueError as ve:
+        logger.error("Error executing task: ", exc_info=ve)
+    except:
+        logger.error("Error executing task", exc_info=True)
+    return False
+
+
+def send_platform_attributes():
+    logger.info("Sending Platform Attributes")
+    try:
+        return RabbitOps._send_platform_attributes_internal()
     except ValueError as ve:
         logger.error("Error executing task: ", exc_info=ve)
     except:
@@ -351,3 +390,44 @@ class RabbitOps:
 
         except Exception as ex:
             raise RuntimeError("Device zero-config not sent", ex.args)
+
+    @classmethod
+    def _send_device_metadata_internal(cls, device_id):
+
+        device = Device.objects.get(device_id=device_id)
+        if not device:
+            raise ValueError("Device not found [device-id: %s]" % device_id)
+
+        try:
+            event = rabbit_events.DeviceEvent.construct_device_metadata_changed(device.metadata)
+            PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id,
+                                             event.to_json())
+            logger.info("Device metadata sent [device-id: %s]" % device_id)
+            return True
+
+        except HTTPError as err:
+            raise RuntimeError("Device metadata not sent", err.args)
+
+        except Exception as ex:
+            raise RuntimeError("Device metadata not sent", ex.args)
+        return False
+
+    @classmethod
+    def _send_platform_attributes_internal(cls):
+
+        data = dict()
+        for e in list(PlatformAttribute.objects.values_list('name', 'value')):
+            data[e[0]] = e[1]
+
+        try:
+            event = rabbit_events.PlatformEvent.construct_platform_attributes(data)
+            PahoPublisher.Instance().publish((config["BROKER_ATTRIBUTES_TOPIC"]), "all", event.to_json())
+            logger.info("Platform attributes sent")
+            return True
+
+        except HTTPError as err:
+            raise RuntimeError("Platform attributes not sent", err.args)
+
+        except Exception as ex:
+            raise RuntimeError("Platform attributes not sent", ex.args)
+        return False

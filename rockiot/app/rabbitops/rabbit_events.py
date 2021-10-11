@@ -1,16 +1,20 @@
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Optional
 
 from dataclasses_json import dataclass_json
 
 
 @dataclass_json
 @dataclass(init=True)
-class AttributesEvent:
-    name: str
-    old_value: str
-    new_value: str
+class PlatformEvent:
+    type: str
     sent_at: str
+    attributes: Optional[dict] = None
+
+    @classmethod
+    def construct_platform_attributes(cls, attributes):
+        return PlatformEvent("platform_attributes", datetime.utcnow().isoformat(), attributes)
 
 
 @dataclass_json
@@ -20,13 +24,7 @@ class DeviceAction:
     client_id: str
     correlation_id: str
     sent_at: str
-
-
-@dataclass_json
-@dataclass(init=True)
-class DeviceEventData:
-    name: str
-    value: str
+    data: Optional[dict] = None
 
 
 @dataclass_json
@@ -37,7 +35,7 @@ class DeviceEvent:
     message: str
     sent_at: str
     type: str = "status"
-    data: DeviceEventData = None
+    data: Optional[dict] = None
 
     @classmethod
     def construct_status(cls, previous_status, new_status, message):
@@ -52,3 +50,7 @@ class DeviceEvent:
     @classmethod
     def construct_zero_config(cls):
         return DeviceEvent(None, None, None, datetime.utcnow().isoformat(), "device_config", {"zero_sensor": True})
+
+    @classmethod
+    def construct_device_metadata_changed(cls, metadata):
+        return DeviceEvent(None, None, None, datetime.utcnow().isoformat(), "device_metadata", metadata)

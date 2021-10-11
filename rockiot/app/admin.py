@@ -23,7 +23,8 @@ from app.models import Facility, Device, Municipality, PlatformAttribute, Platfo
     FacilityMembership, DeviceConnection, CronJobExecution, CronJob, DeviceCalibrationModel
 from app.system.decorators import action_form
 from app.system.dockerops import DockerOps
-from app.tasks import register_device, activate_device, deactivate_device, terminate_device, zero_config
+from app.tasks import register_device, activate_device, deactivate_device, terminate_device, zero_config, \
+    send_device_metadata, send_platform_attributes
 
 DEFAULT_CHOICE_DASH = []
 
@@ -75,7 +76,7 @@ class DeviceLogEntryResource(resources.ModelResource):
         new_record = entry
         old_record = new_record.prev_record
         if new_record and old_record:
-            model_delta = new_record.diff_against(old_record, excluded_fields=["metadata", "history_change"])
+            model_delta = new_record.diff_against(old_record, excluded_fields=["history_change"])
             return "%s" % [f"{c.field} ({c.old} -> {c.new})" for c in model_delta.changes]
         else:
             return None
@@ -240,7 +241,7 @@ class DeviceLogEntryAdmin(ImportExportModelAdmin):
         new_record = obj
         old_record = new_record.prev_record
         if new_record and old_record:
-            model_delta = new_record.diff_against(old_record, excluded_fields=["metadata", "history_change"])
+            model_delta = new_record.diff_against(old_record, excluded_fields=["history_change"])
             return "%s" % [f"{c.field} ({c.old} -> {c.new})" for c in model_delta.changes]
         else:
             return "[]"
@@ -467,6 +468,7 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
         return actions
 
     def save_model(self, request, obj, form, change):
+        metadata_changed = False
         if change:
             reason = ""
             if 'mode' in form.changed_data:
@@ -479,11 +481,20 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
                     if len(reason) > 0:
                         reason += "\n"
                     reason += f"Location changed to: {form.cleaned_data['facility']}"
+            if 'metadata' in form.changed_data:
+                initial = form.get_initial_for_field(form.fields['metadata'], 'metadata')
+                if obj.metadata != initial:
+                    if len(reason) > 0:
+                        reason += "\n"
+                    reason += f"Metadata changed"
+                    metadata_changed = True
             if len(reason) == 0:
                 reason = "Values changed"
         super(DeviceAdmin, self).save_model(request, obj, form, change)
         if change:
             update_change_reason(obj, reason)
+            if metadata_changed:
+                send_device_metadata.apply_async((obj.device_id,))
 
 
 class CronJobExecutionAdmin(admin.TabularInline):
@@ -552,7 +563,7 @@ class CronJobAdmin(ModelAdmin):
         return False
 
 
-class AttributesAdminInline(admin.TabularInline):
+class PlatformAttributeAdminInline(admin.TabularInline):
     model = PlatformAttribute
     can_delete = True
     extra = 0
@@ -569,7 +580,7 @@ class PlatformAdmin(ModelAdmin):
     fieldsets = [
         (None, {'fields': ['name', 'description']}),
     ]
-    inlines = [AttributesAdminInline, ]
+    inlines = [PlatformAttributeAdminInline, ]
     formfield_overrides = get_form_field_overrides()
 
     def has_add_permission(self, request):
@@ -585,6 +596,11 @@ class PlatformAdmin(ModelAdmin):
         if 'delete_selected' in actions:
             del actions['delete_selected']
         return actions
+
+    def save_model(self, request, obj, form, change):
+        super(PlatformAdmin, self).save_model(request, obj, form, change)
+        if change:
+            send_platform_attributes.apply_async()
 
 
 admin.site.unregister(SolarSchedule)

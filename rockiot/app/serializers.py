@@ -88,7 +88,7 @@ class DeviceLogEntrySerializer(serializers.ModelSerializer):
             new_record = obj
             old_record = new_record.prev_record
             if new_record and old_record:
-                model_delta = new_record.diff_against(old_record, excluded_fields=["metadata", "history_change"])
+                model_delta = new_record.diff_against(old_record, excluded_fields=["history_change"])
                 return "%s" % [f"{c.field} ({c.old} -> {c.new})" for c in model_delta.changes]
             else:
                 return None

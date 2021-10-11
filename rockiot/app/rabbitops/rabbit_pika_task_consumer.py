@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=C0111,C0103,R0205
-import json
 import functools
 import logging
-import sys
 import threading
 import time
 
@@ -11,7 +9,7 @@ import pika
 from django.conf import settings
 
 from app.rabbitops.rabbit_events import DeviceAction
-from app.tasks import handle_activation_request
+from app.tasks import handle_activation_request, save_device_metadata
 
 config = settings.BROKER_CONFIG
 LOGGER = logging.getLogger(__name__)
@@ -244,10 +242,17 @@ class RabbitPikaTaskConsumer(object):
                     (basic_deliver.delivery_tag, properties.app_id, body))
 
         try:
-            event = DeviceAction.from_json(body)
-            handle_activation_request.apply_async((event.correlation_id,))
+            action = DeviceAction.from_json(body)
+            if not action or action is None:
+                LOGGER.error("Failed parsing device action")
+            else:
+                if action.type == "activation_request":
+                    handle_activation_request.apply_async((action.correlation_id,))
+                elif action.type == "device_metadata":
+                    save_device_metadata.apply_async((action.correlation_id, action.data))
+
         except:
-            LOGGER.error("Failed handling task message", sys.exc_info())
+            LOGGER.error("Failed handling device action", exc_info=True)
 
         self.acknowledge_message(basic_deliver.delivery_tag)
 

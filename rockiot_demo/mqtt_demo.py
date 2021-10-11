@@ -10,7 +10,7 @@ from time import sleep
 import paho.mqtt.client as paho
 
 import mqtt_demo_readings
-from mqtt_events import DeviceAction, DeviceEvent
+from mqtt_events import DeviceAction, DeviceEvent, PlatformEvent
 
 BROKER_HOST = os.getenv("BROKER_HOST", default='localhost')
 BROKER_MQTT_PORT = int(os.getenv("BROKER_MQTT_PORT", default="1883"))
@@ -83,6 +83,7 @@ class MqttDemo(object):
             LOGGER.info(self.identified + " connected with result: " + paho.connack_string(rc))
             self.client.subscribe(BROKER_ATTRIBUTES_TOPIC)
             self.client.subscribe(BROKER_DEVICE_EVENTS_TOPIC % DEVICE_ID)
+            self.publish_metadata_action()
             self.connected = True
         else:
             LOGGER.warning(self.identified + " failed connecting with result: " + paho.connack_string(rc))
@@ -115,10 +116,17 @@ class MqttDemo(object):
         Otherwise it simply logs the received event.
         """
         payload_decode = message.payload.decode('utf-8')
-        LOGGER.info(self.identified + " received: " + payload_decode)
-        event = DeviceEvent.from_json(payload_decode)
+        LOGGER.info(f"{self.identified}: message on topic: {message.topic}")
+        event = None
+        try:
+            event = DeviceEvent.from_json(payload_decode)
+        except:
+            try:
+                event = PlatformEvent.from_json(payload_decode)
+            except:
+                LOGGER.debug(self.identified + " can parse mqtt event")
         if not event:
-            LOGGER.error(self.identified + " can't parse mqtt event")
+            LOGGER.error(self.identified + " unrecognized mqtt event")
             return
         if event.type == 'activation':
             self.activated = True
@@ -128,6 +136,10 @@ class MqttDemo(object):
             LOGGER.info(self.identified + " received status event [data: %s]" % event)
         elif event.type == 'device_config':
             LOGGER.info(self.identified + " received device_config event [data: %s]" % event)
+        elif event.type == 'device_metadata':
+            LOGGER.info(self.identified + " received device_metadata event [data: %s]" % event)
+        elif event.type == 'platform_attributes':
+            LOGGER.info(self.identified + " received platform_attributes event [data: %s]" % event)
         else:
             LOGGER.warning(self.identified + " received unknown event [data: %s]" % event)
         return True
@@ -142,6 +154,13 @@ class MqttDemo(object):
         else:
             LOGGER.critical("%s client disconnected" % self.identified)
             sys.exit(0)
+
+    def publish_metadata_action(self):
+        """Publishes device metadata to actions topic"""
+        message = DeviceAction("device_metadata", self.client_id, DEVICE_ID, datetime.utcnow().isoformat(), {"key": "value"}).to_json()
+        self.client.publish(topic=BROKER_DEVICE_ACTIONS_TOPIC, payload=message)
+        LOGGER.info("%s device_metadata sent to topic %s: %s" % (self.identified, BROKER_DEVICE_ACTIONS_TOPIC, message))
+        self.activating = True
 
     def publish_activate_action(self):
         """Publishes activation request to actions topic"""

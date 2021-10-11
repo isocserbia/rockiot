@@ -56,6 +56,24 @@ def terminate_device(self, did):
     return rabbit_ops.terminate_device(did)
 
 
+@app.task(bind=True, ignore_result=True, max_retries=3, rate_limit='30/m')
+def save_device_metadata(self, did, metadata):
+    logger.debug(f'Handle Save Device Metadata Request: {self.request!r}')
+    return rabbit_ops.save_device_metadata(did, metadata)
+
+
+@app.task(bind=True, ignore_result=True, max_retries=3, rate_limit='30/m')
+def send_device_metadata(self, did):
+    logger.debug(f'Handle Send Device Metadata Request: {self.request!r}')
+    return rabbit_ops.send_device_metadata(did)
+
+
+@app.task(bind=True, ignore_result=True, max_retries=3, rate_limit='30/m')
+def send_platform_attributes(self):
+    logger.debug(f'Handle Send Platform Attributes Request: {self.request!r}')
+    return rabbit_ops.send_platform_attributes()
+
+
 @app.task(bind=True, ignore_result=False, max_retries=3)
 def export_raw_data_to_csv(self, dat=date.today().isoformat()):
     logger.debug(f'Export raw data request: {self.request!r}')
