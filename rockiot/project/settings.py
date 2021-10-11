@@ -230,7 +230,7 @@ ROCKIOT_CONFIG = {
     'FAULT_DIFF_PERC_SMOKE': int(config('FAULT_DIFF_PERC_SMOKE', default='100')),
     'FAULT_DIFF_PERC_CO': int(config('FAULT_DIFF_PERC_CO', default='100')),
     'FAULT_SECONDS_SINCE_LAST_ENTRY': int(config('FAULT_SECONDS_SINCE_LAST_ENTRY', default='300')),
-    'PIPELINE_ALLOWED_DELAY_MINUTES': int(config('PIPELINE_ALLOWED_DELAY_MINUTES', default='1')),
+    'PIPELINE_ALLOWED_DELAY_MINUTES': int(config('PIPELINE_ALLOWED_DELAY_MINUTES', default='10')),
 }
 
 # Internationalization
