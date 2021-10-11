@@ -251,7 +251,7 @@ class RabbitOps:
 
             event = rabbit_events.DeviceEvent.construct_status(Device.NEW, Device.REGISTERED, "Device registered")
             PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id,
-                                             event.to_json())
+                                             event.to_json(allow_nan=False))
             logger.info("Device ingest user registered [device-id: %s]" % device_id)
             return True
 
@@ -302,7 +302,7 @@ class RabbitOps:
             event = rabbit_events.DeviceEvent.construct_activation(Device.REGISTERED, Device.ACTIVATED,
                                                                    "Device activated")
             PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id,
-                                             event.to_json())
+                                             event.to_json(allow_nan=False))
             logger.info("Device ingest user activated [device-id: %s]" % device_id)
             return True
 
@@ -381,7 +381,7 @@ class RabbitOps:
         try:
             event = rabbit_events.DeviceEvent.construct_zero_config()
             PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id,
-                                             event.to_json())
+                                             event.to_json(allow_nan=False))
             logger.info("Device zero-config sent [device-id: %s]" % device_id)
             return True
 
@@ -401,7 +401,7 @@ class RabbitOps:
         try:
             event = rabbit_events.DeviceEvent.construct_device_metadata_changed(device.metadata)
             PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id,
-                                             event.to_json())
+                                             event.to_json(allow_nan=False))
             logger.info("Device metadata sent [device-id: %s]" % device_id)
             return True
 
@@ -421,7 +421,7 @@ class RabbitOps:
 
         try:
             event = rabbit_events.PlatformEvent.construct_platform_attributes(data)
-            PahoPublisher.Instance().publish((config["BROKER_ATTRIBUTES_TOPIC"]), "all", event.to_json())
+            PahoPublisher.Instance().publish((config["BROKER_ATTRIBUTES_TOPIC"]), "all", event.to_json(allow_nan=False))
             logger.info("Platform attributes sent")
             return True
 
