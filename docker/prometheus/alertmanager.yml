@@ -4,13 +4,13 @@ global:
 route:
   group_wait: 10s
   group_interval: 10s
-  repeat_interval: 5m
+  repeat_interval: 10m
   receiver: 'slack-notifications'
   routes:
     - match:
         severity: critical
       receiver: 'slack-notifications'
-      repeat_interval: 1m
+      repeat_interval: 5m
 
 receivers:
 - name: 'slack-notifications'

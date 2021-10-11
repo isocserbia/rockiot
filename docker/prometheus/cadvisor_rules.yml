@@ -2,7 +2,7 @@ groups:
   - name: docker
     rules:
       - alert: ContainerKilled
-        expr: time() - container_last_seen > 60
+        expr: time() - container_last_seen{container_label_com_docker_compose_project = "rockiot_project"} > 60
         for: 0m
         labels:
           severity: warning
