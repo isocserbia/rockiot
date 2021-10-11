@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import collections
-import datetime
 import json
 import logging
 
@@ -11,7 +10,7 @@ from django.conf import settings
 config = settings.DATABASES["default"]
 logger = logging.getLogger(__name__)
 
-allowed_delay = settings.ROCKIOT_CONFIG['PIPELINE_ALLOWED_DELAY_MINUTES']
+batch_size = settings.ROCKIOT_CONFIG['PIPELINE_BATCH_SIZE']
 
 
 def clean_and_calibrate_dataframe():
@@ -42,18 +41,15 @@ def clean_and_calibrate_dataframe():
         db_cursor.close()
 
         db_cursor = db_conn.cursor()
-        db_cursor.execute("SELECT max(time) FROM sensor_data")
-        max_date = db_cursor.fetchone()
-        if not max_date or max_date is None or max_date[0] is None:
-            max_date = datetime.datetime.now() - datetime.timedelta(days=365)
-        else:
-            max_date = max_date[0] - datetime.timedelta(minutes=allowed_delay)
-        db_cursor.close()
+        db_cursor.execute("""
+            SELECT sdr.* FROM sensor_data_raw sdr
+            LEFT JOIN app_device ad USING(device_id)
+            LEFT JOIN sensor_data sd USING(device_id, time)
+            WHERE ad.device_id IS NOT NULL
+            AND sd.device_id IS NULL
+            ORDER BY time ASC
+            LIMIT %s;""", (batch_size, ))
 
-        logger.info(f"CC: found max date: {max_date}")
-
-        db_cursor = db_conn.cursor()
-        db_cursor.execute("SELECT * from sensor_data_raw WHERE time >= %s", (max_date,))
         raw_records = db_cursor.fetchall()
         clean_records = []
         for row in raw_records:
@@ -79,9 +75,9 @@ def clean_and_calibrate_dataframe():
                        """INSERT INTO sensor_data (time, device_id, client_id, temperature, humidity, no2, so2, pm1, pm10, pm2_5) 
                         VALUES %s ON CONFLICT (device_id, time) DO NOTHING;
                         """,
-                       clean_records)
+                       clean_records, page_size=batch_size)
 
-        logger.info(f"CC: Inserted {len(clean_records)} clean records")
+        logger.info(f"CC: Inserted {db_cursor.rowcount} clean records")
         db_cursor.close()
         db_conn.commit()
         response["records"] = len(clean_records)

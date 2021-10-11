@@ -196,6 +196,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 BROKER_CONFIG = {
+    'USER_HOME': config('USER_HOME', default='~/'),
     'RABBITMNGMT_USER': config('RABBITMNGMT_USER', default='rabbitmngmt'),
     'RABBITMNGMT_PASS': config('RABBITMNGMT_PASS', default='rabbitmngmt_pass'),
     'AMQPTASKPRODUCER_USER': config('AMQPTASKPRODUCER_USER', default='amqptaskproducer'),
@@ -230,7 +231,7 @@ ROCKIOT_CONFIG = {
     'FAULT_DIFF_PERC_SMOKE': int(config('FAULT_DIFF_PERC_SMOKE', default='100')),
     'FAULT_DIFF_PERC_CO': int(config('FAULT_DIFF_PERC_CO', default='100')),
     'FAULT_SECONDS_SINCE_LAST_ENTRY': int(config('FAULT_SECONDS_SINCE_LAST_ENTRY', default='300')),
-    'PIPELINE_ALLOWED_DELAY_MINUTES': int(config('PIPELINE_ALLOWED_DELAY_MINUTES', default='10')),
+    'PIPELINE_BATCH_SIZE': int(config('PIPELINE_BATCH_SIZE', default='1000')),
 }
 
 # Internationalization
