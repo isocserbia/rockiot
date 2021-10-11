@@ -14,7 +14,8 @@ logger = logging.getLogger(__name__)
 
 ROCKIOT_DEMO_CONTAINER = 'rockiot_demo'
 ROCKIOT_DEMO_IMAGE = 'rockiot_project_rockiot_demo'
-
+ROCKIOT_NETWORK = "rockiot_project_app-tier"
+ROCKIOT_VOLUMES = [config['USER_HOME'] + '/docker/certificates/:/certs/', ]
 
 class DockerOps:
     __lock = threading.Lock()
@@ -43,10 +44,12 @@ class DockerOps:
                     container.start()
                     logger.info(f"Device {device.device_id} container started [name: {container.name}]")
             else:
-                container = cls.__client.containers.run(image=ROCKIOT_DEMO_IMAGE, name=name, command="/start.sh",
-                                                        detach=True, environment=env, network="rockiot_project_app-tier")
-                logger.info(f"Device {device.device_id} container started [name: {container.name}]")
 
+                container = cls.__client.containers.run(image=ROCKIOT_DEMO_IMAGE, name=name, command="/start.sh",
+                                                        detach=True, environment=env,
+                                                        network=ROCKIOT_NETWORK,
+                                                        volumes=ROCKIOT_VOLUMES)
+                logger.info(f"Device {device.device_id} container started [name: {container.name}]")
             return True
 
     @classmethod
