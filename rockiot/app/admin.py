@@ -23,7 +23,7 @@ from app.models import Facility, Device, Municipality, PlatformAttribute, Platfo
 from app.system.decorators import action_form
 from app.system.dockerops import DockerOps
 from app.tasks import register_device, activate_device, deactivate_device, terminate_device, zero_config, \
-    send_device_metadata, send_platform_attributes
+    send_device_metadata, send_platform_attributes, erase_wifi_credentials
 
 DEFAULT_CHOICE_DASH = []
 
@@ -289,7 +289,7 @@ class DeviceChangeComment(forms.Form):
 @admin.register(Device)
 class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
 
-    actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container', 'mode_default', 'mode_calibration', 'mode_production', 'zero_config']
+    actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container', 'mode_default', 'mode_calibration', 'mode_production', 'zero_config', 'erase_wifi_credentials']
 
     action_groups_map = OrderedDict({
         'Status': {
@@ -302,7 +302,7 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
         },
         'Config': {
             'label': 'Device config',
-            'actions': ('zero_config',)
+            'actions': ('zero_config', 'erase_wifi_credentials')
         },
         'Demo': {
             'label': 'Device demo',
@@ -379,6 +379,15 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
             device.save()
             update_change_reason(device, comment)
 
+    @action_form(DeviceChangeComment, initial_value="Erase Wifi credentials sent")
+    def erase_wifi_credentials(self, request, queryset, form):
+        comment = form.cleaned_data['comment']
+        for device in queryset.filter(status=Device.ACTIVATED):
+            erase_wifi_credentials.apply_async((device.device_id,))
+            device.erase_wifi_credentials_at = datetime.now()  # TODO: check millis
+            device.save()
+            update_change_reason(device, comment)
+
     def start_container(self, request, queryset):
         success = False
         for device in queryset:
@@ -432,6 +441,7 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
     mode_calibration.short_description = "Calibrate"
     mode_production.short_description = "Production"
     zero_config.short_description = "Zero Config"
+    erase_wifi_credentials.short_description = "Erase Wifi Credentials"
     start_container.short_description = "Start"
     stop_container.short_description = "Stop"
 

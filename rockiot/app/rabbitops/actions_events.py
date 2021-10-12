@@ -52,5 +52,9 @@ class DeviceEvent:
         return DeviceEvent(None, None, None, datetime.utcnow().isoformat(), "device_config", {"zero_sensor": True})
 
     @classmethod
+    def construct_erase_wifi_credentials(cls):
+        return DeviceEvent(None, None, None, datetime.utcnow().isoformat(), "device_config", {"erase_wifi_credentials": True})
+
+    @classmethod
     def construct_device_metadata_changed(cls, metadata):
         return DeviceEvent(None, None, None, datetime.utcnow().isoformat(), "device_metadata", metadata)
