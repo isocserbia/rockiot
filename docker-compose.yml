@@ -42,6 +42,7 @@ services:
     ports:
       - 8000:8000
     environment:
+      - DEBUG=False
       - BROKER_EXCHANGE=amq.topic
       - WAIT_HOSTS=rabbit1:8883,rabbit1:15672
 
@@ -49,7 +50,7 @@ services:
     <<: *rockiotfunction
     container_name: rockiot_app_worker
     command: >
-      sh -c "/wait.sh && celery -A tasks.celery worker -Q normal -n normal@%h -l info -c 2 -E"
+      sh -c "/wait.sh && celery -A tasks.celery worker -Q normal -n normal@%h -l info -c 4 -E"
     ports: [ ]
     depends_on:
       - rabbit1

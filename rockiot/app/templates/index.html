@@ -1,17 +1,34 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>RockIOT platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+        body {
+          background: linear-gradient(180deg, #44B78B 20%, rgba(177, 234, 254, 0) 93.65%) no-repeat;
+          color: #000000;
+        }
+        h1 {
+          padding-left: 10px;
+        }
+        a {
+          padding-left: 10px;
+          padding-right: 5px;
+        }
+    </style>
 </head>
 <body>
-
-<h1>Welcome to RockIOT platform project!</h1>
-
-<a href="/admin/">Admin</a>
-<a href="/swagger/">API</a>
-
-<h2>Coming soon ...</h2>
-
+  <h1>RockIOT</h1>
+  <h3><a href="http://decazavazduh.rs">Deca za vazduh</a></h3>
+  <div>
+      <a href="/admin/">Admin site</a>
+      <a href="/swagger/">REST API</a>
+      <a href="https://rockiot-ingest-apidocs.s3.eu-central-1.amazonaws.com/index.html">MQTT API</a>
+      <a href="http://3.69.51.254:5050/">DB manager</a>
+      <a href="http://3.69.51.254:3000/grafana">Grafana</a>
+      <a href="http://3.69.51.254:9090/alerts">Alerts</a>
+  </div>
 </body>
 </html>

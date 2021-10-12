@@ -1,16 +1,16 @@
 from django.urls import path
 
-from app.views import FacilityMapView, FacilityList, MyTokenObtainPairView, FacilityView, \
+from app.views import FacilityList, MyTokenObtainPairView, FacilityView, \
     SensorDataRawList, SensorDataLastValuesList, DevicesList, \
     MunicipalitySensorsSummary, FacilitySensorsSummary, DeviceSensorsSummary, MunicipalityList, MunicipalityView, \
-    MyTokenRefreshView, CsvExportView, SensorDataList, DeviceChangeLogList
+    MyTokenRefreshView, CsvExportView, SensorDataList, DeviceChangeLogList, IndexView
 
 app_name = "app"
 
 urlpatterns = [
-    path("map/", FacilityMapView.as_view()),
-    path('municipalities/', MunicipalityList.as_view(), name='facility-list'),
-    path('municipalities/<code>/', MunicipalityView.as_view(), name='facility-list'),
+    path("", IndexView.as_view()),
+    path('municipalities/', MunicipalityList.as_view(), name='municipality-list'),
+    path('municipalities/<code>/', MunicipalityView.as_view(), name='municipality-view'),
     path('municipalities/<code>/data/aggregate/', MunicipalitySensorsSummary.as_view(), name='municipality-data-aggregate'),
     path('facilities/', FacilityList.as_view(), name='facility-list'),
     path('facilities/<code>/', FacilityView.as_view(), name='facility-view'),

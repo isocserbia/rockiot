@@ -6,7 +6,7 @@ from time import sleep
 import paho.mqtt.client as paho
 from django.conf import settings
 
-from app.system.singleton import Singleton
+from app.core.singleton import Singleton
 
 config = settings.BROKER_CONFIG
 

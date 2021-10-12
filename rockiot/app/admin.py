@@ -8,7 +8,6 @@ from django.contrib.admin import ModelAdmin
 from django.contrib.gis.admin import OSMGeoAdmin
 from django.db import models
 from django.forms import TextInput, Textarea, ModelForm
-from django.http import HttpResponseRedirect
 from django.utils.html import format_html
 from django_celery_beat.models import SolarSchedule, ClockedSchedule
 from django_celery_results.admin import TaskResultAdmin
@@ -376,23 +375,29 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
         comment = form.cleaned_data['comment']
         for device in queryset.filter(status=Device.ACTIVATED):
             zero_config.apply_async((device.device_id,))
-            device.zero_config_at = datetime.now()
+            device.zero_config_at = datetime.now()  # TODO: check millis
             device.save()
             update_change_reason(device, comment)
 
     def start_container(self, request, queryset):
+        success = False
         for device in queryset:
-            DockerOps.start_demo_container(device)
-            # only_one
+            success = DockerOps.start_demo_container(device)
             break
-        messages.add_message(request, messages.INFO, 'Device demo will soon be started. Refresh page for updates.')
+        if success:
+            messages.add_message(request, messages.INFO, 'Device demo will soon be started. Refresh page for updates.')
+        else:
+            messages.add_message(request, messages.ERROR, 'Failed starting Device demo. System error.')
 
     def stop_container(self, request, queryset):
+        success = False
         for device in queryset:
-            DockerOps.stop_demo_container(device)
-            # only_one
+            success = DockerOps.stop_demo_container(device)
             break
-        messages.add_message(request, messages.INFO, 'Device demo will soon be stopped. Refresh page for updates.')
+        if success:
+            messages.add_message(request, messages.INFO, 'Device demo will soon be stopped. Refresh page for updates.')
+        else:
+            messages.add_message(request, messages.ERROR, 'Failed stopping Device demo. System error.')
 
     def municipality(self, obj):
         return obj.municipality_name()
@@ -619,3 +624,5 @@ class MyTaskResultAdmin(TaskResultAdmin):
 
 
 admin.site.register(TaskResult, MyTaskResultAdmin)
+
+# admin.site.index_template = 'admin/rockiot_index.html'

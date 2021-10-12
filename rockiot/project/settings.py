@@ -19,7 +19,6 @@ from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -27,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-+kw3hg326l#06$3c6_dmahite83n6+d3ey-a2kaqhvl!&+(9u6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DEBUG", default=True))
+DEBUG = bool(os.environ.get("DEBUG", default=False))
 
 # ALLOWED_HOSTS = ['localhost', '0.0.0.0', 'rockiot', 'rabbit', 'http://0.0.0.0:8000']
 ALLOWED_HOSTS = ['*']
@@ -53,7 +52,8 @@ INSTALLED_APPS = [
     'rest_framework_gis',
     'rest_framework_simplejwt',
     'drf_yasg',
-    'import_export'
+    'import_export',
+    'leaflet'
 ]
 
 MIDDLEWARE = [
@@ -90,6 +90,7 @@ REST_FRAMEWORK = {
         'user': '1000/day'
     },
     'DATETIME_FORMAT': "%Y-%m-%dT%H:%M:%S",
+    'EXCEPTION_HANDLER': 'app.core.exception_handler.handler'
 }
 
 SWAGGER_SETTINGS = {
@@ -123,8 +124,8 @@ SIMPLE_JWT = {
 }
 
 LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'app', 'locale'),
-    os.path.join(BASE_DIR, 'app', 'locale_extra'),
+    os.path.join(BASE_DIR, 'app', 'locale' 'default'),
+    os.path.join(BASE_DIR, 'app', 'locale', 'extra')
 )
 
 ROOT_URLCONF = 'project.urls'
@@ -252,11 +253,9 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
 STATIC_URL = "/static/"
 STATICFILES_DIRS = ["/static", os.path.join(BASE_DIR, "..", "static")]
-STATIC_ROOT = "/static_collected"
+STATIC_ROOT = "/resources/static_collected"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
@@ -302,14 +301,9 @@ LOGGING = {
     }
 }
 
-# if DEBUG:
-#     # make all loggers use the console.
-#     for logger in LOGGING['loggers']:
-#         LOGGING['loggers'][logger]['handlers'] = ['console']
-
 
 SIMPLE_HISTORY_REVERT_DISABLED = True
 SIMPLE_HISTORY_HISTORY_CHANGE_REASON_USE_TEXT_FIELD = True
 SIMPLE_HISTORY_EDIT = True
 
-X_FRAME_OPTIONS = 'ALLOW-FROM http://localhost'
+DEBUG = False

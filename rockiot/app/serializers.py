@@ -27,10 +27,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class MunicipalityModelSerializer(serializers.ModelSerializer):
-    # dtz = pytz.timezone('Europe/Belgrade')
-    # created_at = DateTimeTzAwareField(default_timezone=dtz, format='%Y-%m-%d %H:%M')
-    # updated_at = DateTimeTzAwareField(default_timezone=dtz, format='%Y-%m-%d %H:%M')
-
     def validate(self, attrs):
         pass
 
@@ -66,11 +62,9 @@ DeviceLogEntry = apps.get_model("app", "DeviceLogEntry")
 
 
 class DeviceLogEntrySerializer(serializers.ModelSerializer):
-    # dtz = pytz.timezone('Europe/Belgrade')
     action = SerializerMethodField()
     change = SerializerMethodField()
     user = SerializerMethodField()
-    # history_date = DateTimeTzAwareField(default_timezone=dtz, format='%Y-%m-%d %H:%M:%S')
 
     class Meta:
         model = DeviceLogEntry
