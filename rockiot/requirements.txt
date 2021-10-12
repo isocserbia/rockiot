@@ -23,3 +23,5 @@ django-simple-history
 flower
 gunicorn
 whitenoise
+django-leaflet
+django-geojson[field]

@@ -10,6 +10,21 @@ services:
       - db.prod.env
       - rockiot.prod.env
 
+  rockiotworker:
+    env_file:
+      - db.prod.env
+      - rockiot.prod.env
+
+  rockiotbeat:
+    env_file:
+      - db.prod.env
+      - rockiot.prod.env
+
+  rockiotlistener:
+    env_file:
+      - db.prod.env
+      - rockiot.prod.env
+
   rockiot_ingest:
     env_file:
       - db.prod.env
@@ -48,22 +63,5 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8080"
-    networks:
-      - app-tier
-
-  pgadmin:
-    image: biarms/pgadmin4:4.21
-    container_name: rockiot_pgadmin
-    ports:
-      - "5050:5050"
-    depends_on:
-      - timescaledb
-    env_file:
-      - common.env
-      - rockiot.dev.env
-    environment:
-      - WAIT_HOSTS=timescaledb:5432
-    volumes:
-      - $HOME/docker/pgadmin/data:/var/lib/pgadmin
     networks:
       - app-tier

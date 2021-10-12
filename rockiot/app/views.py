@@ -22,8 +22,8 @@ from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer
 logger = logging.getLogger(__name__)
 
 
-class FacilityMapView(TemplateView):
-    template_name = "map.html"
+class IndexView(TemplateView):
+    template_name = "index.html"
 
 
 from_date_param = openapi.Parameter('from_date', openapi.IN_QUERY,
@@ -80,10 +80,10 @@ class MunicipalityView(generics.RetrieveAPIView):
 
     def get_object(self):
         code = self.kwargs['code']
-        return get_object_or_404(Municipality, code)
+        return get_object_or_404(Municipality.objects, code=code)
 
     serializer_class = MunicipalityModelSerializer
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
 
 
 class MunicipalityList(generics.ListAPIView):
@@ -107,10 +107,10 @@ class FacilityView(generics.RetrieveAPIView):
 
     def get_object(self):
         code = self.kwargs['code']
-        return get_object_or_404(Facility, code)
+        return get_object_or_404(Facility.objects, code=code)
 
     serializer_class = FacilityModelSerializer
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
 
 
 class FacilityList(generics.ListAPIView):
@@ -290,21 +290,6 @@ class CsvExportView(views.APIView):
             meg = f"Requested CSV file {file_name} not found: {ioe}"
             logger.warning(meg)
             raise Http404(meg)
-
-
-class FacilityView(generics.RetrieveAPIView):
-    @swagger_auto_schema(operation_description="Retrieve single Facility entity",
-                         operation_summary="Gets Facility by code",
-                         tags=['core'])
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
-
-    def get_object(self):
-        code = self.kwargs['code']
-        return get_object_or_404(Facility, code)
-
-    serializer_class = FacilityModelSerializer
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
 
 
 class MyTokenObtainPairView(TokenObtainPairView):

@@ -8,7 +8,7 @@ import time
 import pika
 from django.conf import settings
 
-from app.rabbitops.rabbit_events import DeviceAction
+from app.rabbitops.actions_events import DeviceAction
 from app.tasks import handle_activation_request, save_device_metadata
 
 config = settings.BROKER_CONFIG

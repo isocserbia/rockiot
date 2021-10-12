@@ -24,3 +24,5 @@ flower
 applescript
 gunicorn
 whitenoise
+django-leaflet
+django-geojson[field]

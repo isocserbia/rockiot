@@ -77,7 +77,7 @@ def clean_and_calibrate_dataframe():
                         """,
                        clean_records, page_size=batch_size)
 
-        logger.info(f"CC: Inserted {db_cursor.rowcount} clean records")
+        logger.debug(f"CC: Inserted {db_cursor.rowcount} clean records")
         db_cursor.close()
         db_conn.commit()
         response["records"] = len(clean_records)

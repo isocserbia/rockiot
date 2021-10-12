@@ -4,7 +4,7 @@ from django.db import connection, migrations
 
 
 def create_periodic_tasks(apps, schema_editor):
-    file_path = os.path.join(os.path.dirname(__file__), '../sql/', 'celery.sql')
+    file_path = os.path.join(os.path.dirname(__file__), 'sql/', 'celery.sql')
     sql_statement = open(file_path).read()
     with connection.cursor() as c:
         c.execute(sql_statement)

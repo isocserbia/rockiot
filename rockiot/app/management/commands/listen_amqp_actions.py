@@ -1,7 +1,7 @@
 import os, django
 from app.models import Device
 from django.contrib.auth.models import User
-from app.rabbitops.rabbit_pika_task_consumer import ReconnectingRabbitPikaTaskConsumer
+from app.rabbitops.amqp_consumer import ReconnectingRabbitPikaTaskConsumer
 from django.core.management.base import BaseCommand
 
 

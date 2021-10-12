@@ -19,6 +19,9 @@ services:
       - app-tier
 
   rockiot:
+    build:
+      context: rockiot
+      dockerfile: ./Dockerfile.prod
     depends_on:
       - timescaledb
       - rabbit1

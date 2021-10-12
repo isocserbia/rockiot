@@ -11,8 +11,8 @@ from requests import HTTPError
 from simple_history.utils import update_change_reason
 
 from app.models import Device, DeviceConnection, PlatformAttribute
-from app.rabbitops import rabbit_events
-from app.rabbitops.rabbit_paho_publisher import PahoPublisher
+from app.rabbitops import actions_events
+from app.rabbitops.mqtt_publisher import PahoPublisher
 
 config = settings.BROKER_CONFIG
 
@@ -249,7 +249,7 @@ class RabbitOps:
             RabbitOps.client._call(action, 'PUT', body, api.Client.json_headers)
             logger.info("Device initial permissions configured [device-id: %s]" % device_id)
 
-            event = rabbit_events.DeviceEvent.construct_status(Device.NEW, Device.REGISTERED, "Device registered")
+            event = actions_events.DeviceEvent.construct_status(Device.NEW, Device.REGISTERED, "Device registered")
             PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id,
                                              event.to_json(allow_nan=False))
             logger.info("Device ingest user registered [device-id: %s]" % device_id)
@@ -299,7 +299,7 @@ class RabbitOps:
                 update_change_reason(device, 'Status changed to: ACTIVATED (by device)')
                 logger.info("Device status updated [device-id: %s] [status: %s]" % (device_id, Device.ACTIVATED))
 
-            event = rabbit_events.DeviceEvent.construct_activation(Device.REGISTERED, Device.ACTIVATED,
+            event = actions_events.DeviceEvent.construct_activation(Device.REGISTERED, Device.ACTIVATED,
                                                                    "Device activated")
             PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id,
                                              event.to_json(allow_nan=False))
@@ -379,7 +379,7 @@ class RabbitOps:
                 "Device zero-config can't be sent [device-id: %s] [status: %s]" % (device_id, device.status))
 
         try:
-            event = rabbit_events.DeviceEvent.construct_zero_config()
+            event = actions_events.DeviceEvent.construct_zero_config()
             PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id,
                                              event.to_json(allow_nan=False))
             logger.info("Device zero-config sent [device-id: %s]" % device_id)
@@ -399,7 +399,7 @@ class RabbitOps:
             raise ValueError("Device not found [device-id: %s]" % device_id)
 
         try:
-            event = rabbit_events.DeviceEvent.construct_device_metadata_changed(device.metadata)
+            event = actions_events.DeviceEvent.construct_device_metadata_changed(device.metadata)
             PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id,
                                              event.to_json(allow_nan=False))
             logger.info("Device metadata sent [device-id: %s]" % device_id)
@@ -420,7 +420,7 @@ class RabbitOps:
             data[e[0]] = e[1]
 
         try:
-            event = rabbit_events.PlatformEvent.construct_platform_attributes(data)
+            event = actions_events.PlatformEvent.construct_platform_attributes(data)
             PahoPublisher.Instance().publish((config["BROKER_ATTRIBUTES_TOPIC"]), "all", event.to_json(allow_nan=False))
             logger.info("Platform attributes sent")
             return True

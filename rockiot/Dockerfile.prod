@@ -21,7 +21,7 @@ RUN pip install --no-cache-dir -r /requirements.txt
 COPY . /
 RUN mkdir -p /static
 RUN mkdir -p /rockiot-data
-COPY /app/static /static
+COPY /app/resources/static /static
 
 ADD start.prod.sh /start.sh
 

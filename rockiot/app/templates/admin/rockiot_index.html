@@ -1,0 +1,57 @@
+{% extends "admin/base.html" %}
+
+{% load leaflet_tags %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+  {% leaflet_js %}
+  {% leaflet_css %}
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <style>
+      html, body, #container /*, and all other map parent selectors*/ {
+          height: 100%;
+          overflow: hidden;
+          width: 100%;
+      }
+      .leaflet-container {
+          height: 100%;
+      }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+
+  {% leaflet_map "main" callback="main_map_init" %}
+
+  <script type="text/javascript">
+      let mylat = -6.21462;
+      let mylon = 106.84513;
+      function main_map_init (map, options) {
+          var dataurl = '{% url "data" %}';
+          map.setView([mylat, mylon], 5);
+          $.getJSON(dataurl, function (data) {
+              // Add GeoJSON layer
+              console.log(data);
+              L.geoJson(data, {
+                  onEachFeature: function(feature, layer){
+                      layer.bindPopup(''+
+                          '<h3>' + feature.properties.device_id + '</h3>' +
+                          '<ul>' +
+                              '<li> mode: ' + feature.properties.mode + '</li>' +
+                              '<li> status: ' + feature.properties.status + '</li>' +
+                          '</ul>'
+                      );
+                  }
+              }).addTo(map);
+          });
+      }
+  </script>
+
+</div>
+{% endblock %}
+
+{% block sidebar %}
+
+{% endblock %}
