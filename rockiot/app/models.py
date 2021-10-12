@@ -152,6 +152,7 @@ class Device(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     zero_config_at = models.DateTimeField(default=None, null=True, blank=True)
+    erase_wifi_credentials_at = models.DateTimeField(default=None, null=True, blank=True)
 
     history = HistoricalRecords(
         history_change_reason_field=models.TextField(blank=True, null=True, default="Values changed"),

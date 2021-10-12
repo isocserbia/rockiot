@@ -170,6 +170,17 @@ def zero_config(did):
     return False
 
 
+def erase_wifi_credentials(did):
+    logger.info("Sending Device erase_wifi_credentials [device-id: %s]" % did)
+    try:
+        return RabbitOps._erase_wifi_credentials_internal(did)
+    except ValueError as ve:
+        logger.error("Error executing task: ", exc_info=ve)
+    except:
+        logger.error("Error executing task", exc_info=True)
+    return False
+
+
 def save_device_metadata(did, metadata):
     logger.info("Saving Device metadata [device-id: %s]" % did)
     try:
@@ -390,6 +401,30 @@ class RabbitOps:
 
         except Exception as ex:
             raise RuntimeError("Device zero-config not sent", ex.args)
+
+    @classmethod
+    def _erase_wifi_credentials_internal(cls, device_id):
+
+        device = Device.objects.get(device_id=device_id)
+        if not device:
+            raise ValueError("Device not found [device-id: %s]" % device_id)
+
+        if not device.can_send_zero_config():
+            raise ValueError(
+                "Device erase_wifi_credentials can't be sent [device-id: %s] [status: %s]" % (device_id, device.status))
+
+        try:
+            event = actions_events.DeviceEvent.construct_erase_wifi_credentials()
+            PahoPublisher.Instance().publish((config["BROKER_DEVICE_EVENTS_TOPIC"] % device_id), device_id,
+                                             event.to_json(allow_nan=False))
+            logger.info("Device erase_wifi_credentials sent [device-id: %s]" % device_id)
+            return True
+
+        except HTTPError as err:
+            raise RuntimeError("Device erase_wifi_credentials not sent", err.args)
+
+        except Exception as ex:
+            raise RuntimeError("Device erase_wifi_credentials not sent", ex.args)
 
     @classmethod
     def _send_device_metadata_internal(cls, device_id):
