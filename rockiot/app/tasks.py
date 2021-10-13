@@ -26,37 +26,37 @@ def get_overview(self):
     return operations.get_overview()
 
 
-@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='30/m')
+@app.task(bind=True, ignore_result=False, max_retries=2, rate_limit='30/m')
 def register_device(self, did):
     logger.debug(f'Register Device Request: {self.request!r}')
     return operations.register_device(did)
 
 
-@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='30/m')
+@app.task(bind=True, ignore_result=False, max_retries=2, rate_limit='30/m')
 def activate_device(self, did):
     logger.debug(f'Activate Device Request: {self.request!r}')
     return operations.activate_device(did)
 
 
-@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='30/m')
+@app.task(bind=True, ignore_result=False, max_retries=2, rate_limit='30/m')
 def deactivate_device(self, did):
     logger.debug(f'Deactivate Device Request: {self.request!r}')
     return operations.deactivate_device(did)
 
 
-@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='30/m')
+@app.task(bind=True, ignore_result=False, max_retries=2, rate_limit='30/m')
 def handle_activation_request(self, did):
     logger.debug(f'Handle Activation Request: {self.request!r}')
     return operations.handle_activation_request(did)
 
 
-@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='30/m')
+@app.task(bind=True, ignore_result=False, max_retries=2, rate_limit='30/m')
 def terminate_device(self, did):
     logger.debug(f'Terminate Device Request: {self.request!r}')
     return operations.terminate_device(did)
 
 
-@app.task(bind=True, ignore_result=True, max_retries=3, rate_limit='30/m')
+@app.task(bind=True, ignore_result=True, max_retries=1, rate_limit='30/m')
 def save_device_metadata(self, did, metadata):
     logger.debug(f'Handle Save Device Metadata Request: {self.request!r}')
     return operations.save_device_metadata(did, metadata)
@@ -80,19 +80,19 @@ def export_raw_data_to_csv(self, dat=date.today().isoformat()):
     return dbops.export_raw_data_to_csv(dat)
 
 
-@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='3/m')
+@app.task(bind=True, ignore_result=False, max_retries=1, rate_limit='10/m')
 def clean_and_calibrate(self):
     logger.debug(f'Clean and Calibrate Request: {self.request!r}')
     return pipeline.clean_and_calibrate_dataframe()
 
 
-@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='30/m')
+@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='10/m')
 def zero_config(self, did):
     logger.debug(f'Device zero-config Request: {self.request!r}')
     return operations.zero_config(did)
 
 
-@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='30/m')
+@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='10/m')
 def erase_wifi_credentials(self, did):
     logger.debug(f'Device erase_wifi_credentials Request: {self.request!r}')
     return operations.erase_wifi_credentials(did)
