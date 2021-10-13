@@ -313,13 +313,13 @@ class SensorDataAbstract(models.Model):
     time = models.DateTimeField(primary_key=True)
     device_id = models.CharField(max_length=30)
     client_id = models.CharField(max_length=30)
-    temperature = models.DecimalField(decimal_places=4, max_digits=8)
-    humidity = models.DecimalField(decimal_places=4, max_digits=8)
-    no2 = models.DecimalField(decimal_places=4, max_digits=8)
-    so2 = models.DecimalField(decimal_places=4, max_digits=8)
-    pm1 = models.DecimalField(decimal_places=4, max_digits=8)
-    pm10 = models.DecimalField(decimal_places=4, max_digits=8)
-    pm2_5 = models.DecimalField(decimal_places=4, max_digits=8)
+    temperature = models.DecimalField(decimal_places=4, max_digits=16)
+    humidity = models.DecimalField(decimal_places=4, max_digits=16)
+    no2 = models.DecimalField(decimal_places=4, max_digits=16)
+    so2 = models.DecimalField(decimal_places=4, max_digits=16)
+    pm1 = models.DecimalField(decimal_places=4, max_digits=16)
+    pm10 = models.DecimalField(decimal_places=4, max_digits=16)
+    pm2_5 = models.DecimalField(decimal_places=4, max_digits=16)
 
     class Meta:
         abstract = True
@@ -339,13 +339,13 @@ class SensorData(SensorDataAbstract):
 class SensorsDataRollupAbstract(models.Model):
     time = models.DateTimeField(primary_key=True)
     device_id = models.CharField(max_length=30)
-    temperature = models.DecimalField(decimal_places=4, max_digits=8)
-    humidity = models.DecimalField(decimal_places=4, max_digits=8)
-    no2 = models.DecimalField(decimal_places=4, max_digits=8)
-    so2 = models.DecimalField(decimal_places=4, max_digits=8)
-    pm1 = models.DecimalField(decimal_places=4, max_digits=8)
-    pm10 = models.DecimalField(decimal_places=4, max_digits=8)
-    pm2_5 = models.DecimalField(decimal_places=4, max_digits=8)
+    temperature = models.DecimalField(decimal_places=4, max_digits=16)
+    humidity = models.DecimalField(decimal_places=4, max_digits=16)
+    no2 = models.DecimalField(decimal_places=4, max_digits=16)
+    so2 = models.DecimalField(decimal_places=4, max_digits=16)
+    pm1 = models.DecimalField(decimal_places=4, max_digits=16)
+    pm10 = models.DecimalField(decimal_places=4, max_digits=16)
+    pm2_5 = models.DecimalField(decimal_places=4, max_digits=16)
 
     class Meta:
         abstract = True
