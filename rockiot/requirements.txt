@@ -25,3 +25,4 @@ gunicorn
 whitenoise
 django-leaflet
 django-geojson[field]
+django-prettyjson

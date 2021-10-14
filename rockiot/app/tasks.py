@@ -62,7 +62,7 @@ def save_device_metadata(self, did, metadata):
     return operations.save_device_metadata(did, metadata)
 
 
-@app.task(bind=True, ignore_result=True, max_retries=3, rate_limit='30/m')
+@app.task(bind=True, ignore_result=True, max_retries=3, rate_limit='120/m')
 def send_device_metadata(self, did):
     logger.debug(f'Handle Send Device Metadata Request: {self.request!r}')
     return operations.send_device_metadata(did)
@@ -86,13 +86,13 @@ def clean_and_calibrate(self):
     return pipeline.clean_and_calibrate_dataframe()
 
 
-@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='10/m')
+@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='120/m')
 def zero_config(self, did):
     logger.debug(f'Device zero-config Request: {self.request!r}')
     return operations.zero_config(did)
 
 
-@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='10/m')
+@app.task(bind=True, ignore_result=False, max_retries=3, rate_limit='120/m')
 def erase_wifi_credentials(self, did):
     logger.debug(f'Device erase_wifi_credentials Request: {self.request!r}')
     return operations.erase_wifi_credentials(did)
