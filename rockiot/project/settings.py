@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'drf_yasg',
     'import_export',
-    'leaflet'
+    'leaflet',
+    'prettyjson'
 ]
 
 MIDDLEWARE = [

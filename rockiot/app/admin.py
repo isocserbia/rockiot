@@ -15,6 +15,7 @@ from django_celery_results.models import GroupResult, TaskResult
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from import_export.fields import Field
+from prettyjson import PrettyJSONWidget
 from simple_history.admin import SimpleHistoryAdmin
 from simple_history.utils import update_change_reason
 
@@ -91,7 +92,8 @@ def get_form_field_overrides():
         models.CharField: {'widget': TextInput(attrs={'size': '40'})},
         models.EmailField: {'widget': TextInput(attrs={'size': '40'})},
         models.GenericIPAddressField: {'widget': TextInput(attrs={'size': '40'})},
-        models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})}
+        models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},
+        models.JSONField: {'widget': PrettyJSONWidget(attrs={'initial': 'parsed', 'rows': 24, 'cols': 96})}
     }
 
 
@@ -468,7 +470,7 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
             ('description', 'facility')
         )}),
         ('Location', {'fields': ('location',)}),
-        ('Metadata', {'fields': ('metadata',), 'classes': ['collapse']}),
+        ('Metadata', {'fields': ('metadata',)}),
         ('Confidential', {'fields': ('device_pass',), 'classes': ['collapse']})
     ]
 
