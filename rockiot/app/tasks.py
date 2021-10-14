@@ -56,7 +56,7 @@ def terminate_device(self, did):
     return operations.terminate_device(did)
 
 
-@app.task(bind=True, ignore_result=True, max_retries=1, rate_limit='30/m')
+@app.task(bind=True, ignore_result=True, max_retries=1, rate_limit='120/m')
 def save_device_metadata(self, did, metadata):
     logger.debug(f'Handle Save Device Metadata Request: {self.request!r}')
     return operations.save_device_metadata(did, metadata)
