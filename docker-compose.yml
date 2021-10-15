@@ -88,22 +88,36 @@ services:
       - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
     restart: on-failure
 
-  rockiot_ingest:
-    build: rockiot_ingest
-    env_file:
-      - db.env
-      - common.env
-    environment:
-      - BROKER_USER=amqpingest
-      - BROKER_PASS=amqpingest_pass
-      - BROKER_QUEUE=mq2_amqp
-      - WAIT_HOSTS=rabbit1:8883,rockiot:8000
+  rockioteventlistener:
+    <<: *rockiotfunction
+    container_name: rockiot_event_listener
+    command: >
+      sh -c "/wait.sh && python manage.py listen_rabbitmq_events"
+    ports: [ ]
     depends_on:
       - rabbit1
       - rockiot
-    networks:
-      - app-tier
+    environment:
+      - BROKER_EXCHANGE=amq.topic
+      - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
     restart: on-failure
+
+#  rockiot_ingest:
+#    build: rockiot_ingest
+#    env_file:
+#      - db.env
+#      - common.env
+#    environment:
+#      - BROKER_USER=amqpingest
+#      - BROKER_PASS=amqpingest_pass
+#      - BROKER_QUEUE=mq2_amqp
+#      - WAIT_HOSTS=rabbit1:8883,rockiot:8000
+#    depends_on:
+#      - rabbit1
+#      - rockiot
+#    networks:
+#      - app-tier
+#    restart: on-failure
 
 networks:
   app-tier:

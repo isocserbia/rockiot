@@ -199,6 +199,15 @@
       "durable": false,
       "auto_delete": false,
       "arguments": {}
+    },
+    {
+      "name": "rabbitmq_events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
     }
   ],
   "exchanges": [],
@@ -225,6 +234,30 @@
       "destination": "tasks_amqp",
       "destination_type": "queue",
       "routing_key": "v1.devices.actions",
+      "arguments": {}
+    },
+    {
+      "source": "amq.topic",
+      "vhost": "/",
+      "destination": "tasks_amqp",
+      "destination_type": "queue",
+      "routing_key": "v1.devices.actions",
+      "arguments": {}
+    },
+    {
+      "source": "amq.rabbitmq.event",
+      "vhost": "/",
+      "destination": "rabbitmq_events",
+      "destination_type": "queue",
+      "routing_key": "connection.closed",
+      "arguments": {}
+    },
+    {
+      "source": "amq.rabbitmq.event",
+      "vhost": "/",
+      "destination": "rabbitmq_events",
+      "destination_type": "queue",
+      "routing_key": "connection.created",
       "arguments": {}
     }
   ]

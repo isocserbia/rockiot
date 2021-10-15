@@ -72,39 +72,39 @@ services:
     networks:
       - app-tier
 
-  pgadmin:
-    image: biarms/pgadmin4:4.21
-    container_name: rockiot_pgadmin
-    ports:
-      - "5050:5050"
-    depends_on:
-      - timescaledb
-    env_file:
-      - common.env
-      - rockiot.dev.env
-    environment:
-      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
-    volumes:
-      - $HOME/docker/pgadmin/data:/var/lib/pgadmin
-    networks:
-      - app-tier
-
-  postgresexporter:
-    image: quay.io/prometheuscommunity/postgres-exporter
-    container_name: postgres_exporter
-    ports:
-      - "9187:9187"
-    depends_on:
-      - timescaledb
-      - rockiot
-    env_file:
-      - db.env
-      - common.env
-      - rockiot.dev.env
-    environment:
-      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
-      - DATA_SOURCE_USER=postgres
-      - DATA_SOURCE_PASS=postgres
-      - DATA_SOURCE_URI=timescaledb:5432/postgres?sslmode=disable
-    networks:
-      - app-tier
+#  pgadmin:
+#    image: biarms/pgadmin4:4.21
+#    container_name: rockiot_pgadmin
+#    ports:
+#      - "5050:5050"
+#    depends_on:
+#      - timescaledb
+#    env_file:
+#      - common.env
+#      - rockiot.dev.env
+#    environment:
+#      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+#    volumes:
+#      - $HOME/docker/pgadmin/data:/var/lib/pgadmin
+#    networks:
+#      - app-tier
+#
+#  postgresexporter:
+#    image: quay.io/prometheuscommunity/postgres-exporter
+#    container_name: postgres_exporter
+#    ports:
+#      - "9187:9187"
+#    depends_on:
+#      - timescaledb
+#      - rockiot
+#    env_file:
+#      - db.env
+#      - common.env
+#      - rockiot.dev.env
+#    environment:
+#      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+#      - DATA_SOURCE_USER=postgres
+#      - DATA_SOURCE_PASS=postgres
+#      - DATA_SOURCE_URI=timescaledb:5432/postgres?sslmode=disable
+#    networks:
+#      - app-tier

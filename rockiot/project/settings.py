@@ -222,6 +222,7 @@ BROKER_CONFIG = {
     'BROKER_MNGMT_SSL_PORT': config('BROKER_MNGMT_SSL_PORT', default='15673'),
     'BROKER_EXCHANGE': config('BROKER_EXCHANGE', default='amq.topic'),
     'BROKER_TASK_QUEUE': config('BROKER_TASK_QUEUE', default='tasks_amqp'),
+    'BROKER_EVENT_QUEUE': config('BROKER_EVENT_QUEUE', default='rabbitmq_events'),
     'BROKER_DELAYED_TASK_QUEUE': config('BROKER_DELAYED_TASK_QUEUE', default='tasks_amqp_delay'),
     'BROKER_ATTRIBUTES_TOPIC': config("BROKER_ATTRIBUTES_TOPIC", default='v1.attributes'),
     'BROKER_DEVICE_EVENTS_TOPIC': config("BROKER_DEVICE_EVENTS_TOPIC", default='v1.devices.%s.events'),
