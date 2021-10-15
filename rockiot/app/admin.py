@@ -426,7 +426,12 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
             'TERMINATED': '#A41515',
             'UNKNOWN': '#0C4B33',
         }
-        return format_html('<b style="color:{};">{}</b>', colors[s], s, )
+        names = {
+            'RUNNING': 'ONLINE',
+            'TERMINATED': 'OFFLINE',
+            'UNKNOWN': 'OFFLINE',
+        }
+        return format_html('<b style="color:{};">{}</b>', colors[s], names[s], )
 
     def activation_status(self, obj):
         colors = {

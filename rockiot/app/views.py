@@ -139,9 +139,9 @@ class SensorDataList(generics.ListAPIView):
         until_date = self.request.query_params.get('until_date', None)
         qs1 = SensorData.objects.filter(device_id=did)
         if from_date is not None:
-            qs1 = qs1.filter(time__date__gt=from_date)
+            qs1 = qs1.filter(time__date__gte=from_date)
         if until_date is not None:
-            qs1 = qs1.filter(time__date__lt=until_date)
+            qs1 = qs1.filter(time__date__lte=until_date)
         return qs1
 
     serializer_class = SensorDataSerializer
@@ -162,9 +162,9 @@ class SensorDataRawList(generics.ListAPIView):
         until_date = self.request.query_params.get('until_date', None)
         qs1 = SensorDataRaw.objects.filter(device_id=did)
         if from_date is not None:
-            qs1 = qs1.filter(time__date__gt=from_date)
+            qs1 = qs1.filter(time__date__gte=from_date)
         if until_date is not None:
-            qs1 = qs1.filter(time__date__lt=until_date)
+            qs1 = qs1.filter(time__date__lte=until_date)
         return qs1
 
     serializer_class = SensorDataRawSerializer
@@ -192,9 +192,9 @@ class DeviceSensorsSummary(generics.ListAPIView):
         until_date = self.request.query_params.get('until_date', None)
         qs1 = model_cls.objects.filter(device_id=device_id)
         if from_date is not None:
-            qs1 = qs1.filter(time__date__gt=from_date)
+            qs1 = qs1.filter(time__date__gte=from_date)
         if until_date is not None:
-            qs1 = qs1.filter(time__date__lt=until_date)
+            qs1 = qs1.filter(time__date__lte=until_date)
         return qs1
 
     serializer_class = SensorsDataRollupSerializer
@@ -218,9 +218,9 @@ class FacilitySensorsSummary(generics.ListAPIView):
         until_date = self.request.query_params.get('until_date', None)
         qs1 = model_cls.objects.filter(device_id__in=ids)
         if from_date is not None:
-            qs1 = qs1.filter(time__date__gt=from_date)
+            qs1 = qs1.filter(time__date__gte=from_date)
         if until_date is not None:
-            qs1 = qs1.filter(time__date__lt=until_date)
+            qs1 = qs1.filter(time__date__lte=until_date)
         return qs1
 
     serializer_class = SensorsDataRollupWithDeviceSerializer
@@ -247,9 +247,9 @@ class MunicipalitySensorsSummary(generics.ListAPIView):
         until_date = self.request.query_params.get('until_date', None)
         qs1 = model_cls.objects.filter(device_id__in=ids)
         if from_date is not None:
-            qs1 = qs1.filter(time__date__gt=from_date)
+            qs1 = qs1.filter(time__date__gte=from_date)
         if until_date is not None:
-            qs1 = qs1.filter(time__date__lt=until_date)
+            qs1 = qs1.filter(time__date__lte=until_date)
         return qs1
 
     serializer_class = SensorsDataRollupWithDeviceSerializer
