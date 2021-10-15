@@ -3,8 +3,8 @@ FROM rabbitmq:3.8-management
 RUN apt-get update && apt-get install -y curl unzip
 
 ADD rabbitmq-ssl.config /etc/rabbitmq/rabbitmq.config
-# ADD definitions.json /etc/rabbitmq/definitions.json
-ADD definitions-demo.json /etc/rabbitmq/definitions.json
+ADD definitions.json /etc/rabbitmq/definitions.json
+# ADD definitions-demo.json /etc/rabbitmq/definitions.json
 ADD demo.sh /demo.sh
 RUN chmod +x /demo.sh
 
