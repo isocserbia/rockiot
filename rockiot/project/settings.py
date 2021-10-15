@@ -54,10 +54,12 @@ INSTALLED_APPS = [
     'drf_yasg',
     'import_export',
     'leaflet',
-    'prettyjson'
+    'prettyjson',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -308,3 +310,11 @@ SIMPLE_HISTORY_HISTORY_CHANGE_REASON_USE_TEXT_FIELD = True
 SIMPLE_HISTORY_EDIT = True
 
 DEBUG = False
+
+CORS_ORIGIN_WHITELIST = (
+    'http://api.decazavazduh.rs',
+    'https://api.decazavazduh.rs',
+    'http://localhost:8000',
+)
+
+SERVING_URL = config('SERVING_URL', default=None)
