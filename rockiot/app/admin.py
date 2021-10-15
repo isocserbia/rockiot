@@ -21,10 +21,10 @@ from simple_history.utils import update_change_reason
 
 from app.models import Facility, Device, Municipality, PlatformAttribute, Platform, \
     FacilityMembership, DeviceConnection, CronJobExecution, CronJob, DeviceCalibrationModel
-from app.system.decorators import action_form
+from app.system.decorators import action_form, device_event_form
 from app.system.dockerops import DockerOps
-from app.tasks import register_device, activate_device, deactivate_device, terminate_device, zero_config, \
-    send_device_metadata, send_platform_attributes, erase_wifi_credentials
+from app.tasks import register_device, activate_device, deactivate_device, terminate_device, \
+    send_device_metadata, send_platform_attributes, send_device_event
 
 DEFAULT_CHOICE_DASH = []
 
@@ -288,10 +288,24 @@ class DeviceChangeComment(forms.Form):
     comment = forms.CharField(max_length=128)
 
 
+class DeviceSendEventForm(forms.Form):
+    title = 'Select an event to send to device'
+    MY_CHOICES = (
+        ('zero_senzor', 'Zero Sensor'),
+        ('zero_so2', 'Zero So2 Sensor'),
+        ('zero_no2', 'Zero No2 Sensor'),
+        ('erase_wifi_credentials', 'Erase WiFi Credentials'),
+        ('reboot_device', 'Reboot Device'),
+        ('erase_zeroing_data', 'Erase Zeroing Data'),
+        ('identify_device', 'Identify Device'),
+    )
+    event = forms.ChoiceField(choices=MY_CHOICES)
+
+
 @admin.register(Device)
 class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
 
-    actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container', 'mode_default', 'mode_calibration', 'mode_production', 'zero_config', 'erase_wifi_credentials']
+    actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container', 'mode_default', 'mode_calibration', 'mode_production', 'send_event_to_device']
 
     action_groups_map = OrderedDict({
         'Status': {
@@ -302,9 +316,9 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
             'label': 'Device mode',
             'actions': ('mode_default', 'mode_calibration', 'mode_production')
         },
-        'Config': {
-            'label': 'Device config',
-            'actions': ('zero_config', 'erase_wifi_credentials')
+        'Actions': {
+            'label': 'Device actions',
+            'actions': ('send_event_to_device', )
         },
         'Demo': {
             'label': 'Device demo',
@@ -372,23 +386,14 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
             device.save()
             update_change_reason(device, comment)
 
-    @action_form(DeviceChangeComment, initial_value="Zero config sent")
-    def zero_config(self, request, queryset, form):
-        comment = form.cleaned_data['comment']
+    @device_event_form(DeviceSendEventForm, initial_value="Event sent to Device")
+    def send_event_to_device(self, request, queryset, form):
+        event_type = form.cleaned_data['event']
         for device in queryset.filter(status=Device.ACTIVATED):
-            zero_config.apply_async((device.device_id,))
-            device.zero_config_at = datetime.now()  # TODO: check millis
+            send_device_event.apply_async((device.device_id, event_type))
+            device.event_sent_at = datetime.now()  # TODO: check millis
             device.save()
-            update_change_reason(device, comment)
-
-    @action_form(DeviceChangeComment, initial_value="Erase Wifi credentials sent")
-    def erase_wifi_credentials(self, request, queryset, form):
-        comment = form.cleaned_data['comment']
-        for device in queryset.filter(status=Device.ACTIVATED):
-            erase_wifi_credentials.apply_async((device.device_id,))
-            device.erase_wifi_credentials_at = datetime.now()  # TODO: check millis
-            device.save()
-            update_change_reason(device, comment)
+            update_change_reason(device, f"Sent {event_type}")
 
     def start_container(self, request, queryset):
         success = False
@@ -442,10 +447,9 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
     mode_default.short_description = "Reset"
     mode_calibration.short_description = "Calibrate"
     mode_production.short_description = "Production"
-    zero_config.short_description = "Zero Config"
-    erase_wifi_credentials.short_description = "Erase Wifi Credentials"
     start_container.short_description = "Start"
     stop_container.short_description = "Stop"
+    send_event_to_device.short_description = "Send Event"
 
     def get_row_actions(self, obj):
         row_actions = []
