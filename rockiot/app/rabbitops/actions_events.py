@@ -48,12 +48,8 @@ class DeviceEvent:
                            datetime.utcnow().isoformat(), "activation", None)
 
     @classmethod
-    def construct_zero_config(cls):
-        return DeviceEvent(None, None, None, datetime.utcnow().isoformat(), "device_config", {"zero_sensor": True})
-
-    @classmethod
-    def construct_erase_wifi_credentials(cls):
-        return DeviceEvent(None, None, None, datetime.utcnow().isoformat(), "device_config", {"erase_wifi_credentials": True})
+    def construct_device_event(cls, event_type):
+        return DeviceEvent(None, None, None, datetime.utcnow().isoformat(), "device_config", {f"{event_type}": True})
 
     @classmethod
     def construct_device_metadata_changed(cls, metadata):
