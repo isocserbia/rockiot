@@ -46,11 +46,25 @@ services:
       - BROKER_EXCHANGE=amq.topic
       - WAIT_HOSTS=rabbit1:8883,rabbit1:15672
 
-  rockiotworker:
+  rockiotworker_default:
     <<: *rockiotfunction
-    container_name: rockiot_app_worker
+    container_name: rockiot_app_worker_default
     command: >
-      sh -c "/wait.sh && celery -A tasks.celery worker -Q normal -n normal@%h -l info -c 4"
+      sh -c "/wait.sh && celery -A tasks.celery worker -Q celery_default -l info -c 1"
+    ports: [ ]
+    depends_on:
+      - rabbit1
+      - rockiot
+    environment:
+      - DEBUG=False
+      - BROKER_EXCHANGE=amq.topic
+      - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
+
+  rockiotworker_device:
+    <<: *rockiotfunction
+    container_name: rockiot_app_worker_device
+    command: >
+      sh -c "/wait.sh && celery -A tasks.celery worker -Q celery_uplink,celery_downlink -l info -c 4 --prefetch-multiplier=2"
     ports: [ ]
     depends_on:
       - rabbit1
