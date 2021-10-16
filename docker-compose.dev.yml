@@ -28,7 +28,15 @@ services:
     env_file:
       - rockiot.dev.env
 
-  rockiotworker:
+  rockiotworker_default:
+    depends_on:
+      - timescaledb
+      - rabbit1
+      - rockiot
+    env_file:
+      - rockiot.dev.env
+
+  rockiotworker_device:
     depends_on:
       - timescaledb
       - rabbit1

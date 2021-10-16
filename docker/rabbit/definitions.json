@@ -199,9 +199,58 @@
       "durable": false,
       "auto_delete": false,
       "arguments": {}
+    },
+    {
+      "name": "celery_default",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "celery_downlink",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "celery_uplink",
+      "vhost": "/",
+      "durable": false,
+      "auto_delete": false,
+      "arguments": {}
     }
   ],
-  "exchanges": [],
+  "exchanges": [
+    {
+      "name": "celery_default",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "celery_downlink",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "celery_uplink",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
   "bindings": [
     {
       "source": "amq.direct",
@@ -225,6 +274,30 @@
       "destination": "tasks_amqp",
       "destination_type": "queue",
       "routing_key": "v1.devices.actions",
+      "arguments": {}
+    },
+    {
+      "source": "celery_default",
+      "vhost": "/",
+      "destination": "celery_default",
+      "destination_type": "queue",
+      "routing_key": "celery_routing_key",
+      "arguments": {}
+    },
+    {
+      "source": "celery_downlink",
+      "vhost": "/",
+      "destination": "celery_downlink",
+      "destination_type": "queue",
+      "routing_key": "celery_routing_key",
+      "arguments": {}
+    },
+    {
+      "source": "celery_uplink",
+      "vhost": "/",
+      "destination": "celery_uplink",
+      "destination_type": "queue",
+      "routing_key": "celery_routing_key",
       "arguments": {}
     }
   ]
