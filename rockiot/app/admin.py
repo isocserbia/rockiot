@@ -25,6 +25,7 @@ from app.system.decorators import action_form, device_event_form
 from app.system.dockerops import DockerOps
 from app.tasks import register_device, activate_device, deactivate_device, terminate_device, \
     send_device_metadata, send_platform_attributes, send_device_event
+from app.widgets import MyPrettyJSONWidget
 
 DEFAULT_CHOICE_DASH = []
 
@@ -93,7 +94,7 @@ def get_form_field_overrides():
         models.EmailField: {'widget': TextInput(attrs={'size': '40'})},
         models.GenericIPAddressField: {'widget': TextInput(attrs={'size': '40'})},
         models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},
-        models.JSONField: {'widget': PrettyJSONWidget(attrs={'initial': 'parsed', 'rows': 24, 'cols': 96})}
+        models.JSONField: {'widget': MyPrettyJSONWidget(attrs={'initial': 'parsed', 'rows': 24, 'cols': 96})}
     }
 
 
