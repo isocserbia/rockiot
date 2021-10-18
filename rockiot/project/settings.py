@@ -314,6 +314,7 @@ DEBUG = False
 CORS_ORIGIN_WHITELIST = (
     'http://api.decazavazduh.rs',
     'https://api.decazavazduh.rs',
+    'https://api.decazavazduh.rs:8000',
     'http://localhost:8000',
 )
 
