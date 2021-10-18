@@ -15,7 +15,6 @@ from django_celery_results.models import GroupResult, TaskResult
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from import_export.fields import Field
-from prettyjson import PrettyJSONWidget
 from simple_history.admin import SimpleHistoryAdmin
 from simple_history.utils import update_change_reason
 
@@ -306,6 +305,9 @@ class DeviceSendEventForm(forms.Form):
 @admin.register(Device)
 class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
 
+    map_template = 'admin/map-openlayers.html'
+    default_zoom = 4
+
     actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container', 'mode_default', 'mode_calibration', 'mode_production', 'send_event_to_device']
 
     action_groups_map = OrderedDict({
@@ -480,7 +482,7 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
             ('description', 'facility')
         )}),
         ('Location', {'fields': ('location',)}),
-        ('Metadata', {'fields': ('metadata',)}),
+        ('Metadata', {'fields': ('metadata',), 'classes': ['collapse']}),
         ('Confidential', {'fields': ('device_pass',), 'classes': ['collapse']})
     ]
 
