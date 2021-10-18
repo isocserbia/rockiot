@@ -44,7 +44,9 @@ class Municipality(models.Model):
 
 
 def belgrade_location_point():
-    return Point(20.457273, 44.787197)
+    point = Point(x=20.457273, y=44.787197, srid=4326)
+    point.transform(900913)
+    return point
 
 
 class Facility(models.Model):
