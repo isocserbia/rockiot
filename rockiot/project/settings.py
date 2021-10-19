@@ -319,3 +319,8 @@ CORS_ORIGIN_WHITELIST = (
 )
 
 SERVING_URL = config('SERVING_URL', default=None)
+
+LEAFLET_CONFIG = {
+    'FORCE_IMAGE_PATH': True,
+}
+

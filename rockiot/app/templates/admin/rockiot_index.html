@@ -9,7 +9,7 @@
   {% leaflet_css %}
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
   <style>
-      html, body, #container /*, and all other map parent selectors*/ {
+      html, body {
           height: 100%;
           overflow: hidden;
           width: 100%;
@@ -26,8 +26,8 @@
   {% leaflet_map "main" callback="main_map_init" %}
 
   <script type="text/javascript">
-      let mylat = -6.21462;
-      let mylon = 106.84513;
+      let mylat = 20.457273;
+      let mylon = 44.787197;
       function main_map_init (map, options) {
           var dataurl = '{% url "data" %}';
           map.setView([mylat, mylon], 5);
@@ -36,12 +36,12 @@
               console.log(data);
               L.geoJson(data, {
                   onEachFeature: function(feature, layer){
-                      layer.bindPopup(''+
+                      layer.bindTooltip(''+
                           '<h3>' + feature.properties.device_id + '</h3>' +
                           '<ul>' +
                               '<li> mode: ' + feature.properties.mode + '</li>' +
                               '<li> status: ' + feature.properties.status + '</li>' +
-                          '</ul>'
+                          '</ul>', {closeButton: false, offset: L.point(0, -20)}
                       );
                   }
               }).addTo(map);
