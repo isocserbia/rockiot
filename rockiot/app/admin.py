@@ -291,7 +291,7 @@ class DeviceChangeComment(forms.Form):
 class DeviceSendEventForm(forms.Form):
     title = 'Select an event to send to device'
     MY_CHOICES = (
-        ('zero_senzor', 'Zero Sensor'),
+        ('zero_sensors', 'Zero Sensors'),
         ('zero_so2', 'Zero So2 Sensor'),
         ('zero_no2', 'Zero No2 Sensor'),
         ('erase_wifi_credentials', 'Erase WiFi Credentials'),
