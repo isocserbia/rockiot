@@ -26,11 +26,11 @@
   {% leaflet_map "main" callback="main_map_init" %}
 
   <script type="text/javascript">
-      let mylat = 20.457273;
-      let mylon = 44.787197;
+      let mylat = 43.91372326852401;
+      let mylon = 21.4508056640625;
       function main_map_init (map, options) {
           var dataurl = '{% url "data" %}';
-          map.setView([mylat, mylon], 5);
+          map.setView([mylat, mylon], 7);
           $.getJSON(dataurl, function (data) {
               // Add GeoJSON layer
               console.log(data);
@@ -43,6 +43,34 @@
                               '<li> status: ' + feature.properties.status + '</li>' +
                           '</ul>', {closeButton: false, offset: L.point(0, -20)}
                       );
+                  }
+              }).addTo(map);
+          });
+          $.getJSON('{% url "borders" %}', function (data) {
+              L.geoJson(data, {
+                  onEachFeature: function(feature, layer) {
+                      layer.bindPopup('<h3>' + feature.properties['code'] + '</h3>' +
+                                      '<li><a href="/admin/app/municipality/' + feature.properties['id']+ '/change/">' +
+                                      feature.properties['name'] +
+                                      '</a></li>',
+                                      {
+                                          closeButton: false,
+                                          closeOnClick: true,
+                                          closeOnEscapeKey: true,
+                                          autoClose: true
+                                      })
+                            .addTo(map);
+<!--                  onEachFeature: function(feature, layer) {-->
+<!--                      layer.bindPopup(feature.properties['laa'], {-->
+<!--                          closeButton: false,-->
+<!--                          closeOnClick: true,-->
+<!--                          closeOnEscapeKey: true,-->
+<!--                          autoClose: true-->
+<!--                      }).addTo(map);-->
+<!--                      var polygonCenter = layer.getBounds().getCenter();-->
+<!--                      L.circleMarker(polygonCenter, radius=1, weight=1, pane='markerPane')-->
+<!--                        .bindTooltip(feature.properties['laa'])-->
+<!--                        .addTo(map);-->
                   }
               }).addTo(map);
           });

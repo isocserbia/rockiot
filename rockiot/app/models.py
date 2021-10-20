@@ -39,7 +39,8 @@ class Municipality(models.Model):
         return str(self.name)
 
     def save(self, *args, **kwargs):
-        self.code = slugify(self.name)
+        if not self.code:
+            self.code = slugify(self.name)
         super(Municipality, self).save(*args, **kwargs)
 
 

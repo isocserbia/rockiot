@@ -322,5 +322,10 @@ SERVING_URL = config('SERVING_URL', default=None)
 
 LEAFLET_CONFIG = {
     'FORCE_IMAGE_PATH': True,
+    'NO_GLOBALS': False,
+}
+
+SERIALIZATION_MODULES = {
+    'geojson': 'djgeojson.serializers'
 }
 

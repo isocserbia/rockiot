@@ -649,4 +649,4 @@ class MyTaskResultAdmin(TaskResultAdmin):
 
 admin.site.register(TaskResult, MyTaskResultAdmin)
 
-# admin.site.index_template = 'admin/rockiot_index.html'
+admin.site.index_template = 'admin/rockiot_index.html'
