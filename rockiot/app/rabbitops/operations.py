@@ -90,11 +90,20 @@ def update_connections():
 
     for did in list(connection_map.keys()):
         for cid in list(connection_map[did].keys()):
-            new_dc = DeviceConnection()
-            new_dc.device = Device.objects.get(device_id=did)
-            new_dc.update_from_rabbitmq_connection(connection_map[did][cid])
-            new_dc.save()
-            logger.info(f"{did} new connection created [client: {cid}]")
+            try:
+                connection = connection_map[did][cid]
+                name = connection["name"]
+                client_id = connection["variable_map"]["client_id"]
+                if not DeviceConnection.objects.filter(name=name, client_id=client_id).exists():
+                    new_dc = DeviceConnection()
+                    new_dc.device = Device.objects.get(device_id=did)
+                    new_dc.update_from_rabbitmq_connection(connection)
+                    new_dc.save()
+                    logger.info(f"{did} new connection created [client: {cid}]")
+                else:
+                    logger.info(f"{did} skipped, connection already exsts [client: {cid}]")
+            except:
+                logger.error("Error creating device connection", exc_info=True)
     return True
 
 

@@ -2,12 +2,14 @@
 import logging
 from datetime import date, datetime
 
+from django.conf import settings
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, views
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, IsAuthenticatedOrReadOnly
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
@@ -20,6 +22,8 @@ from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer
     SensorDataSerializer, DeviceLogEntrySerializer
 
 logger = logging.getLogger(__name__)
+
+config = settings.REST_FRAMEWORK
 
 
 class IndexView(TemplateView):
@@ -47,6 +51,8 @@ class DevicesList(generics.ListAPIView):
     queryset = Device.objects.all()
     serializer_class = DeviceModelSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class DeviceChangeLogList(generics.ListAPIView):
@@ -69,6 +75,8 @@ class DeviceChangeLogList(generics.ListAPIView):
 
     serializer_class = DeviceLogEntrySerializer
     permission_classes = [IsAuthenticatedOrReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class MunicipalityView(generics.RetrieveAPIView):
@@ -96,6 +104,8 @@ class MunicipalityList(generics.ListAPIView):
     queryset = Municipality.objects.all()
     serializer_class = MunicipalityModelSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class FacilityView(generics.RetrieveAPIView):
@@ -123,6 +133,8 @@ class FacilityList(generics.ListAPIView):
     queryset = Facility.objects.all()
     serializer_class = FacilityModelSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class SensorDataList(generics.ListAPIView):
@@ -146,6 +158,8 @@ class SensorDataList(generics.ListAPIView):
 
     serializer_class = SensorDataSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class SensorDataRawList(generics.ListAPIView):
@@ -169,6 +183,8 @@ class SensorDataRawList(generics.ListAPIView):
 
     serializer_class = SensorDataRawSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 interval_param = openapi.Parameter('interval', openapi.IN_QUERY,
@@ -199,6 +215,8 @@ class DeviceSensorsSummary(generics.ListAPIView):
 
     serializer_class = SensorsDataRollupSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class FacilitySensorsSummary(generics.ListAPIView):
@@ -225,6 +243,8 @@ class FacilitySensorsSummary(generics.ListAPIView):
 
     serializer_class = SensorsDataRollupWithDeviceSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class MunicipalitySensorsSummary(generics.ListAPIView):
@@ -254,6 +274,8 @@ class MunicipalitySensorsSummary(generics.ListAPIView):
 
     serializer_class = SensorsDataRollupWithDeviceSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class SensorDataLastValuesList(generics.ListAPIView):
@@ -266,6 +288,8 @@ class SensorDataLastValuesList(generics.ListAPIView):
     queryset = SensorDataLastValues.objects.all()
     serializer_class = SensorDataLastValuesSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class CsvExportView(views.APIView):
