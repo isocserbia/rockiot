@@ -72,6 +72,7 @@ MIDDLEWARE = [
     # 'admin_reorder.middleware.ModelAdminReorder',
 ]
 
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -89,8 +90,8 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '100/day',
-        'user': '1000/day'
+        'anon': '5000/day',
+        'user': '10000/day'
     },
     'DATETIME_FORMAT': "%Y-%m-%dT%H:%M:%S",
     'EXCEPTION_HANDLER': 'app.core.exception_handler.handler'
