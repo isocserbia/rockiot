@@ -210,3 +210,15 @@ class SensorDataLastValuesSerializer(serializers.ModelSerializer):
 class CronJobSerializer(serializers.ModelSerializer):
     class Meta:
         model = CronJob
+
+
+class SensorHourAverageFacilitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SensorHourAverageFacility
+        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
+
+
+class SensorHourAverageMunicipalitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SensorHourAverageMunicipality
+        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]

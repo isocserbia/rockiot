@@ -55,7 +55,8 @@ app.conf.task_routes = {
         'delivery_mode': 'transient',
     },
     'app.tasks.save_device_metadata': 'celery_uplink',
-    'app.tasks.handle_activation_request': 'celery_uplink'
+    'app.tasks.handle_activation_request': 'celery_uplink',
+    'app.tasks.export_raw_data_to_csv': 'celery_default'
 }
 
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)

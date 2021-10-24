@@ -101,7 +101,7 @@ def update_connections():
                     new_dc.save()
                     logger.info(f"{did} new connection created [client: {cid}]")
                 else:
-                    logger.info(f"{did} skipped, connection already exsts [client: {cid}]")
+                    logger.info(f"{did} skipped, connection already exists [client: {cid}]")
             except:
                 logger.error("Error creating device connection", exc_info=True)
     return True
