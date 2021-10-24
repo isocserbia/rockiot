@@ -1,7 +1,7 @@
 --
 -- Data for Name: django_celery_beat_crontabschedule; Type: TABLE DATA; Schema: public; Owner: postgres
 --
-INSERT INTO public.django_celery_beat_crontabschedule (id, minute, hour, day_of_week, day_of_month, month_of_year, timezone) VALUES (1, '0', '0', '*', '*', '*', 'UTC');
+INSERT INTO public.django_celery_beat_crontabschedule (id, minute, hour, day_of_week, day_of_month, month_of_year, timezone) VALUES (1, '10', '0', '*', '*', '*', 'UTC');
 INSERT INTO public.django_celery_beat_crontabschedule (id, minute, hour, day_of_week, day_of_month, month_of_year, timezone) VALUES (2, '0', '4', '*', '*', '*', 'UTC');
 --
 -- Name: django_celery_beat_crontabschedule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres

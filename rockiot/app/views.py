@@ -1,9 +1,10 @@
 """Markers view."""
+import json
 import logging
 from datetime import date, datetime
 
 from django.conf import settings
-from django.http import FileResponse, Http404
+from django.http import FileResponse, HttpResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
 from drf_yasg import openapi
@@ -15,11 +16,13 @@ from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
 
 from app.models import Facility, SensorData, SensorDataLastValues, Device, Municipality, \
-    SensorsDataRollupAbstract, SensorDataRaw
+    SensorsDataRollupAbstract, SensorDataRaw, SensorHourAverageMunicipality, SensorHourAverageFacility
 from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer, SensorDataRawSerializer, \
     SensorDataLastValuesSerializer, DeviceModelSerializer, \
     SensorsDataRollupSerializer, MunicipalityModelSerializer, SensorsDataRollupWithDeviceSerializer, \
-    SensorDataSerializer, DeviceLogEntrySerializer
+    SensorDataSerializer, DeviceLogEntrySerializer, SensorHourAverageFacilitySerializer, \
+    SensorHourAverageMunicipalitySerializer
+from app.tasks import export_raw_data_to_csv
 
 logger = logging.getLogger(__name__)
 
@@ -278,6 +281,56 @@ class MunicipalitySensorsSummary(generics.ListAPIView):
     pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
+class SensorDataAverageMunicipality(generics.ListAPIView):
+    @swagger_auto_schema(operation_description="Retrieve list of hour-average Sensor data for Municipality",
+                         operation_summary="Gets hour-average Sensor data for Municipality",
+                         tags=['report'],
+                         manual_parameters=[from_date_param, until_date_param])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        code = self.kwargs['code']
+        from_date = self.request.query_params.get('from_date', None)
+        until_date = self.request.query_params.get('until_date', None)
+        qs = SensorHourAverageMunicipality.objects.filter(code=code)
+        if from_date is not None:
+            qs = qs.filter(time__date__gte=from_date)
+        if until_date is not None:
+            qs = qs.filter(time__date__lte=until_date)
+        return qs
+
+    serializer_class = SensorHourAverageMunicipalitySerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
+
+
+class SensorDataAverageFacility(generics.ListAPIView):
+    @swagger_auto_schema(operation_description="Retrieve list of hour-average Sensor data for Facility",
+                         operation_summary="Gets hour-average Sensor data for Facility",
+                         tags=['report'],
+                         manual_parameters=[from_date_param, until_date_param])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        code = self.kwargs['code']
+        from_date = self.request.query_params.get('from_date', None)
+        until_date = self.request.query_params.get('until_date', None)
+        qs = SensorHourAverageFacility.objects.filter(code=code)
+        if from_date is not None:
+            qs = qs.filter(time__date__gte=from_date)
+        if until_date is not None:
+            qs = qs.filter(time__date__lte=until_date)
+        return qs
+
+    serializer_class = SensorHourAverageFacilitySerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
+
+
 class SensorDataLastValuesList(generics.ListAPIView):
     @swagger_auto_schema(operation_description="Retrieve last readings for all devices",
                          operation_summary="Gets last Sensor data",
@@ -299,21 +352,27 @@ class CsvExportView(views.APIView):
                          tags=['report'],
                          responses={
                              '200': openapi.Response('File Attachment', schema=openapi.Schema(type=openapi.TYPE_FILE)),
+                             '201': 'System is creating file. Check later.',
                              '404': 'Not Found'
                          },
                          produces='text/csv')
     def get(self, request, format=None):
         from_date = self.request.query_params.get('from_date', date.today().isoformat())
         file_name = f'sensor_data-{from_date}.csv'
+        file_path = f'/rockiot-data/{file_name}'
         try:
-            file_handle = open(f'/rockiot-data/{file_name}', 'rb')
+            file_handle = open(file_path, 'rb')
             response = FileResponse(file_handle, content_type='text/csv')
             response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
             return response
         except IOError as ioe:
-            meg = f"Requested CSV file {file_name} not found: {ioe}"
-            logger.warning(meg)
-            raise Http404(meg)
+            export_raw_data_to_csv.apply_async((from_date,))
+            logger.info(f"System is creating CSV report [dat: {from_date}]")
+            return HttpResponse('System is creating CSV report. Please, check again soon.')
+        except:
+            msg = f"Failed getting CSV file {file_name}"
+            logger.error(msg, exc_info=True)
+            raise HttpResponseServerError(msg)
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
