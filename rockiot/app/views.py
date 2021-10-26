@@ -16,7 +16,8 @@ from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
 
 from app.models import Facility, SensorData, SensorDataLastValues, Device, Municipality, \
-    SensorsDataRollupAbstract, SensorDataRaw, SensorHourAverageMunicipality, SensorHourAverageFacility
+    SensorsDataRollupAbstract, SensorDataRaw, SensorHourAverageMunicipality, SensorHourAverageFacility, \
+    SensorDayAverageMunicipality, SensorDayAverageFacility
 from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer, SensorDataRawSerializer, \
     SensorDataLastValuesSerializer, DeviceModelSerializer, \
     SensorsDataRollupSerializer, MunicipalityModelSerializer, SensorsDataRollupWithDeviceSerializer, \
@@ -194,6 +195,10 @@ interval_param = openapi.Parameter('interval', openapi.IN_QUERY,
                                    description="interval ('15m','1h','4h','24h')",
                                    type=openapi.TYPE_STRING, default='15m')
 
+interval_avg_param = openapi.Parameter('interval', openapi.IN_QUERY,
+                                       description="interval ('1h','24h')",
+                                       type=openapi.TYPE_STRING, default='1h')
+
 
 class DeviceSensorsSummary(generics.ListAPIView):
     @swagger_auto_schema(operation_description="Retrieve list of aggregated Sensor data for Device and time Interval",
@@ -282,23 +287,27 @@ class MunicipalitySensorsSummary(generics.ListAPIView):
 
 
 class SensorDataAverageMunicipality(generics.ListAPIView):
-    @swagger_auto_schema(operation_description="Retrieve list of hour-average Sensor data for Municipality",
-                         operation_summary="Gets hour-average Sensor data for Municipality",
+    @swagger_auto_schema(operation_description="Retrieve list of average Sensor data for Municipality",
+                         operation_summary="Gets average Sensor data for Municipality",
                          tags=['report'],
-                         manual_parameters=[from_date_param, until_date_param])
+                         manual_parameters=[interval_avg_param, from_date_param, until_date_param])
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
         code = self.kwargs['code']
+        interval = self.request.query_params.get('interval')
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
-        qs = SensorHourAverageMunicipality.objects.filter(code=code)
+        if interval == '1h':
+            qs = SensorHourAverageMunicipality.objects.filter(code=code)
+        else:
+            qs = SensorDayAverageMunicipality.objects.filter(code=code)
         if from_date is not None:
             qs = qs.filter(time__date__gte=from_date)
         if until_date is not None:
             qs = qs.filter(time__date__lte=until_date)
-        return qs
+        return qs.order_by('-time')
 
     serializer_class = SensorHourAverageMunicipalitySerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
@@ -307,23 +316,27 @@ class SensorDataAverageMunicipality(generics.ListAPIView):
 
 
 class SensorDataAverageFacility(generics.ListAPIView):
-    @swagger_auto_schema(operation_description="Retrieve list of hour-average Sensor data for Facility",
-                         operation_summary="Gets hour-average Sensor data for Facility",
+    @swagger_auto_schema(operation_description="Retrieve list of average Sensor data for Facility",
+                         operation_summary="Gets average Sensor data for Facility",
                          tags=['report'],
-                         manual_parameters=[from_date_param, until_date_param])
+                         manual_parameters=[interval_avg_param, from_date_param, until_date_param])
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
         code = self.kwargs['code']
+        interval = self.request.query_params.get('interval')
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
-        qs = SensorHourAverageFacility.objects.filter(code=code)
+        if interval == '1h':
+            qs = SensorHourAverageFacility.objects.filter(code=code)
+        else:
+            qs = SensorDayAverageFacility.objects.filter(code=code)
         if from_date is not None:
             qs = qs.filter(time__date__gte=from_date)
         if until_date is not None:
             qs = qs.filter(time__date__lte=until_date)
-        return qs
+        return qs.order_by('-time')
 
     serializer_class = SensorHourAverageFacilitySerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
