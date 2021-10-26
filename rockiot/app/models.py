@@ -461,7 +461,7 @@ class CronJobExecution(models.Model):
 
 class SensorAverage(models.Model):
     code = models.CharField(max_length=30)
-    time = models.DateField(primary_key=True)
+    time = models.DateTimeField(primary_key=True)
     temperature = models.DecimalField(decimal_places=4, max_digits=16)
     humidity = models.DecimalField(decimal_places=4, max_digits=16)
     no2 = models.DecimalField(decimal_places=4, max_digits=16)
@@ -490,3 +490,19 @@ class SensorHourAverageMunicipality(SensorAverage):
         managed = False
         verbose_name_plural = "class SensorHourAverageMunicipalities"
         db_table = "sensor_data_hour_average_municipality"
+
+
+class SensorDayAverageFacility(SensorAverage):
+    class Meta:
+        abstract = False
+        managed = False
+        verbose_name_plural = "SensorDayAverageFacilities"
+        db_table = "sensor_data_day_average_facility"
+
+
+class SensorDayAverageMunicipality(SensorAverage):
+    class Meta:
+        abstract = False
+        managed = False
+        verbose_name_plural = "SensorDayAverageMunicipality"
+        db_table = "sensor_data_day_average_municipality"

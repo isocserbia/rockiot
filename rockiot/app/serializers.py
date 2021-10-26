@@ -222,3 +222,15 @@ class SensorHourAverageMunicipalitySerializer(serializers.ModelSerializer):
     class Meta:
         model = SensorHourAverageMunicipality
         fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
+
+
+class SensorDayAverageFacilitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SensorDayAverageFacility
+        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
+
+
+class SensorDayAverageMunicipalitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SensorDayAverageMunicipality
+        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
