@@ -476,33 +476,57 @@ class SensorAverage(models.Model):
         ordering = ['-time']
 
 
-class SensorHourAverageFacility(SensorAverage):
+class Sensor15mAverageFacility(SensorAverage):
     class Meta:
         abstract = False
         managed = False
-        verbose_name_plural = "SensorHourAverageFacilities"
+        db_table = "sensor_data_15m_average_facility"
+
+
+class Sensor15mAverageMunicipality(SensorAverage):
+    class Meta:
+        abstract = False
+        managed = False
+        db_table = "sensor_data_15m_average_municipality"
+
+
+class Sensor1hAverageFacility(SensorAverage):
+    class Meta:
+        abstract = False
+        managed = False
         db_table = "sensor_data_hour_average_facility"
 
 
-class SensorHourAverageMunicipality(SensorAverage):
+class Sensor1hAverageMunicipality(SensorAverage):
     class Meta:
         abstract = False
         managed = False
-        verbose_name_plural = "class SensorHourAverageMunicipalities"
         db_table = "sensor_data_hour_average_municipality"
 
 
-class SensorDayAverageFacility(SensorAverage):
+class Sensor4hAverageFacility(SensorAverage):
     class Meta:
         abstract = False
         managed = False
-        verbose_name_plural = "SensorDayAverageFacilities"
+        db_table = "sensor_data_4hour_average_facility"
+
+
+class Sensor4hAverageMunicipality(SensorAverage):
+    class Meta:
+        abstract = False
+        managed = False
+        db_table = "sensor_data_4hour_average_municipality"
+
+
+class Sensor24hAverageFacility(SensorAverage):
+    class Meta:
+        abstract = False
+        managed = False
         db_table = "sensor_data_day_average_facility"
 
 
-class SensorDayAverageMunicipality(SensorAverage):
+class Sensor24hAverageMunicipality(SensorAverage):
     class Meta:
         abstract = False
         managed = False
-        verbose_name_plural = "SensorDayAverageMunicipality"
         db_table = "sensor_data_day_average_municipality"

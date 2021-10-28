@@ -15,14 +15,14 @@ from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, IsA
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
 
+from app import models
 from app.models import Facility, SensorData, SensorDataLastValues, Device, Municipality, \
-    SensorsDataRollupAbstract, SensorDataRaw, SensorHourAverageMunicipality, SensorHourAverageFacility, \
-    SensorDayAverageMunicipality, SensorDayAverageFacility
+    SensorsDataRollupAbstract, SensorDataRaw
 from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer, SensorDataRawSerializer, \
     SensorDataLastValuesSerializer, DeviceModelSerializer, \
     SensorsDataRollupSerializer, MunicipalityModelSerializer, SensorsDataRollupWithDeviceSerializer, \
-    SensorDataSerializer, DeviceLogEntrySerializer, SensorHourAverageFacilitySerializer, \
-    SensorHourAverageMunicipalitySerializer
+    SensorDataSerializer, DeviceLogEntrySerializer, SensorAverageMunicipalitySerializer, \
+    SensorAverageFacilitySerializer
 from app.tasks import export_raw_data_to_csv
 
 logger = logging.getLogger(__name__)
@@ -193,11 +193,7 @@ class SensorDataRawList(generics.ListAPIView):
 
 interval_param = openapi.Parameter('interval', openapi.IN_QUERY,
                                    description="interval ('15m','1h','4h','24h')",
-                                   type=openapi.TYPE_STRING, default='15m')
-
-interval_avg_param = openapi.Parameter('interval', openapi.IN_QUERY,
-                                       description="interval ('1h','24h')",
-                                       type=openapi.TYPE_STRING, default='1h')
+                                   type=openapi.TYPE_STRING, default='1h')
 
 
 class DeviceSensorsSummary(generics.ListAPIView):
@@ -290,7 +286,7 @@ class SensorDataAverageMunicipality(generics.ListAPIView):
     @swagger_auto_schema(operation_description="Retrieve list of average Sensor data for Municipality",
                          operation_summary="Gets average Sensor data for Municipality",
                          tags=['report'],
-                         manual_parameters=[interval_avg_param, from_date_param, until_date_param])
+                         manual_parameters=[interval_param, from_date_param, until_date_param])
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
@@ -299,17 +295,14 @@ class SensorDataAverageMunicipality(generics.ListAPIView):
         interval = self.request.query_params.get('interval')
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
-        if interval == '1h':
-            qs = SensorHourAverageMunicipality.objects.filter(code=code)
-        else:
-            qs = SensorDayAverageMunicipality.objects.filter(code=code)
+        qs = getattr(models, f"Sensor{interval}AverageMunicipality").objects.filter(code=code)
         if from_date is not None:
             qs = qs.filter(time__date__gte=from_date)
         if until_date is not None:
             qs = qs.filter(time__date__lte=until_date)
         return qs.order_by('-time')
 
-    serializer_class = SensorHourAverageMunicipalitySerializer
+    serializer_class = SensorAverageMunicipalitySerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
     pagination_class = LimitOffsetPagination
     pagination_class.default_limit = int(config['PAGE_SIZE'])
@@ -319,7 +312,7 @@ class SensorDataAverageFacility(generics.ListAPIView):
     @swagger_auto_schema(operation_description="Retrieve list of average Sensor data for Facility",
                          operation_summary="Gets average Sensor data for Facility",
                          tags=['report'],
-                         manual_parameters=[interval_avg_param, from_date_param, until_date_param])
+                         manual_parameters=[interval_param, from_date_param, until_date_param])
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
@@ -328,17 +321,14 @@ class SensorDataAverageFacility(generics.ListAPIView):
         interval = self.request.query_params.get('interval')
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
-        if interval == '1h':
-            qs = SensorHourAverageFacility.objects.filter(code=code)
-        else:
-            qs = SensorDayAverageFacility.objects.filter(code=code)
+        qs = getattr(models, f"Sensor{interval}AverageFacility").objects.filter(code=code)
         if from_date is not None:
             qs = qs.filter(time__date__gte=from_date)
         if until_date is not None:
             qs = qs.filter(time__date__lte=until_date)
         return qs.order_by('-time')
 
-    serializer_class = SensorHourAverageFacilitySerializer
+    serializer_class = SensorAverageFacilitySerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
     pagination_class = LimitOffsetPagination
     pagination_class.default_limit = int(config['PAGE_SIZE'])
