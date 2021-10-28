@@ -116,7 +116,7 @@ class FacilityModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Facility
-        fields = ['name', 'type', 'email', 'description', 'address', 'lon', 'lat',
+        fields = ['code', 'name', 'type', 'email', 'description', 'address', 'lon', 'lat',
                   'municipality', 'location', 'created_at', 'updated_at', 'devices', 'memberships']
 
 
@@ -212,25 +212,13 @@ class CronJobSerializer(serializers.ModelSerializer):
         model = CronJob
 
 
-class SensorHourAverageFacilitySerializer(serializers.ModelSerializer):
+class SensorAverageFacilitySerializer(serializers.ModelSerializer):
     class Meta:
-        model = SensorHourAverageFacility
-        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
+        model = Sensor1hAverageFacility
+        fields = '__all__'
 
 
-class SensorHourAverageMunicipalitySerializer(serializers.ModelSerializer):
+class SensorAverageMunicipalitySerializer(serializers.ModelSerializer):
     class Meta:
-        model = SensorHourAverageMunicipality
-        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
-
-
-class SensorDayAverageFacilitySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SensorDayAverageFacility
-        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
-
-
-class SensorDayAverageMunicipalitySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SensorDayAverageMunicipality
-        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
+        model = Sensor1hAverageMunicipality
+        fields = '__all__'
