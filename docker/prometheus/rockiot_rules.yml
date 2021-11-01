@@ -1,0 +1,38 @@
+groups:
+  - name: rockiot
+    rules:
+      - alert: DeviceMetadataNotUpdated
+        expr: time() - rockiot_device_metadata_updated_at > 60
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: Device metadata not updated (device {{ $labels.device }})
+          description: "Device metadata not updated. Last update at: {{ $value }}"
+
+      - alert: DeviceNotIngestingData
+        expr: time() - rockiot_device_data_updated_at > 60
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: Device is not ingesting data (device {{ $labels.device }})
+          description: "Device sensor data not ingested recently. Last update at: {{ $value }}"
+
+      - alert: DeviceNotSeenOnlineRecently
+        expr: time() - rockiot_device_last_seen_at > 60
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: Device not seen Online recently (device {{ $labels.device }})
+          description: "Device not seen Online recently. Last time seen at: {{ $value }}"
+
+      - alert: DeviceTooManyTerminatedConnections
+        expr: rockiot_device_terminated_connections_in_hour > 5
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: Device has too many terminated connections in last hour (device {{ $labels.device }})
+          description: "Device is terminating connections to often. Terminated {{ $value }} connections in last hour"

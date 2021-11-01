@@ -7,7 +7,7 @@ global:
 
   scrape_interval: 15s
   scrape_timeout: 10s
-  evaluation_interval: 30s
+  evaluation_interval: 15s
 
 alerting:
   alertmanagers:
@@ -16,30 +16,38 @@ alerting:
        - 'alertmanager:9093'
 
 rule_files:
-   - "system_rules.yml"
-   - "rabbitmq_rules.yml"
+   - "rockiot_rules.yml"
    - "postgres_rules.yml"
+   - "rabbitmq_rules.yml"
    - "cadvisor_rules.yml"
+   - "system_rules.yml"
 
 scrape_configs:
 
-  - job_name: 'prometheus'
+  - job_name: 'rockiot-exporter'
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: [ 'rockiotmetrics:8001' ]
 
-  - job_name: 'nodeexporter'
+  - job_name: 'django-exporter'
     static_configs:
-      - targets: [ 'nodeexporter:9100' ]
+      - targets: [ 'rockiot:8000' ]
 
-  - job_name: 'cadvisor'
-    scrape_interval: 5s
+  - job_name: 'postgres-exporter'
     static_configs:
-      - targets: [ 'cadvisor:8080' ]
+      - targets: [ 'postgresexporter:9187' ]
 
   - job_name: 'rabbitmq-exporter'
     static_configs:
       - targets: [ 'rabbit1:15692' ]
 
-  - job_name: 'postgres-exporter'
+  - job_name: 'prometheus'
     static_configs:
-      - targets: [ 'postgresexporter:9187' ]
+      - targets: ['localhost:9090']
+
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: [ 'cadvisor:8080' ]
+
+  - job_name: 'nodeexporter'
+    static_configs:
+      - targets: [ 'nodeexporter:9100' ]

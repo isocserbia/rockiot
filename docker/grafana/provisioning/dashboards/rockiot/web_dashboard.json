@@ -1,0 +1,1024 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "ROCK IoT Dashboard",
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "iteration": 1635642095372,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "PostgreSQL",
+      "description": "Average Temperature",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 23
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 0,
+        "y": 0
+      },
+      "id": 16,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "/^device1$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "metricColumn": "device_id",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  coalesce(temperature, 0)\nFROM sensor_data\nWHERE\n  $__timeFilter(time)\nAND\n  $device is null or device_id IN ($device)\nORDER BY 1,2",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "avg_temp"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "avg_temp"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "temperature_humidity_summary_minute",
+          "timeColumn": "bucket",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Temperature",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": "PostgreSQL",
+      "description": "Average Humidity",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
+            ]
+          },
+          "unit": "humidity"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 3,
+        "y": 0
+      },
+      "id": 22,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "device_id"
+              ],
+              "type": "column"
+            }
+          ],
+          "hide": false,
+          "metricColumn": "device_id",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  humidity\nFROM sensor_data\nWHERE\n  $__timeFilter(time)\nAND\n  $device is null or device_id IN ($device)\nORDER BY 1,2",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "avg_humidity"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "avg"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "avg_humidity"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "temperature_humidity_summary_minute",
+          "timeColumn": "bucket",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Humidity",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": "PostgreSQL",
+      "description": "NO2",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "congm3"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 6,
+        "y": 0
+      },
+      "id": 13,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "device_id",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  no2\nFROM sensor_data\nWHERE\n  $__timeFilter(time)\nAND\n  $device is null or device_id IN ($device)\nORDER BY 1,2",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "avg_lpg"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "avg_co"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "avg_smoke"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "air_quality_summary_minute",
+          "timeColumn": "bucket",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "NO2",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": "PostgreSQL",
+      "description": "Average SO2",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "congm3"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 9,
+        "y": 0
+      },
+      "id": 14,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "device_id",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  so2\nFROM sensor_data\nWHERE\n  $__timeFilter(time)\nAND\n  $device is null or device_id IN ($device)\nORDER BY 1,2",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "avg_lpg"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "avg_co"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "avg_smoke"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "air_quality_summary_minute",
+          "timeColumn": "bucket",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "SO2",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": "PostgreSQL",
+      "description": "Average PM1",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "congm3"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 12,
+        "y": 0
+      },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "device_id",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  pm1\nFROM sensor_data\nWHERE\n  $__timeFilter(time)\nAND\n  $device is null or device_id IN ($device)\nORDER BY 1,2",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "avg_temp"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "avg_humidity"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "temperature_humidity_summary_minute",
+          "timeColumn": "bucket",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "PM1",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": "PostgreSQL",
+      "description": "Average PM2_5",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "congm3"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 15,
+        "y": 0
+      },
+      "id": 21,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "device_id",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  pm2_5\nFROM sensor_data\nWHERE\n  $__timeFilter(time)\nAND\n  $device is null or device_id IN ($device)\nORDER BY 1,2",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "avg_temp"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "avg_humidity"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "temperature_humidity_summary_minute",
+          "timeColumn": "bucket",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "PM2_5",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": "PostgreSQL",
+      "description": "Average PM10 ",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "congm3"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 18,
+        "y": 0
+      },
+      "id": 20,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "device_id",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time AS \"time\",\n  device_id AS metric,\n  pm10\nFROM sensor_data\nWHERE\n  $__timeFilter(time)\nAND\n  $device is null or device_id IN ($device)\nORDER BY 1,2",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "avg_temp"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "avg_humidity"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "temperature_humidity_summary_minute",
+          "timeColumn": "bucket",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "PM10",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "PostgreSQL",
+      "description": "Aveerage Data records inserted during selected Period",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 23,
+        "x": 0,
+        "y": 5
+      },
+      "hiddenSeries": false,
+      "id": 17,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "percentage": false,
+      "pluginVersion": "7.1.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "metricColumn": "device_id",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(\"time\",$__interval),\n  device_id AS metric,\n  avg(count(humidity)) OVER (PARTITION BY device_id ORDER BY $__timeGroup(\"time\",$__interval) ROWS 5 PRECEDING) AS \"humidity\"\nFROM sensor_data\nWHERE\n  $__timeFilter(\"time\")\nAND\n  $device is null or device_id IN ($device)\nGROUP BY 1,2\nORDER BY 1,2",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "humidity"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "avg",
+                  "5"
+                ],
+                "type": "moving_window"
+              },
+              {
+                "params": [
+                  "humidity"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "sensor_data",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Average Sensor Records",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transparent": true,
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:519",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:520",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 26,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "PostgreSQL",
+        "definition": "select distinct name from app_municipality",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Municipality",
+        "multi": false,
+        "name": "municipality",
+        "options": [],
+        "query": "select distinct name from app_municipality",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": "null",
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": "PostgreSQL",
+        "definition": "select id from app_facility where municipality_id = (select id from app_municipality where name = $municipality or $municipality is NULL)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Facility",
+        "multi": true,
+        "name": "facility",
+        "options": [],
+        "query": "select id from app_facility where municipality_id = (select id from app_municipality where name = $municipality or $municipality is NULL)",
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": "null",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "PostgreSQL",
+        "definition": "select device_id from app_device where facility_id in (select id from app_facility where id = $facility or $facility is NULL)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Device",
+        "multi": false,
+        "name": "device",
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          {
+            "selected": false,
+            "text": "device1",
+            "value": "device1"
+          },
+          {
+            "selected": false,
+            "text": "device5",
+            "value": "device5"
+          },
+          {
+            "selected": false,
+            "text": "device4",
+            "value": "device4"
+          },
+          {
+            "selected": false,
+            "text": "device3",
+            "value": "device3"
+          },
+          {
+            "selected": false,
+            "text": "device2",
+            "value": "device2"
+          },
+          {
+            "selected": false,
+            "text": "device10",
+            "value": "device10"
+          },
+          {
+            "selected": false,
+            "text": "device9",
+            "value": "device9"
+          },
+          {
+            "selected": false,
+            "text": "device8",
+            "value": "device8"
+          },
+          {
+            "selected": false,
+            "text": "device7",
+            "value": "device7"
+          },
+          {
+            "selected": false,
+            "text": "device6",
+            "value": "device6"
+          }
+        ],
+        "query": "select device_id from app_device where facility_id in (select id from app_facility where id = $facility or $facility is NULL)",
+        "refresh": 0,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "hidden": false,
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "ROCKIOT MAIN Dashboard",
+  "uid": "C8H6Trmgz",
+  "version": 8
+}

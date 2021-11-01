@@ -1,3 +1,4 @@
+import json
 import logging
 import uuid
 
@@ -5,10 +6,13 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models as gismodels
 from django.contrib.gis.geos import Point
+from django.core import exceptions
 from django.db import models
 from django.db.models import JSONField
 from django.utils.text import slugify
 from simple_history.models import HistoricalRecords
+
+from app.core.common import validate_json
 
 logger = logging.getLogger(__name__)
 
@@ -110,6 +114,42 @@ class FacilityMembership(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+MAX_MINUTES_NO_INGEST = 'max_minutes_no_ingest'
+MAX_MINUTES_NO_METADATA = 'max_minutes_no_metadata'
+MAX_TERMINATED_CONNECTIONS_PER_HOUR = 'max_terminated_connections_per_hour'
+MAX_MINUTES_OFFLINE = 'max_minutes_offline'
+
+
+def default_alert_scheme():
+    return {
+        MAX_MINUTES_NO_INGEST: 10,
+        MAX_MINUTES_NO_METADATA: 120,
+        MAX_TERMINATED_CONNECTIONS_PER_HOUR: 5,
+        MAX_MINUTES_OFFLINE: 30
+    }
+
+
+class AlertScheme(models.Model):
+    name = models.CharField(max_length=64, null=False, unique=True)
+    scheme = JSONField(default=default_alert_scheme)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = "DeviceAlertScheme"
+        verbose_name_plural = "DeviceAlertSchemes"
+
+    def __str__(self):
+        return str(self.name)
+
+    # def save(self, *args, **kwargs):
+    #     if validate_json(self.scheme):
+    #         super(AlertScheme, self).save(*args, **kwargs)
+    #     else:
+    #         raise exceptions.ValidationError("Invalid alert scheme", code='invalid')
+
+
 def default_device_metadata():
     return {"manufacturer": "", "type": ""}
 
@@ -154,6 +194,8 @@ class Device(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     last_event_sent_at = models.DateTimeField(default=None, null=True, blank=True)
+    alert_scheme = models.ForeignKey(AlertScheme, related_name='devices', null=True,
+                                     db_column='alert_scheme_id', on_delete=models.PROTECT)
 
     history = HistoricalRecords(
         history_change_reason_field=models.TextField(blank=True, null=True, default="Values changed"),

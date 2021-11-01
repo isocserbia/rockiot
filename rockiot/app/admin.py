@@ -19,7 +19,7 @@ from simple_history.admin import SimpleHistoryAdmin
 from simple_history.utils import update_change_reason
 
 from app.models import Facility, Device, Municipality, PlatformAttribute, Platform, \
-    FacilityMembership, DeviceConnection, CronJobExecution, CronJob, DeviceCalibrationModel
+    FacilityMembership, DeviceConnection, CronJobExecution, CronJob, DeviceCalibrationModel, AlertScheme
 from app.system.decorators import action_form, device_event_form
 from app.system.dockerops import DockerOps
 from app.tasks import register_device, activate_device, deactivate_device, terminate_device, \
@@ -97,6 +97,48 @@ def get_form_field_overrides():
     }
 
 
+# @admin.register(AlertScheme)
+class AlertSchemeAdmin(ModelAdmin):
+    list_display = ('name', 'created_at', 'updated_at')
+    list_display_links = ('name',)
+    formfield_overrides = get_form_field_overrides()
+
+    readonly_fields = ['created_at', 'updated_at']
+    fieldsets = [
+        (None, {'fields': (
+            'name',
+            'scheme',
+            'created_at',
+            'updated_at')
+        })
+    ]
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+
+class AlertSchemeInlineAdmin(admin.TabularInline):
+    model = AlertScheme
+    can_delete = False
+    extra = 0
+    show_change_link = True
+    readonly_fields = ['created_at', 'updated_at']
+    fields = ['name', 'created_at', 'updated_at']
+    formfield_overrides = get_form_field_overrides()
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 class FacilityInlineAdmin(admin.TabularInline):
     model = Facility
     can_delete = False
@@ -128,11 +170,14 @@ class FacilityMembershipInline(admin.TabularInline):
 
 @admin.register(Municipality)
 class MunicipalityAdmin(OSMGeoAdmin):
+    map_template = 'admin/map-openlayers.html'
+    default_zoom = 4
     list_display = ('name', 'code', 'created_at', 'updated_at')
     list_display_links = ('name',)
     list_filter = ('name', 'code')
     fieldsets = [
-        (None, {'fields': ['name', 'code', 'area']}),
+        (None, {'fields': ['name', 'code']}),
+        ('Area', {'fields': ('area',)}),
     ]
     formfield_overrides = get_form_field_overrides()
     inlines = [FacilityInlineAdmin, ]
@@ -165,6 +210,8 @@ class DeviceInlineAdmin(admin.TabularInline):
 
 @admin.register(Facility)
 class FacilityAdmin(OSMGeoAdmin):
+    map_template = 'admin/map-openlayers.html'
+    default_zoom = 4
     list_display = ('code', 'name', 'type', 'address', 'municipality', 'updated_at')
     list_display_links = ('code', 'name',)
     list_filter = ('type',)
@@ -174,9 +221,9 @@ class FacilityAdmin(OSMGeoAdmin):
             'code', 'name',
             'address', 'email',
             'type', 'municipality',
-            'location',
             'description',
-            'created_at', 'updated_at')})
+            'created_at', 'updated_at')}),
+        ('Location', {'fields': ('location',)}),
     ]
     inlines = [DeviceInlineAdmin, FacilityMembershipInline, ]
     formfield_overrides = get_form_field_overrides()
@@ -486,7 +533,7 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
         ('Confidential', {'fields': ('device_pass',), 'classes': ['collapse']})
     ]
 
-    inlines = [DeviceCalibrationModelInlineAdmin, DeviceConnectionInlineAdmin, ]
+    inlines = [DeviceCalibrationModelInlineAdmin, DeviceConnectionInlineAdmin]
     formfield_overrides = get_form_field_overrides()
 
     def get_actions(self, request):

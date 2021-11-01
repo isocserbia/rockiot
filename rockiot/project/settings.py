@@ -31,6 +31,8 @@ DEBUG = bool(os.environ.get("DEBUG", default=False))
 # ALLOWED_HOSTS = ['localhost', '0.0.0.0', 'rockiot', 'rabbit', 'http://0.0.0.0:8000']
 ALLOWED_HOSTS = ['*']
 
+EXPORT_METRICS = bool(config('EXPORT_METRICS', default='False'))
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -45,6 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "django.contrib.gis",
     'django.contrib.admin',
+    'health_check',
+    # 'health_check.contrib.celery',
     'app',
     'tasks',
     'simple_history',
@@ -55,8 +59,11 @@ INSTALLED_APPS = [
     'import_export',
     'leaflet',
     'prettyjson',
-    'corsheaders'
+    'corsheaders',
 ]
+
+if EXPORT_METRICS:
+    INSTALLED_APPS += ['django_prometheus']
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -69,9 +76,13 @@ MIDDLEWARE = [
     'simple_history.middleware.HistoryRequestMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'admin_reorder.middleware.ModelAdminReorder',
 ]
 
+if EXPORT_METRICS:
+    MIDDLEWARE = \
+        ['django_prometheus.middleware.PrometheusBeforeMiddleware'] + \
+        MIDDLEWARE + \
+        ['django_prometheus.middleware.PrometheusAfterMiddleware']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -305,7 +316,6 @@ LOGGING = {
     }
 }
 
-
 SIMPLE_HISTORY_REVERT_DISABLED = True
 SIMPLE_HISTORY_HISTORY_CHANGE_REASON_USE_TEXT_FIELD = True
 SIMPLE_HISTORY_EDIT = True
@@ -325,3 +335,6 @@ LEAFLET_CONFIG = {
     'FORCE_IMAGE_PATH': True,
 }
 
+PROMETHEUS_EXPORT_MIGRATIONS = False
+PROMETHEUS_METRICS_EXPORT_PORT_RANGE = range(8001, 8050)
+PROMETHEUS_METRICS_EXPORT_ADDRESS = ''  # all addresses
