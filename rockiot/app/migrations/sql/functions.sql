@@ -137,7 +137,15 @@ $function$;
 
 CREATE OR REPLACE FUNCTION rockiot_delete_successful_cron_jobs_executions(since_time timestamptz) RETURNS void LANGUAGE PLPGSQL AS $function$
 BEGIN
-  RAISE NOTICE 'Deleting Successful Job Executions since %', start_time;
+  RAISE NOTICE 'Deleting Successful Job Executions since %', since_time;
   DELETE FROM cron.job_run_details WHERE start_time <= since_time AND status='succeeded';
+END;
+$function$;
+
+
+CREATE OR REPLACE FUNCTION rockiot_delete_terminated_devices_connections(since_time timestamptz) RETURNS void LANGUAGE PLPGSQL AS $function$
+BEGIN
+  RAISE NOTICE 'Deleting Terminated Devices Connections%', since_time;
+  DELETE FROM public.app_deviceconnection WHERE state='TERMINATED' AND terminated_at IS NOT NULL AND terminated_at <= since_time;
 END;
 $function$;

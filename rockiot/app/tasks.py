@@ -92,4 +92,7 @@ def send_device_metadata(self, did):
     return operations.send_device_metadata(did)
 
 
-
+@app.task(bind=True, ignore_result=True, max_retries=1, rate_limit='6/m')
+def export_metrics(self):
+    logger.debug(f'Handle Export metrics task: {self.request!r}')
+    return operations.send_device_metadata(did)

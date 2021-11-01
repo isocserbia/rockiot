@@ -35,6 +35,12 @@ class MunicipalityModelSerializer(serializers.ModelSerializer):
         exclude = ["id", "area"]
 
 
+class AlertSchemeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AlertScheme
+        fields = ["name", "scheme", "created_at", "updated_at"]
+
+
 class DeviceModelSerializer(serializers.ModelSerializer):
     lon = rest_framework.serializers.ReadOnlyField()
     lat = rest_framework.serializers.ReadOnlyField()

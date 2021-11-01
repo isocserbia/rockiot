@@ -47,6 +47,8 @@ urlpatterns = [
    url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
    path('admin/', admin.site.urls),
    path("api/", include("app.urls")),
+   url(r'^ht/', include('health_check.urls')),
+   url('', include('django_prometheus.urls')),
    url(r'^$', TemplateView.as_view(template_name='index.html'), name='home'),
    url(r'^data.geojson$', GeoJSONLayerView.as_view(model=Device, geometry_field="location", properties=('device_id', 'mode', 'status')), name='data'),
 ]

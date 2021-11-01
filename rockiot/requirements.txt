@@ -27,3 +27,5 @@ django-leaflet
 django-geojson[field]
 django-prettyjson
 django-cors-headers
+django-health-check
+django-prometheus
