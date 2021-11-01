@@ -21,6 +21,8 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 # Optional configuration, see the application user guide.
 app.conf.update(
     result_expires=timedelta(days=7),
+    worker_prefetch_multiplier=10,
+    task_soft_time_limit=60,
 )
 
 app.conf.database_table_schemas = {
@@ -32,12 +34,30 @@ app.conf.task_ignore_result = False
 app.conf.task_store_errors_even_if_ignored = True
 
 app.conf.task_queues = (
-    Queue("normal", Exchange("normal"), routing_key="normal"),
-    Queue("low", Exchange("low"), routing_key="low"),
+    Queue('celery_default', Exchange("celery_default")),
+    Queue("celery_uplink", Exchange("celery_uplink", delivery_mode=1), durable=False),
+    Queue("celery_downlink", Exchange("celery_downlink")),
 )
-app.conf.task_default_queue = "normal"
-app.conf.task_default_exchange = "normal"
-app.conf.task_default_routing_key = "normal"
+
+app.conf.task_default_queue = "celery_default"
+app.conf.task_default_exchange = "celery_default"
+app.conf.task_default_routing_key = 'celery_routing_key'
+
+app.conf.task_routes = {
+    'app.tasks.register_device': 'celery_downlink',
+    'app.tasks.activate_device': 'celery_downlink',
+    'app.tasks.deactivate_device': 'celery_downlink',
+    'app.tasks.terminate_device': 'celery_downlink',
+    'app.tasks.send_device_metadata': 'celery_downlink',
+    'app.tasks.send_platform_attributes': 'celery_downlink',
+    'app.tasks.send_device_event': {
+        'queue': 'celery_downlink',
+        'delivery_mode': 'transient',
+    },
+    'app.tasks.save_device_metadata': 'celery_uplink',
+    'app.tasks.handle_activation_request': 'celery_uplink',
+    'app.tasks.export_raw_data_to_csv': 'celery_default'
+}
 
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 

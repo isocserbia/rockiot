@@ -68,6 +68,28 @@ repo1-retention-full=2
 compress-level=3
 EOF
 
+cat <<EOF > /etc/pgbackrest.conf.s3
+[main]
+pg1-path=/var/lib/postgresql/12/main
+
+[global]
+repo1-cipher-type=none
+repo1-path=/
+repo1-s3-bucket=rockiot-backup
+repo1-s3-endpoint=s3.amazonaws.com
+repo1-s3-key=
+repo1-s3-key-secret=
+repo1-s3-region=eu-central-1
+repo1-type=s3
+repo1-retention-diff=2
+repo1-retention-full=2
+start-fast=y
+stop-auto=y
+
+[global:archive-push]
+compress-level=3
+EOF
+
 echo "archive_mode = on" >> /etc/postgresql/12/main/postgresql.conf
 echo "archive_command = 'pgbackrest --stanza=main archive-push %p'" >> /etc/postgresql/12/main/postgresql.conf
 pgbackrest stanza-create --stanza=main

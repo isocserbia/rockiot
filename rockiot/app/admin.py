@@ -15,16 +15,16 @@ from django_celery_results.models import GroupResult, TaskResult
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from import_export.fields import Field
-from prettyjson import PrettyJSONWidget
 from simple_history.admin import SimpleHistoryAdmin
 from simple_history.utils import update_change_reason
 
 from app.models import Facility, Device, Municipality, PlatformAttribute, Platform, \
-    FacilityMembership, DeviceConnection, CronJobExecution, CronJob, DeviceCalibrationModel
+    FacilityMembership, DeviceConnection, CronJobExecution, CronJob, DeviceCalibrationModel, AlertScheme
 from app.system.decorators import action_form, device_event_form
 from app.system.dockerops import DockerOps
 from app.tasks import register_device, activate_device, deactivate_device, terminate_device, \
     send_device_metadata, send_platform_attributes, send_device_event
+from app.widgets import MyPrettyJSONWidget
 
 DEFAULT_CHOICE_DASH = []
 
@@ -93,8 +93,50 @@ def get_form_field_overrides():
         models.EmailField: {'widget': TextInput(attrs={'size': '40'})},
         models.GenericIPAddressField: {'widget': TextInput(attrs={'size': '40'})},
         models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},
-        models.JSONField: {'widget': PrettyJSONWidget(attrs={'initial': 'parsed', 'rows': 24, 'cols': 96})}
+        models.JSONField: {'widget': MyPrettyJSONWidget(attrs={'initial': 'parsed', 'rows': 24, 'cols': 96})}
     }
+
+
+# @admin.register(AlertScheme)
+class AlertSchemeAdmin(ModelAdmin):
+    list_display = ('name', 'created_at', 'updated_at')
+    list_display_links = ('name',)
+    formfield_overrides = get_form_field_overrides()
+
+    readonly_fields = ['created_at', 'updated_at']
+    fieldsets = [
+        (None, {'fields': (
+            'name',
+            'scheme',
+            'created_at',
+            'updated_at')
+        })
+    ]
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+
+class AlertSchemeInlineAdmin(admin.TabularInline):
+    model = AlertScheme
+    can_delete = False
+    extra = 0
+    show_change_link = True
+    readonly_fields = ['created_at', 'updated_at']
+    fields = ['name', 'created_at', 'updated_at']
+    formfield_overrides = get_form_field_overrides()
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class FacilityInlineAdmin(admin.TabularInline):
@@ -128,11 +170,14 @@ class FacilityMembershipInline(admin.TabularInline):
 
 @admin.register(Municipality)
 class MunicipalityAdmin(OSMGeoAdmin):
+    map_template = 'admin/map-openlayers.html'
+    default_zoom = 4
     list_display = ('name', 'code', 'created_at', 'updated_at')
     list_display_links = ('name',)
     list_filter = ('name', 'code')
     fieldsets = [
-        (None, {'fields': ['name', 'code', 'area']}),
+        (None, {'fields': ['name', 'code']}),
+        ('Area', {'fields': ('area',)}),
     ]
     formfield_overrides = get_form_field_overrides()
     inlines = [FacilityInlineAdmin, ]
@@ -165,6 +210,8 @@ class DeviceInlineAdmin(admin.TabularInline):
 
 @admin.register(Facility)
 class FacilityAdmin(OSMGeoAdmin):
+    map_template = 'admin/map-openlayers.html'
+    default_zoom = 4
     list_display = ('code', 'name', 'type', 'address', 'municipality', 'updated_at')
     list_display_links = ('code', 'name',)
     list_filter = ('type',)
@@ -174,9 +221,9 @@ class FacilityAdmin(OSMGeoAdmin):
             'code', 'name',
             'address', 'email',
             'type', 'municipality',
-            'location',
             'description',
-            'created_at', 'updated_at')})
+            'created_at', 'updated_at')}),
+        ('Location', {'fields': ('location',)}),
     ]
     inlines = [DeviceInlineAdmin, FacilityMembershipInline, ]
     formfield_overrides = get_form_field_overrides()
@@ -291,7 +338,7 @@ class DeviceChangeComment(forms.Form):
 class DeviceSendEventForm(forms.Form):
     title = 'Select an event to send to device'
     MY_CHOICES = (
-        ('zero_senzor', 'Zero Sensor'),
+        ('zero_sensors', 'Zero Sensors'),
         ('zero_so2', 'Zero So2 Sensor'),
         ('zero_no2', 'Zero No2 Sensor'),
         ('erase_wifi_credentials', 'Erase WiFi Credentials'),
@@ -304,6 +351,9 @@ class DeviceSendEventForm(forms.Form):
 
 @admin.register(Device)
 class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
+
+    map_template = 'admin/map-openlayers.html'
+    default_zoom = 4
 
     actions = ['register', 'activate', 'deactivate', 'terminate', 'start_container', 'stop_container', 'mode_default', 'mode_calibration', 'mode_production', 'send_event_to_device']
 
@@ -426,7 +476,12 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
             'TERMINATED': '#A41515',
             'UNKNOWN': '#0C4B33',
         }
-        return format_html('<b style="color:{};">{}</b>', colors[s], s, )
+        names = {
+            'RUNNING': 'ONLINE',
+            'TERMINATED': 'OFFLINE',
+            'UNKNOWN': 'OFFLINE',
+        }
+        return format_html('<b style="color:{};">{}</b>', colors[s], names[s], )
 
     def activation_status(self, obj):
         colors = {
@@ -474,11 +529,11 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
             ('description', 'facility')
         )}),
         ('Location', {'fields': ('location',)}),
-        ('Metadata', {'fields': ('metadata',)}),
+        ('Metadata', {'fields': ('metadata',), 'classes': ['collapse']}),
         ('Confidential', {'fields': ('device_pass',), 'classes': ['collapse']})
     ]
 
-    inlines = [DeviceCalibrationModelInlineAdmin, DeviceConnectionInlineAdmin, ]
+    inlines = [DeviceCalibrationModelInlineAdmin, DeviceConnectionInlineAdmin]
     formfield_overrides = get_form_field_overrides()
 
     def get_actions(self, request):

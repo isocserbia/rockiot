@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-
 import logging
-from datetime import date
+from datetime import date, timedelta
 
 import psycopg2
 from django.conf import settings
@@ -10,10 +8,13 @@ config = settings.DATABASES["default"]
 logger = logging.getLogger(__name__)
 
 
-def export_raw_data_to_csv(dat=date.today().isoformat()):
+def export_raw_data_to_csv(target_date):
+    dat = target_date
+    if not dat:
+        dat = (date.today() - timedelta(days=1)).isoformat()
 
     file_path = f"/rockiot-data/sensor_data-{dat}.csv"
-    logger.info(f"Preparing for CSV data export {file_path}")
+    logger.info(f"Preparing for CSV data export [date: {target_date}] [path: {file_path}]")
 
     db_args = dict(host=config["HOST"], port=config["PORT"], dbname=config["NAME"],
                    user=config["USER"], password=config["PASSWORD"])
@@ -34,7 +35,3 @@ def export_raw_data_to_csv(dat=date.today().isoformat()):
     db_cursor.close()
     db_conn.close()
     return file_path
-
-
-if __name__ == '__main__':
-    export_raw_data_to_csv()

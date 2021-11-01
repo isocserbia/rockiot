@@ -3,7 +3,8 @@ from django.urls import path
 from app.views import FacilityList, MyTokenObtainPairView, FacilityView, \
     SensorDataRawList, SensorDataLastValuesList, DevicesList, \
     MunicipalitySensorsSummary, FacilitySensorsSummary, DeviceSensorsSummary, MunicipalityList, MunicipalityView, \
-    MyTokenRefreshView, CsvExportView, SensorDataList, DeviceChangeLogList, IndexView
+    MyTokenRefreshView, CsvExportView, SensorDataList, DeviceChangeLogList, IndexView, SensorDataAverageMunicipality, \
+    SensorDataAverageFacility
 
 app_name = "app"
 
@@ -11,10 +12,12 @@ urlpatterns = [
     path("", IndexView.as_view()),
     path('municipalities/', MunicipalityList.as_view(), name='municipality-list'),
     path('municipalities/<code>/', MunicipalityView.as_view(), name='municipality-view'),
-    path('municipalities/<code>/data/aggregate/', MunicipalitySensorsSummary.as_view(), name='municipality-data-aggregate'),
+    # path('municipalities/<code>/data/aggregate/', MunicipalitySensorsSummary.as_view(), name='municipality-data-aggregate'),
+    path('municipalities/<code>/data/aggregate/', SensorDataAverageMunicipality.as_view(), name='municipality-data-average'),
     path('facilities/', FacilityList.as_view(), name='facility-list'),
     path('facilities/<code>/', FacilityView.as_view(), name='facility-view'),
-    path('facilities/<code>/data/aggregate/', FacilitySensorsSummary.as_view(), name='facility-data-aggregate'),
+    # path('facilities/<code>/data/aggregate/', FacilitySensorsSummary.as_view(), name='facility-data-aggregate'),
+    path('facilities/<code>/data/aggregate/', SensorDataAverageFacility.as_view(), name='facility-data-average'),
     path('devices/', DevicesList.as_view(), name='device-list'),
     path('devices/data/last/', SensorDataLastValuesList.as_view(), name='device-last-values'),
     path('devices/data/daily/csv/', CsvExportView.as_view(), name='devices-raw-daily-csv'),

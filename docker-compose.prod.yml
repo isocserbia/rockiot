@@ -10,7 +10,12 @@ services:
       - db.prod.env
       - rockiot.prod.env
 
-  rockiotworker:
+  rockiotworker_default:
+    env_file:
+      - db.prod.env
+      - rockiot.prod.env
+
+  rockiotworker_device:
     env_file:
       - db.prod.env
       - rockiot.prod.env
@@ -21,6 +26,11 @@ services:
       - rockiot.prod.env
 
   rockiotlistener:
+    env_file:
+      - db.prod.env
+      - rockiot.prod.env
+
+  rockiotmetrics:
     env_file:
       - db.prod.env
       - rockiot.prod.env

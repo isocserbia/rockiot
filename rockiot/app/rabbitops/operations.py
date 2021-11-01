@@ -5,6 +5,7 @@ import logging
 from urllib.parse import quote_plus
 
 from django.conf import settings
+from django.db import IntegrityError
 from django.db.models import Q
 from pyrabbit2 import api
 from requests import HTTPError
@@ -26,7 +27,7 @@ def get_mngmt_client():
 
 def check_system_health():
     responses = {}
-    logger.info("checking system health")
+    logger.debug("checking system health")
     try:
         client = get_mngmt_client()
         resp_alarms = client._call('/api/health/checks/alarms', 'GET')
@@ -42,14 +43,14 @@ def check_system_health():
 
 
 def get_overview():
-    logger.info("getting overview")
+    logger.debug("getting overview")
     overview = get_mngmt_client().get_overview()
     logger.info("overview " + str(overview))
     return json.dumps(overview)
 
 
 def update_connections():
-    logger.info("updating connections")
+    logger.debug("updating connections")
     connection_map = {}
     connections = RabbitOps.client.get_connections()
     for c in connections:
@@ -63,43 +64,62 @@ def update_connections():
 
     dcs = DeviceConnection.objects.filter(Q(state='UNKNOWN') | Q(state='RUNNING')).prefetch_related('device')
     for dc in dcs:
-        device = dc.device
-        logger.debug(f"Found {device.device_id} connection in db ...")
-        conn = connection_map.get(device.device_id)
-        if conn or conn is not None:
-            if conn.get(dc.client_id, None) is not None:
-                dc.update_from_rabbitmq_connection(conn.get(dc.client_id))
-                dc.save()
-                logger.info(f"{device.device_id} connection updated")
+        try:
+            device = dc.device
+            logger.debug(f"Found {device.device_id} connection in db ...")
+            conn = connection_map.get(device.device_id)
+            if conn or conn is not None:
+                dconn = conn.get(dc.client_id, None)
+                if dconn is not None:
+                    try:
+                        dc.update_from_rabbitmq_connection(dconn)
+                        dc.save()
+                        logger.info(f"{device.device_id} connection updated")
+                    except:
+                        dcs_existing = DeviceConnection.objects.filter(name=dconn["name"], client_id=dconn["client_id"])
+                        dcs_existing.update_from_rabbitmq_connection(dconn)
+                        dcs_existing.save()
+                        logger.info(f"{device.device_id} connection updated")
+                else:
+                    dc.state = Device.TERMINATED
+                    dc.terminated_at = datetime.datetime.utcnow()
+                    dc.save()
+                    logger.info("%s connection changed, terminating ... " % device.device_id)
+                    new_dc = DeviceConnection()
+                    new_dc.device = dc.device
+                    new_dc.update_from_rabbitmq_connection(list(conn.values())[0])
+                    new_dc.save()
+                    logger.info("%s new connection created" % device.device_id)
+                del connection_map[device.device_id]
             else:
                 dc.state = Device.TERMINATED
                 dc.terminated_at = datetime.datetime.utcnow()
                 dc.save()
-                logger.info("%s connection changed, terminating ... " % device.device_id)
-                new_dc = DeviceConnection()
-                new_dc.device = dc.device
-                new_dc.update_from_rabbitmq_connection(list(conn.values())[0])
-                new_dc.save()
-                logger.info("%s new connection created" % device.device_id)
-            del connection_map[device.device_id]
-        else:
-            dc.state = Device.TERMINATED
-            dc.terminated_at = datetime.datetime.utcnow()
-            dc.save()
-            logger.info("%s connection terminated" % device.device_id)
+                logger.info("%s connection terminated" % device.device_id)
+        except:
+            logger.error(f"Error updating device connection [device: {device.device_id}]", exc_info=True)
 
     for did in list(connection_map.keys()):
         for cid in list(connection_map[did].keys()):
-            new_dc = DeviceConnection()
-            new_dc.device = Device.objects.get(device_id=did)
-            new_dc.update_from_rabbitmq_connection(connection_map[did][cid])
-            new_dc.save()
-            logger.info(f"{did} new connection created [client: {cid}]")
+            try:
+                connection = connection_map[did][cid]
+                name = connection["name"]
+                client_id = connection["variable_map"]["client_id"]
+                if not DeviceConnection.objects.filter(name=name, client_id=client_id).exists():
+                    new_dc = DeviceConnection()
+                    new_dc.device = Device.objects.get(device_id=did)
+                    new_dc.update_from_rabbitmq_connection(connection)
+                    new_dc.save()
+                    logger.info(f"{did} new connection created [client: {cid}]")
+                else:
+                    logger.info(f"{did} skipped, connection already exists [client: {cid}]")
+            except:
+                logger.error("Error creating device connection", exc_info=True)
     return True
 
 
 def register_device(did):
-    logger.info("Registering device [device-id: %s]" % did)
+    logger.debug("Registering device [device-id: %s]" % did)
     try:
         return RabbitOps._register_device_internal(did)
     except ValueError as ve:
@@ -110,7 +130,7 @@ def register_device(did):
 
 
 def activate_device(did):
-    logger.info("Activating device [device-id: %s]" % did)
+    logger.debug("Activating device [device-id: %s]" % did)
     try:
         return RabbitOps._activate_device_internal(did)
     except ValueError as ve:
@@ -121,7 +141,7 @@ def activate_device(did):
 
 
 def handle_activation_request(did):
-    logger.info("Handling activation request [device-id: %s]" % did)
+    logger.debug("Handling activation request [device-id: %s]" % did)
     try:
         device = Device.objects.get(device_id=did)
         if not device:
@@ -138,7 +158,7 @@ def handle_activation_request(did):
 
 
 def deactivate_device(did):
-    logger.info("Deactivating device [device-id: %s]" % did)
+    logger.debug("Deactivating device [device-id: %s]" % did)
     try:
         return RabbitOps._deactivate_device_internal(did)
     except ValueError as ve:
@@ -149,7 +169,7 @@ def deactivate_device(did):
 
 
 def terminate_device(did):
-    logger.info("Terminating device [device-id: %s]" % did)
+    logger.debug("Terminating device [device-id: %s]" % did)
     try:
         return RabbitOps._deactivate_device_internal(did, Device.TERMINATED)
     except ValueError as ve:
@@ -160,7 +180,7 @@ def terminate_device(did):
 
 
 def send_device_event(did, event_type):
-    logger.info("Sending Device Event [device-id: %s] [type: %s]" % (did, event_type))
+    logger.debug("Sending Device Event [device-id: %s] [type: %s]" % (did, event_type))
     try:
         return RabbitOps._send_device_event(did, event_type)
     except ValueError as ve:
@@ -171,7 +191,7 @@ def send_device_event(did, event_type):
 
 
 def save_device_metadata(did, metadata):
-    logger.info("Saving Device metadata [device-id: %s]" % did)
+    logger.debug("Saving Device metadata [device-id: %s]" % did)
     try:
         device = Device.objects.get(device_id=did)
         if not device:
@@ -188,7 +208,7 @@ def save_device_metadata(did, metadata):
 
 
 def send_device_metadata(did):
-    logger.info("Sending Device metadata [device-id: %s]" % did)
+    logger.debug("Sending Device metadata [device-id: %s]" % did)
     try:
         return RabbitOps._send_device_metadata_internal(did)
     except ValueError as ve:
@@ -199,7 +219,7 @@ def send_device_metadata(did):
 
 
 def send_platform_attributes():
-    logger.info("Sending Platform Attributes")
+    logger.debug("Sending Platform Attributes")
     try:
         return RabbitOps._send_platform_attributes_internal()
     except ValueError as ve:

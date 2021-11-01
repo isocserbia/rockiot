@@ -39,14 +39,12 @@ class PahoPublisher:
 
     def on_disconnect(self, client, userdata, rc):
         try:
-            logger.warning("Paho publisher %s disconnected [rc: %s] [userdata: %s]" % (rc, userdata))
-            self.client.loop_stop()
+            logger.warning("Paho publisher %s disconnected [rc: %s]" % (self.clientid, rc))
+            if rc == paho.MQTT_ERR_CONN_LOST or rc == paho.MQTT_ERR_NO_CONN:
+                logger.warning("Paho publisher %s is re-connecting [rc: %]" % (self.clientid, paho.error_string(rc)))
+                self.client.reconnect()
         except:
-            logger.warning("Paho publisher failed stopping client loop [reason: %s]" % sys.exc_info()[0])
-        sleep(5)
-        self.client.connect(BROKER_HOST, BROKER_MQTT_PORT, keepalive=60)
-        self.client.loop_start()
-        logger.info("Paho publisher %s loop re-started" % self.clientid)
+            logger.warning("Paho publisher %s failed stopping client loop [reason: %s]" % (self.clientid, sys.exc_info()[0]))
 
     def on_connect(self, client, userdata, flags, rc):
         self.conflag = True
@@ -55,14 +53,13 @@ class PahoPublisher:
     def publish(self, topic, device, message):
         if not self.initialized:
             self.start()
-        logger.info("Paho publisher %s message to device [device-id: %s]" % (self.clientid, device))
         while 1 == 1:
             if not self.conflag:
                 logger.info("Paho publisher %s waiting for connection..." % self.clientid)
                 sleep(5)
             else:
                 message_info = self.client.publish(topic=topic, payload=message, qos=2)
-                logger.info("Paho publisher %s awaiting ACK for msg %s" % (self.clientid, message_info.mid))
+                logger.info("Paho publisher %s Awaiting ACK [device-id: %s] [message-id: %s]" % (self.clientid, device, message_info.mid))
                 message_info.wait_for_publish()
-                logger.info("Paho publisher %s received ACK for msg %s" % (self.clientid, message_info.mid))
+                logger.info("Paho publisher %s Received ACK [device-id: %s] [message-id: %s]" % (self.clientid, device, message_info.mid))
                 return

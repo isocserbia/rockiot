@@ -35,6 +35,12 @@ class MunicipalityModelSerializer(serializers.ModelSerializer):
         exclude = ["id", "area"]
 
 
+class AlertSchemeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AlertScheme
+        fields = ["name", "scheme", "created_at", "updated_at"]
+
+
 class DeviceModelSerializer(serializers.ModelSerializer):
     lon = rest_framework.serializers.ReadOnlyField()
     lat = rest_framework.serializers.ReadOnlyField()
@@ -116,7 +122,7 @@ class FacilityModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Facility
-        fields = ['name', 'type', 'email', 'description', 'address', 'lon', 'lat',
+        fields = ['code', 'name', 'type', 'email', 'description', 'address', 'lon', 'lat',
                   'municipality', 'location', 'created_at', 'updated_at', 'devices', 'memberships']
 
 
@@ -210,3 +216,15 @@ class SensorDataLastValuesSerializer(serializers.ModelSerializer):
 class CronJobSerializer(serializers.ModelSerializer):
     class Meta:
         model = CronJob
+
+
+class SensorAverageFacilitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sensor1hAverageFacility
+        fields = '__all__'
+
+
+class SensorAverageMunicipalitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sensor1hAverageMunicipality
+        fields = '__all__'
