@@ -2,8 +2,8 @@ groups:
   - name: rockiot
     rules:
       - alert: DeviceMetadataNotUpdated
-        expr: time() - rockiot_device_metadata_updated_at > 60
-        for: 0m
+        expr: time() - rockiot_device_metadata_updated_at > 900
+        for: 1m
         labels:
           severity: warning
         annotations:
@@ -11,7 +11,7 @@ groups:
           description: "Device metadata not updated. Last update at: {{ $value }}"
 
       - alert: DeviceNotIngestingData
-        expr: time() - rockiot_device_data_updated_at > 60
+        expr: time() - rockiot_device_data_updated_at > 120
         for: 1m
         labels:
           severity: warning
@@ -20,7 +20,7 @@ groups:
           description: "Device sensor data not ingested recently. Last update at: {{ $value }}"
 
       - alert: DeviceNotSeenOnlineRecently
-        expr: time() - rockiot_device_last_seen_at > 60
+        expr: time() - rockiot_device_last_seen_at > 120
         for: 1m
         labels:
           severity: warning
