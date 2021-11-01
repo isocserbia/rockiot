@@ -27,7 +27,7 @@ def get_overview(self):
 
 
 @app.task(bind=True, ignore_result=False, max_retries=1, time_limit=120)
-def export_raw_data_to_csv(self, dat=date.today().isoformat()):
+def export_raw_data_to_csv(self, dat=None):
     logger.debug(f'Export raw data request: {self.request!r}')
     return dbops.export_raw_data_to_csv(dat)
 
@@ -92,4 +92,7 @@ def send_device_metadata(self, did):
     return operations.send_device_metadata(did)
 
 
-
+@app.task(bind=True, ignore_result=True, max_retries=1, rate_limit='6/m')
+def export_metrics(self):
+    logger.debug(f'Handle Export metrics task: {self.request!r}')
+    return operations.send_device_metadata(did)

@@ -1,25 +1,33 @@
 """Markers view."""
+import json
 import logging
 from datetime import date, datetime
 
-from django.http import FileResponse, Http404
+from django.conf import settings
+from django.http import FileResponse, HttpResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, views
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, IsAuthenticatedOrReadOnly
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
 
+from app import models
 from app.models import Facility, SensorData, SensorDataLastValues, Device, Municipality, \
     SensorsDataRollupAbstract, SensorDataRaw
 from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer, SensorDataRawSerializer, \
     SensorDataLastValuesSerializer, DeviceModelSerializer, \
     SensorsDataRollupSerializer, MunicipalityModelSerializer, SensorsDataRollupWithDeviceSerializer, \
-    SensorDataSerializer, DeviceLogEntrySerializer
+    SensorDataSerializer, DeviceLogEntrySerializer, SensorAverageMunicipalitySerializer, \
+    SensorAverageFacilitySerializer
+from app.tasks import export_raw_data_to_csv
 
 logger = logging.getLogger(__name__)
+
+config = settings.REST_FRAMEWORK
 
 
 class IndexView(TemplateView):
@@ -47,6 +55,8 @@ class DevicesList(generics.ListAPIView):
     queryset = Device.objects.all()
     serializer_class = DeviceModelSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class DeviceChangeLogList(generics.ListAPIView):
@@ -69,6 +79,8 @@ class DeviceChangeLogList(generics.ListAPIView):
 
     serializer_class = DeviceLogEntrySerializer
     permission_classes = [IsAuthenticatedOrReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class MunicipalityView(generics.RetrieveAPIView):
@@ -96,6 +108,8 @@ class MunicipalityList(generics.ListAPIView):
     queryset = Municipality.objects.all()
     serializer_class = MunicipalityModelSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class FacilityView(generics.RetrieveAPIView):
@@ -123,6 +137,8 @@ class FacilityList(generics.ListAPIView):
     queryset = Facility.objects.all()
     serializer_class = FacilityModelSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class SensorDataList(generics.ListAPIView):
@@ -146,6 +162,8 @@ class SensorDataList(generics.ListAPIView):
 
     serializer_class = SensorDataSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class SensorDataRawList(generics.ListAPIView):
@@ -169,11 +187,13 @@ class SensorDataRawList(generics.ListAPIView):
 
     serializer_class = SensorDataRawSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 interval_param = openapi.Parameter('interval', openapi.IN_QUERY,
                                    description="interval ('15m','1h','4h','24h')",
-                                   type=openapi.TYPE_STRING, default='15m')
+                                   type=openapi.TYPE_STRING, default='1h')
 
 
 class DeviceSensorsSummary(generics.ListAPIView):
@@ -199,6 +219,8 @@ class DeviceSensorsSummary(generics.ListAPIView):
 
     serializer_class = SensorsDataRollupSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class FacilitySensorsSummary(generics.ListAPIView):
@@ -225,6 +247,8 @@ class FacilitySensorsSummary(generics.ListAPIView):
 
     serializer_class = SensorsDataRollupWithDeviceSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class MunicipalitySensorsSummary(generics.ListAPIView):
@@ -254,6 +278,60 @@ class MunicipalitySensorsSummary(generics.ListAPIView):
 
     serializer_class = SensorsDataRollupWithDeviceSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
+
+
+class SensorDataAverageMunicipality(generics.ListAPIView):
+    @swagger_auto_schema(operation_description="Retrieve list of average Sensor data for Municipality",
+                         operation_summary="Gets average Sensor data for Municipality",
+                         tags=['report'],
+                         manual_parameters=[interval_param, from_date_param, until_date_param])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        code = self.kwargs['code']
+        interval = self.request.query_params.get('interval')
+        from_date = self.request.query_params.get('from_date', None)
+        until_date = self.request.query_params.get('until_date', None)
+        qs = getattr(models, f"Sensor{interval}AverageMunicipality").objects.filter(code=code)
+        if from_date is not None:
+            qs = qs.filter(time__date__gte=from_date)
+        if until_date is not None:
+            qs = qs.filter(time__date__lte=until_date)
+        return qs.order_by('-time')
+
+    serializer_class = SensorAverageMunicipalitySerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
+
+
+class SensorDataAverageFacility(generics.ListAPIView):
+    @swagger_auto_schema(operation_description="Retrieve list of average Sensor data for Facility",
+                         operation_summary="Gets average Sensor data for Facility",
+                         tags=['report'],
+                         manual_parameters=[interval_param, from_date_param, until_date_param])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        code = self.kwargs['code']
+        interval = self.request.query_params.get('interval')
+        from_date = self.request.query_params.get('from_date', None)
+        until_date = self.request.query_params.get('until_date', None)
+        qs = getattr(models, f"Sensor{interval}AverageFacility").objects.filter(code=code)
+        if from_date is not None:
+            qs = qs.filter(time__date__gte=from_date)
+        if until_date is not None:
+            qs = qs.filter(time__date__lte=until_date)
+        return qs.order_by('-time')
+
+    serializer_class = SensorAverageFacilitySerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class SensorDataLastValuesList(generics.ListAPIView):
@@ -266,6 +344,8 @@ class SensorDataLastValuesList(generics.ListAPIView):
     queryset = SensorDataLastValues.objects.all()
     serializer_class = SensorDataLastValuesSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
 
 
 class CsvExportView(views.APIView):
@@ -275,21 +355,27 @@ class CsvExportView(views.APIView):
                          tags=['report'],
                          responses={
                              '200': openapi.Response('File Attachment', schema=openapi.Schema(type=openapi.TYPE_FILE)),
+                             '201': 'System is creating file. Check later.',
                              '404': 'Not Found'
                          },
                          produces='text/csv')
     def get(self, request, format=None):
         from_date = self.request.query_params.get('from_date', date.today().isoformat())
         file_name = f'sensor_data-{from_date}.csv'
+        file_path = f'/rockiot-data/{file_name}'
         try:
-            file_handle = open(f'/rockiot-data/{file_name}', 'rb')
+            file_handle = open(file_path, 'rb')
             response = FileResponse(file_handle, content_type='text/csv')
             response['Content-Disposition'] = 'attachment; filename="%s"' % file_name
             return response
         except IOError as ioe:
-            meg = f"Requested CSV file {file_name} not found: {ioe}"
-            logger.warning(meg)
-            raise Http404(meg)
+            export_raw_data_to_csv.apply_async((from_date,))
+            logger.info(f"System is creating CSV report [dat: {from_date}]")
+            return HttpResponse('System is creating CSV report. Please, check again soon.')
+        except:
+            msg = f"Failed getting CSV file {file_name}"
+            logger.error(msg, exc_info=True)
+            raise HttpResponseServerError(msg)
 
 
 class MyTokenObtainPairView(TokenObtainPairView):

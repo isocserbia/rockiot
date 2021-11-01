@@ -5,6 +5,7 @@ import logging
 from urllib.parse import quote_plus
 
 from django.conf import settings
+from django.db import IntegrityError
 from django.db.models import Q
 from pyrabbit2 import api
 from requests import HTTPError
@@ -63,38 +64,57 @@ def update_connections():
 
     dcs = DeviceConnection.objects.filter(Q(state='UNKNOWN') | Q(state='RUNNING')).prefetch_related('device')
     for dc in dcs:
-        device = dc.device
-        logger.debug(f"Found {device.device_id} connection in db ...")
-        conn = connection_map.get(device.device_id)
-        if conn or conn is not None:
-            if conn.get(dc.client_id, None) is not None:
-                dc.update_from_rabbitmq_connection(conn.get(dc.client_id))
-                dc.save()
-                logger.info(f"{device.device_id} connection updated")
+        try:
+            device = dc.device
+            logger.debug(f"Found {device.device_id} connection in db ...")
+            conn = connection_map.get(device.device_id)
+            if conn or conn is not None:
+                dconn = conn.get(dc.client_id, None)
+                if dconn is not None:
+                    try:
+                        dc.update_from_rabbitmq_connection(dconn)
+                        dc.save()
+                        logger.info(f"{device.device_id} connection updated")
+                    except:
+                        dcs_existing = DeviceConnection.objects.filter(name=dconn["name"], client_id=dconn["client_id"])
+                        dcs_existing.update_from_rabbitmq_connection(dconn)
+                        dcs_existing.save()
+                        logger.info(f"{device.device_id} connection updated")
+                else:
+                    dc.state = Device.TERMINATED
+                    dc.terminated_at = datetime.datetime.utcnow()
+                    dc.save()
+                    logger.info("%s connection changed, terminating ... " % device.device_id)
+                    new_dc = DeviceConnection()
+                    new_dc.device = dc.device
+                    new_dc.update_from_rabbitmq_connection(list(conn.values())[0])
+                    new_dc.save()
+                    logger.info("%s new connection created" % device.device_id)
+                del connection_map[device.device_id]
             else:
                 dc.state = Device.TERMINATED
                 dc.terminated_at = datetime.datetime.utcnow()
                 dc.save()
-                logger.info("%s connection changed, terminating ... " % device.device_id)
-                new_dc = DeviceConnection()
-                new_dc.device = dc.device
-                new_dc.update_from_rabbitmq_connection(list(conn.values())[0])
-                new_dc.save()
-                logger.info("%s new connection created" % device.device_id)
-            del connection_map[device.device_id]
-        else:
-            dc.state = Device.TERMINATED
-            dc.terminated_at = datetime.datetime.utcnow()
-            dc.save()
-            logger.info("%s connection terminated" % device.device_id)
+                logger.info("%s connection terminated" % device.device_id)
+        except:
+            logger.error(f"Error updating device connection [device: {device.device_id}]", exc_info=True)
 
     for did in list(connection_map.keys()):
         for cid in list(connection_map[did].keys()):
-            new_dc = DeviceConnection()
-            new_dc.device = Device.objects.get(device_id=did)
-            new_dc.update_from_rabbitmq_connection(connection_map[did][cid])
-            new_dc.save()
-            logger.info(f"{did} new connection created [client: {cid}]")
+            try:
+                connection = connection_map[did][cid]
+                name = connection["name"]
+                client_id = connection["variable_map"]["client_id"]
+                if not DeviceConnection.objects.filter(name=name, client_id=client_id).exists():
+                    new_dc = DeviceConnection()
+                    new_dc.device = Device.objects.get(device_id=did)
+                    new_dc.update_from_rabbitmq_connection(connection)
+                    new_dc.save()
+                    logger.info(f"{did} new connection created [client: {cid}]")
+                else:
+                    logger.info(f"{did} skipped, connection already exists [client: {cid}]")
+            except:
+                logger.error("Error creating device connection", exc_info=True)
     return True
 
 

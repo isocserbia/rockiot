@@ -14,9 +14,10 @@ services:
       - ./docker/prometheus/rabbitmq_rules.yml:/etc/prometheus/rabbitmq_rules.yml
       - ./docker/prometheus/postgres_rules.yml:/etc/prometheus/postgres_rules.yml
       - ./docker/prometheus/cadvisor_rules.yml:/etc/prometheus/cadvisor_rules.yml
+      - ./docker/prometheus/rockiot_rules.yml:/etc/prometheus/rockiot_rules.yml
       - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
-      - metrics-tier
+      - app-tier
     user: root
 
   alertmanager:
@@ -26,7 +27,7 @@ services:
     ports:
       - "9093:9093"
     networks:
-      - metrics-tier
+      - app-tier
     environment:
       - WAIT_HOSTS=prometheus:9090
 
@@ -48,29 +49,29 @@ services:
 #    networks:
 #      - app-tier
 #
-#  grafana:
-#    image: grafana/grafana:7.1.5
-#    container_name: rockiot_grafana
-#    ports:
-#      - "3000:3000"
-#    depends_on:
-#      - timescaledb
-#    env_file:
-#      - common.env
-#    environment:
-#      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
-#      - GF_SECURITY_ALLOW_EMBEDDING=true
-#      - GF_AUTH_ANONYMOUS_ENABLED=true
-#      - GF_AUTH_ANONYMOUS_ORG_NAME=Main Org.
-#      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
-#      - GF_INSTALL_PLUGINS=grafana-worldmap-panel,flant-statusmap-panel,grafana-piechart-panel
-#    networks:
-#      - app-tier
-#    volumes:
-#      - $HOME/docker/grafana/data:/var/lib/grafana
-#      - ./docker/grafana/provisioning/:/etc/grafana/provisioning/
-#    user: root
+  grafana:
+    image: grafana/grafana:7.1.5
+    container_name: rockiot_grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - timescaledb
+    env_file:
+      - common.env
+    environment:
+      - WAIT_HOSTS=timescaledb:5432,rockiot:8000
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_NAME=Main Org.
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_INSTALL_PLUGINS=grafana-worldmap-panel,flant-statusmap-panel,grafana-piechart-panel
+    networks:
+      - app-tier
+    volumes:
+      - $HOME/docker/grafana/data:/var/lib/grafana
+      - ./docker/grafana/provisioning/:/etc/grafana/provisioning/
+    user: root
 
-networks:
-  metrics-tier:
-    driver: bridge
+#networks:
+#  metrics-tier:
+#    driver: bridge
