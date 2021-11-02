@@ -309,6 +309,11 @@ LOGGING = {
             'handlers': ['console'],
             'propagate': False,
         },
+        'src.exporter': {
+            'handlers': ['console'],
+            'propagate': False,
+            'level': 'DEBUG',
+        },
     },
     'root': {
         'level': 'INFO',
@@ -338,3 +343,7 @@ LEAFLET_CONFIG = {
 PROMETHEUS_EXPORT_MIGRATIONS = False
 PROMETHEUS_METRICS_EXPORT_PORT_RANGE = range(8001, 8050)
 PROMETHEUS_METRICS_EXPORT_ADDRESS = ''  # all addresses
+
+
+CELERY_WORKER_SEND_TASK_EVENTS = True
+CELERY_TASK_SEND_SENT_EVENT = True

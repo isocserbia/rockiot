@@ -84,6 +84,20 @@ services:
     networks:
       - app-tier
 
+  celeryexporter:
+    image: danihodovic/celery-exporter
+    command: --broker-url=amqp://rabbit1:5672/
+    container_name: celery-exporter
+    env_file:
+      - common.env
+      - db.env
+      - rockiot.dev.env
+    restart: unless-stopped
+    ports:
+      - "9808:9808"
+    networks:
+      - app-tier
+
 #  pgadmin:
 #    image: biarms/pgadmin4:4.21
 #    container_name: rockiot_pgadmin

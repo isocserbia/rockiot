@@ -58,6 +58,19 @@ services:
     networks:
       - app-tier
 
+  celeryexporter:
+    image: danihodovic/celery-exporter
+    container_name: celery-exporter
+    env_file:
+      - common.env
+      - db.prod.env
+      - rockiot.prod.env
+    restart: unless-stopped
+    ports:
+      - "9808:9808"
+    networks:
+      - app-tier
+
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.40.0
     container_name: cadvisor

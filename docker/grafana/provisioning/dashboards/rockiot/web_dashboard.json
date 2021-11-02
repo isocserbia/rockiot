@@ -24,7 +24,7 @@
   "gnetId": 9528,
   "graphTooltip": 0,
   "id": 7,
-  "iteration": 1635777799778,
+  "iteration": 1635798502524,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -61,7 +61,7 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "opm"
         },
         "overrides": []
       },
@@ -76,7 +76,7 @@
       "links": [],
       "maxDataPoints": 100,
       "options": {
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
@@ -88,7 +88,7 @@
           "values": false
         },
         "text": {},
-        "textMode": "auto"
+        "textMode": "value"
       },
       "pluginVersion": "8.2.1",
       "targets": [
@@ -99,7 +99,7 @@
           "refId": "A"
         }
       ],
-      "title": "Total Requests",
+      "title": "Request rate per minute",
       "type": "stat"
     },
     {
@@ -134,7 +134,7 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -149,7 +149,7 @@
       "links": [],
       "maxDataPoints": 100,
       "options": {
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
@@ -166,8 +166,10 @@
       "pluginVersion": "8.2.1",
       "targets": [
         {
+          "exemplar": true,
           "expr": "sum(irate(django_http_responses_total_by_status_total{status=~\"2.+\",namespace=~\"$namespace\", app=~\"^$app$\"}[1m]))",
           "format": "time_series",
+          "interval": "",
           "intervalFactor": 1,
           "legendFormat": "",
           "refId": "A"
@@ -208,7 +210,7 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -223,7 +225,7 @@
       "links": [],
       "maxDataPoints": 100,
       "options": {
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
@@ -282,7 +284,7 @@
               }
             ]
           },
-          "unit": "none"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -297,7 +299,7 @@
       "links": [],
       "maxDataPoints": 100,
       "options": {
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
@@ -600,6 +602,7 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": true,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -610,14 +613,16 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:354",
           "format": "short",
           "label": null,
-          "logBase": 1,
+          "logBase": 2,
           "max": null,
           "min": null,
           "show": true
         },
         {
+          "$$hashKey": "object:355",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -691,6 +696,7 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": true,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -701,20 +707,22 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:294",
           "format": "short",
-          "label": null,
-          "logBase": 1,
+          "label": "",
+          "logBase": 2,
           "max": null,
           "min": null,
           "show": true
         },
         {
+          "$$hashKey": "object:295",
           "format": "short",
           "label": null,
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": true
+          "show": false
         }
       ],
       "yaxis": {
@@ -731,7 +739,7 @@
     "list": [
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "Prometheus",
           "value": "Prometheus"
         },
@@ -754,7 +762,7 @@
         "allValue": ".*",
         "current": {
           "isNone": true,
-          "selected": false,
+          "selected": true,
           "text": "None",
           "value": ""
         },
@@ -784,7 +792,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "All",
           "value": "$__all"
         },
@@ -845,5 +853,5 @@
   "timezone": "",
   "title": "RockIOT Web Dashboard",
   "uid": "O6v4rMpizda",
-  "version": 2
+  "version": 3
 }

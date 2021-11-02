@@ -23,6 +23,8 @@ app.conf.update(
     result_expires=timedelta(days=7),
     worker_prefetch_multiplier=10,
     task_soft_time_limit=60,
+    worker_send_task_events=True,
+    task_send_sent_event=True
 )
 
 app.conf.database_table_schemas = {
