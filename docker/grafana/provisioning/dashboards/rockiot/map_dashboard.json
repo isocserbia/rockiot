@@ -1,0 +1,244 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Map with location of all devices and last sensor values",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 9,
+  "iteration": 1636062648261,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": "PostgreSQL",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 50
+              },
+              {
+                "color": "dark-red",
+                "value": 70
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 52,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "basemap": {
+          "config": {},
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showDebug": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "color": {
+                "field": "value",
+                "fixed": "dark-green"
+              },
+              "fillOpacity": 0.4,
+              "shape": "triangle",
+              "showLegend": true,
+              "size": {
+                "field": "value",
+                "fixed": 5,
+                "max": 10,
+                "min": 5
+              }
+            },
+            "location": {
+              "latitude": "latitude",
+              "longitude": "longitude",
+              "mode": "coords"
+            },
+            "type": "markers"
+          }
+        ],
+        "view": {
+          "id": "coords",
+          "lat": 26.116453,
+          "lon": 15.223423,
+          "shared": false,
+          "zoom": 5
+        }
+      },
+      "targets": [
+        {
+          "format": "table",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            }
+          ],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  ap.device_id as \"device_id\",\n  ST_X(location) As longitude, \n  ST_Y(location) As latitude,\n  ${sensor} as value\nFROM app_device ap join sensors_last_values r on ap.device_id = r.device_id\nORDER BY r.time desc",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "minutes_since_last_entry"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "count"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "minutes_since_last_entry"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "lag_diff_device",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Panel Title",
+      "type": "geomap"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 31,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "pm10",
+          "value": "pm10"
+        },
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "sensor",
+        "multi": false,
+        "name": "sensor",
+        "options": [
+          {
+            "selected": false,
+            "text": "temperature",
+            "value": "temperature"
+          },
+          {
+            "selected": false,
+            "text": "humidity",
+            "value": "humidity"
+          },
+          {
+            "selected": false,
+            "text": "so2",
+            "value": "so2"
+          },
+          {
+            "selected": false,
+            "text": "no2",
+            "value": "no2"
+          },
+          {
+            "selected": false,
+            "text": "pm1",
+            "value": "pm1"
+          },
+          {
+            "selected": false,
+            "text": "pm2_5",
+            "value": "pm2_5"
+          },
+          {
+            "selected": true,
+            "text": "pm10",
+            "value": "pm10"
+          }
+        ],
+        "query": "temperature, humidity, so2, no2, pm1, pm2_5, pm10",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "timepicker": {
+    "hidden": false,
+    "refresh_intervals": [
+      "10s"
+    ]
+  },
+  "timezone": "",
+  "title": "Rock IoT Devices Map",
+  "uid": "P6cS3aK7k",
+  "version": 8
+}

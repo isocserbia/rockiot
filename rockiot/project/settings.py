@@ -32,6 +32,7 @@ DEBUG = bool(os.environ.get("DEBUG", default=False))
 ALLOWED_HOSTS = ['*']
 
 EXPORT_METRICS = bool(config('EXPORT_METRICS', default='False'))
+USE_CACHE = bool(config('USE_CACHE', default='True'))
 
 # Application definition
 
@@ -83,6 +84,15 @@ if EXPORT_METRICS:
         ['django_prometheus.middleware.PrometheusBeforeMiddleware'] + \
         MIDDLEWARE + \
         ['django_prometheus.middleware.PrometheusAfterMiddleware']
+
+if USE_CACHE:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        },
+    }
+
+CACHE_MIDDLEWARE_SECONDS = 60 * 1
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -327,6 +337,7 @@ CORS_ORIGIN_WHITELIST = (
     'https://api.decazavazduh.rs',
     'https://api.decazavazduh.rs:8000',
     'http://localhost:8000',
+    'http://127.0.0.1:8000',
 )
 
 SERVING_URL = config('SERVING_URL', default=None)
