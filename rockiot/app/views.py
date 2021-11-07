@@ -57,6 +57,7 @@ class DevicesList(generics.ListAPIView):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
     pagination_class = LimitOffsetPagination
     pagination_class.default_limit = int(config['PAGE_SIZE'])
+    pagination_class.max_limit = int(config['PAGE_SIZE'])
 
 
 class DeviceChangeLogList(generics.ListAPIView):
@@ -81,6 +82,7 @@ class DeviceChangeLogList(generics.ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly, ]
     pagination_class = LimitOffsetPagination
     pagination_class.default_limit = int(config['PAGE_SIZE'])
+    pagination_class.max_limit = (int(config['PAGE_SIZE']) * 10)
 
 
 class MunicipalityView(generics.RetrieveAPIView):
@@ -164,6 +166,7 @@ class SensorDataList(generics.ListAPIView):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
     pagination_class = LimitOffsetPagination
     pagination_class.default_limit = int(config['PAGE_SIZE'])
+    pagination_class.max_limit = (int(config['PAGE_SIZE']) * 10)
 
 
 class SensorDataRawList(generics.ListAPIView):
@@ -189,6 +192,7 @@ class SensorDataRawList(generics.ListAPIView):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
     pagination_class = LimitOffsetPagination
     pagination_class.default_limit = int(config['PAGE_SIZE'])
+    pagination_class.max_limit = (int(config['PAGE_SIZE']) * 10)
 
 
 interval_param = openapi.Parameter('interval', openapi.IN_QUERY,
@@ -221,6 +225,7 @@ class DeviceSensorsSummary(generics.ListAPIView):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
     pagination_class = LimitOffsetPagination
     pagination_class.default_limit = int(config['PAGE_SIZE'])
+    pagination_class.max_limit = (int(config['PAGE_SIZE']) * 10)
 
 
 class FacilitySensorsSummary(generics.ListAPIView):
@@ -249,6 +254,7 @@ class FacilitySensorsSummary(generics.ListAPIView):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
     pagination_class = LimitOffsetPagination
     pagination_class.default_limit = int(config['PAGE_SIZE'])
+    pagination_class.max_limit = (int(config['PAGE_SIZE']) * 10)
 
 
 class MunicipalitySensorsSummary(generics.ListAPIView):
@@ -280,6 +286,7 @@ class MunicipalitySensorsSummary(generics.ListAPIView):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
     pagination_class = LimitOffsetPagination
     pagination_class.default_limit = int(config['PAGE_SIZE'])
+    pagination_class.max_limit = (int(config['PAGE_SIZE']) * 10)
 
 
 class SensorDataAverageMunicipality(generics.ListAPIView):
@@ -306,6 +313,7 @@ class SensorDataAverageMunicipality(generics.ListAPIView):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
     pagination_class = LimitOffsetPagination
     pagination_class.default_limit = int(config['PAGE_SIZE'])
+    pagination_class.max_limit = (int(config['PAGE_SIZE']) * 10)
 
 
 class SensorDataAverageFacility(generics.ListAPIView):
@@ -332,6 +340,7 @@ class SensorDataAverageFacility(generics.ListAPIView):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
     pagination_class = LimitOffsetPagination
     pagination_class.default_limit = int(config['PAGE_SIZE'])
+    pagination_class.max_limit = (int(config['PAGE_SIZE']) * 10)
 
 
 class SensorDataLastValuesList(generics.ListAPIView):

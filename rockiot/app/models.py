@@ -1,4 +1,3 @@
-import json
 import logging
 import uuid
 
@@ -6,13 +5,11 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models as gismodels
 from django.contrib.gis.geos import Point
-from django.core import exceptions
 from django.db import models
 from django.db.models import JSONField
 from django.utils.text import slugify
 from simple_history.models import HistoricalRecords
-
-from app.core.common import validate_json
+from srtools import cyrillic_to_latin
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +27,7 @@ class CommaSeparatedStringsField(models.CharField):
 
 class Municipality(models.Model):
     name = models.CharField(max_length=100)
-    code = models.CharField(max_length=100, null=True)
+    code = models.CharField(max_length=100, null=True, blank=True)
     area = gismodels.MultiPolygonField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -43,7 +40,10 @@ class Municipality(models.Model):
         return str(self.name)
 
     def save(self, *args, **kwargs):
-        self.code = slugify(self.name)
+        if not self.code:
+            self.code = slugify(cyrillic_to_latin(self.name))
+        else:
+            self.code = cyrillic_to_latin(self.code)
         super(Municipality, self).save(*args, **kwargs)
 
 
@@ -66,7 +66,7 @@ class Facility(models.Model):
     )
 
     name = models.CharField(max_length=100, null=False, unique=True)
-    code = models.SlugField(max_length=64, unique=True, default=uuid.uuid1())
+    code = models.SlugField(max_length=64, unique=True, default=uuid.uuid1(), blank=True)
     type = models.CharField(max_length=20, null=False, choices=TYPES, default=ELEMENTARY_SCHOOL)
     email = models.EmailField(max_length=120, null=False)
     description = models.TextField(blank=True, null=True)
@@ -103,7 +103,10 @@ class Facility(models.Model):
         return None if not self.municipality else self.municipality.name
 
     def save(self, *args, **kwargs):
-        self.code = slugify(self.name)
+        if not self.code:
+            self.code = slugify(cyrillic_to_latin(self.name))
+        else:
+            self.code = cyrillic_to_latin(self.code)
         super(Facility, self).save(*args, **kwargs)
 
 
