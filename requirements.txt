@@ -31,3 +31,4 @@ django-cors-headers
 django-health-check
 prometheus_client
 django-prometheus
+srtools
