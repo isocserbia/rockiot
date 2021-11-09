@@ -8,6 +8,8 @@ from django.contrib.gis.geos import Point
 from django.db import models
 from django.db.models import JSONField
 from django.utils.text import slugify
+from django_celery_results.models import TaskResult
+from dynamic_preferences.models import GlobalPreferenceModel
 from simple_history.models import HistoricalRecords
 from srtools import cyrillic_to_latin
 
@@ -575,3 +577,11 @@ class Sensor24hAverageMunicipality(SensorAverage):
         abstract = False
         managed = False
         db_table = "sensor_data_day_average_municipality"
+
+
+class RockiotGlobalPreferenceModel(GlobalPreferenceModel):
+    class Meta:
+        proxy = True
+        app_label = 'app'
+        verbose_name = GlobalPreferenceModel._meta.verbose_name
+

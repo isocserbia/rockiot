@@ -12,6 +12,8 @@ from django.utils.html import format_html
 from django_celery_beat.models import SolarSchedule, ClockedSchedule
 from django_celery_results.admin import TaskResultAdmin
 from django_celery_results.models import GroupResult, TaskResult
+from dynamic_preferences.admin import GlobalPreferenceAdmin
+from dynamic_preferences.models import GlobalPreferenceModel
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from import_export.fields import Field
@@ -19,7 +21,8 @@ from simple_history.admin import SimpleHistoryAdmin
 from simple_history.utils import update_change_reason
 
 from app.models import Facility, Device, Municipality, PlatformAttribute, Platform, \
-    FacilityMembership, DeviceConnection, CronJobExecution, CronJob, DeviceCalibrationModel, AlertScheme
+    FacilityMembership, DeviceConnection, CronJobExecution, CronJob, DeviceCalibrationModel, AlertScheme, \
+    RockiotGlobalPreferenceModel
 from app.system.decorators import action_form, device_event_form
 from app.system.dockerops import DockerOps
 from app.tasks import register_device, activate_device, deactivate_device, terminate_device, \
@@ -511,9 +514,29 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
         row_actions += super(DeviceAdmin, self).get_row_actions(obj)
         return row_actions
 
-    list_display = ('device_id', 'name', 'facility', 'municipality', 'mode', 'activation_status', 'state')
-    list_display_links = ('device_id', 'name')
-    list_filter = ('status', 'mode')
+    def get_list_display(self, request):
+        pref = request.user.preferences['device__table_columns']
+        if pref:
+            list_display = pref.split(', ')
+        else:
+            list_display = ('device_id', 'name', 'facility', 'municipality', 'mode', 'activation_status', 'state')
+        return list_display
+
+    def get_list_display_links(self, request, list_display):
+        pref = request.user.preferences['device__table_columns_links']
+        if pref:
+            return pref.split(', ')
+        else:
+            return super().get_list_display_links(request, list_display)
+
+    def get_list_filter(self, request):
+        pref = request.user.preferences['device__table_filter']
+        if pref:
+            list_filter = pref.split(', ')
+        else:
+            list_filter = ('status', 'mode')
+        return list_filter
+
     history_list_display = ["status"]
 
     def get_readonly_fields(self, request, obj=None):
@@ -685,7 +708,7 @@ admin.site.unregister(GroupResult)
 admin.site.unregister(TaskResult)
 
 
-class MyTaskResultAdmin(TaskResultAdmin):
+class RockiotTaskResultAdmin(TaskResultAdmin):
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -694,6 +717,9 @@ class MyTaskResultAdmin(TaskResultAdmin):
         return False
 
 
-admin.site.register(TaskResult, MyTaskResultAdmin)
+admin.site.register(TaskResult, RockiotTaskResultAdmin)
 
 # admin.site.index_template = 'admin/rockiot_index.html'
+
+admin.site.unregister(GlobalPreferenceModel)
+admin.site.register(RockiotGlobalPreferenceModel, GlobalPreferenceAdmin)

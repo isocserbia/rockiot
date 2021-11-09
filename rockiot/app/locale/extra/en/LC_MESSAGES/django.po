@@ -12,3 +12,15 @@ msgstr "Tasks"
 
 msgid "Celery Results"
 msgstr "Task results"
+
+msgid "Global preference"
+msgstr "Preference"
+
+msgid "Global preferences"
+msgstr "Preferences"
+
+msgid "Preferences - Users"
+msgstr "Preferences"
+
+msgid "Dynamic preferences"
+msgstr "User preferences"

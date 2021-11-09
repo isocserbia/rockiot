@@ -42,12 +42,3 @@ msgstr ""
 #: app/templates/admin/app/app_index.html:10
 msgid "Home"
 msgstr ""
-
-#~ msgid "Recent actions"
-#~ msgstr "YO actions"
-
-#~ msgid "Celery Results"
-#~ msgstr "Task results"
-
-#~ msgid "Authentication and Authorization"
-#~ msgstr "Security"

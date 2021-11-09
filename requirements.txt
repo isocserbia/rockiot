@@ -32,3 +32,4 @@ django-health-check
 prometheus_client
 django-prometheus
 srtools
+django-dynamic-preferences

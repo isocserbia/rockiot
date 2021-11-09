@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     'leaflet',
     'prettyjson',
     'corsheaders',
+    'dynamic_preferences',
+    'dynamic_preferences.users.apps.UserPreferencesConfig',
 ]
 
 if EXPORT_METRICS:
@@ -148,9 +150,19 @@ SIMPLE_JWT = {
     'SIGNING_KEY': SECRET_KEY
 }
 
+# available settings with their default values
+DYNAMIC_PREFERENCES = {
+    'MANAGER_ATTRIBUTE': 'preferences',
+    'REGISTRY_MODULE': 'preferences',
+    'ADMIN_ENABLE_CHANGELIST_FORM': False,
+    'SECTION_KEY_SEPARATOR': '__',
+    'ENABLE_CACHE': False,
+    'VALIDATE_NAMES': True,
+}
+
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'app', 'locale' 'default'),
-    os.path.join(BASE_DIR, 'app', 'locale', 'extra')
+    os.path.join(BASE_DIR, 'app', 'locale', 'extra'),
 )
 
 ROOT_URLCONF = 'project.urls'
@@ -166,6 +178,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'dynamic_preferences.processors.global_preferences',
             ],
             'libraries': {
                 'staticfiles': 'django.templatetags.static',
