@@ -18,11 +18,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenViewBase
 from app import models
 from app.models import Facility, SensorData, SensorDataLastValues, Device, Municipality, \
     SensorsDataRollupAbstract, SensorDataRaw
-from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer, SensorDataRawSerializer, \
+from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer, \
     SensorDataLastValuesSerializer, DeviceModelSerializer, \
     SensorsDataRollupSerializer, MunicipalityModelSerializer, SensorsDataRollupWithDeviceSerializer, \
     SensorDataSerializer, DeviceLogEntrySerializer, SensorAverageMunicipalitySerializer, \
-    SensorAverageFacilitySerializer
+    SensorAverageFacilitySerializer, SensorDataRawAllSerializer
 from app.tasks import export_raw_data_to_csv
 
 logger = logging.getLogger(__name__)
@@ -188,7 +188,7 @@ class SensorDataRawList(generics.ListAPIView):
             qs1 = qs1.filter(time__date__lte=until_date)
         return qs1
 
-    serializer_class = SensorDataRawSerializer
+    serializer_class = SensorDataRawAllSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
     pagination_class = LimitOffsetPagination
     pagination_class.default_limit = int(config['PAGE_SIZE'])
