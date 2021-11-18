@@ -20,6 +20,16 @@ services:
       - app-tier
     user: root
 
+  alertmanagerdiscord:
+    image: benjojo/alertmanager-discord:latest
+    ports:
+      - "9094:9094"
+    environment:
+      - DISCORD_WEBHOOK=https://discord.com/api/webhooks/905139528434597941/2DH-SrNUjKyEzlrcKVvdIxokribw70vIrIfkCpFh-98dIZTE9Uqq4EeKHtiorp2lJ4FJ
+      - WAIT_HOSTS=prometheus:9090
+    networks:
+      - app-tier
+
   alertmanager:
     image: bitnami/alertmanager:latest
     volumes:
