@@ -139,9 +139,24 @@ services:
       - app-tier
     restart: on-failure
 
+  portainer:
+    image: cr.portainer.io/portainer/portainer-ce:2.9.3
+    container_name: portainer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    restart: always
+    ports:
+      - "8099:8099"
+      - "9443:9443"
+    networks:
+      - app-tier
+
 networks:
   app-tier:
     driver: bridge
 
 volumes:
   rockiot-data:
+  portainer_data:
+    external: true
