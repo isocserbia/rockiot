@@ -3,7 +3,7 @@ groups:
     limit:
     rules:
       - alert: DeviceMetadataNotUpdated
-        expr: time() - rockiot_device_metadata_updated_at > 900 and rockiot_device_has_terminated_connection == 1
+        expr: time() - rockiot_device_metadata_updated_at > 1020 and rockiot_device_has_terminated_connection == 1
         for: 1m
         labels:
           severity: warning
@@ -12,7 +12,7 @@ groups:
           description: "Device {{ $labels.device }} metadata not updated. Last update before: {{ $value | humanizeDuration }}"
 
       - alert: DeviceNotIngestingData
-        expr: time() - rockiot_device_data_updated_at > 120 and rockiot_device_has_terminated_connection == 1
+        expr: time() - rockiot_device_data_updated_at > 150 and rockiot_device_has_terminated_connection == 1
         for: 1m
         labels:
           severity: warning
@@ -21,7 +21,7 @@ groups:
           description: "Device {{ $labels.device }} sensor data not ingested recently. Last update before: {{ $value | humanizeDuration }}"
 
       - alert: DeviceNotSeenOnlineRecently
-        expr: time() - rockiot_device_last_seen_at > 150 and rockiot_device_has_terminated_connection == 1
+        expr: time() - rockiot_device_last_seen_at > 180 and rockiot_device_has_terminated_connection == 1
         for: 1m
         labels:
           severity: warning
