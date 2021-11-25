@@ -121,7 +121,6 @@ services:
       - EXPORT_METRICS=True
     ports:
       - 8001:8001
-    restart: on-failure
 
   rockiot_ingest:
     build: rockiot_ingest

@@ -2,7 +2,6 @@ import logging
 import threading
 
 import time
-from datetime import datetime
 
 import psycopg2
 import pytz
