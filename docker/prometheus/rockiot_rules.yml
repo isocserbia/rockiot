@@ -1,32 +1,33 @@
 groups:
   - name: rockiot
+    limit:
     rules:
       - alert: DeviceMetadataNotUpdated
-        expr: time() - rockiot_device_metadata_updated_at > 900
+        expr: time() - rockiot_device_metadata_updated_at > 1020 and rockiot_device_has_terminated_connection == 1
         for: 1m
         labels:
           severity: warning
         annotations:
           summary: Device metadata not updated (device {{ $labels.device }})
-          description: "Device metadata not updated. Last update at: {{ $value }}"
+          description: "Device {{ $labels.device }} metadata not updated. Last update before: {{ $value | humanizeDuration }}"
 
       - alert: DeviceNotIngestingData
-        expr: time() - rockiot_device_data_updated_at > 120
+        expr: time() - rockiot_device_data_updated_at > 150 and rockiot_device_has_terminated_connection == 1
         for: 1m
         labels:
           severity: warning
         annotations:
           summary: Device is not ingesting data (device {{ $labels.device }})
-          description: "Device sensor data not ingested recently. Last update at: {{ $value }}"
+          description: "Device {{ $labels.device }} sensor data not ingested recently. Last update before: {{ $value | humanizeDuration }}"
 
       - alert: DeviceNotSeenOnlineRecently
-        expr: time() - rockiot_device_last_seen_at > 120
+        expr: time() - rockiot_device_last_seen_at > 180 and rockiot_device_has_terminated_connection == 1
         for: 1m
         labels:
           severity: warning
         annotations:
           summary: Device not seen Online recently (device {{ $labels.device }})
-          description: "Device not seen Online recently. Last time seen at: {{ $value }}"
+          description: "Device {{ $labels.device }} not seen Online recently. Last time seen before: {{ $value | humanizeDuration }}"
 
       - alert: DeviceTooManyTerminatedConnections
         expr: rockiot_device_terminated_connections_in_hour > 5
@@ -35,4 +36,4 @@ groups:
           severity: warning
         annotations:
           summary: Device has too many terminated connections in last hour (device {{ $labels.device }})
-          description: "Device is terminating connections to often. Terminated {{ $value }} connections in last hour"
+          description: "Device {{ $labels.device }} is terminating connections to often. Terminated {{ $value }} connections in last hour"

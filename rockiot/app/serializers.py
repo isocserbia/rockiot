@@ -1,4 +1,4 @@
-from datetime import timezone, time
+from datetime import timezone
 
 import rest_framework
 from rest_framework.serializers import CharField, SerializerMethodField, DateTimeField
@@ -131,6 +131,18 @@ class FacilitySerializer(serializers.GeoFeatureModelSerializer):
         model = Facility
         fields = ("id", "name")
         geo_field = "location"
+
+
+class SensorDataRawAllSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        result = {"time": instance.time}
+        for entry in instance.data:
+            result[entry] = instance.data[entry]
+        return result
+
+    class Meta:
+        model = SensorDataRaw
+        fields = ["time", "data"]
 
 
 class SensorDataRawSerializer(serializers.ModelSerializer):

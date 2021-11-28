@@ -2,7 +2,6 @@ import logging
 import threading
 
 import time
-from datetime import datetime
 
 import psycopg2
 import pytz
@@ -40,6 +39,8 @@ class MetricsExporter(threading.Thread):
         self.gauge3 = Gauge('data_updated_at', "Last data ingested at",
                             labelnames=("device",), namespace="rockiot", subsystem="device")
         self.gauge4 = Gauge('last_seen_at', "Last time device was seen online",
+                            labelnames=("device",), namespace="rockiot", subsystem="device")
+        self.gauge5 = Gauge('has_terminated_connection', "Device has terminated connection",
                             labelnames=("device",), namespace="rockiot", subsystem="device")
 
         db_args = dict(host=config["HOST"], port=config["PORT"], dbname=config["NAME"],
@@ -83,6 +84,7 @@ class MetricsExporter(threading.Thread):
                         seen_online = d[5]
                     if seen_online:
                         self.gauge4.labels(d[0]).set(localized_timestamp(seen_online))
+                    self.gauge5.labels(d[0]).set(d[5] is not None)
                 db_cursor.close()
         except:
             logger.error("error collecting devices metrics", exc_info=True)
