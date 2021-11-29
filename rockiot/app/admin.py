@@ -1,17 +1,25 @@
 from collections import OrderedDict
 from datetime import datetime
+from functools import reduce
 
 from django import forms
 from django.apps import apps
 from django.contrib import admin, messages
-from django.contrib.admin import ModelAdmin
+from django.contrib.admin import ModelAdmin, SimpleListFilter
 from django.contrib.gis.admin import OSMGeoAdmin
+from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.forms import TextInput, Textarea, ModelForm
 from django.utils.html import format_html
 from django_celery_beat.models import SolarSchedule, ClockedSchedule
 from django_celery_results.admin import TaskResultAdmin
 from django_celery_results.models import GroupResult, TaskResult
+from dynamic_preferences.admin import GlobalPreferenceAdmin, DynamicPreferenceAdmin
+from dynamic_preferences.models import GlobalPreferenceModel
+from dynamic_preferences.settings import preferences_settings
+from dynamic_preferences.users.admin import UserPreferenceAdmin
+from dynamic_preferences.users.forms import UserSinglePreferenceForm
+from dynamic_preferences.users.models import UserPreferenceModel
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from import_export.fields import Field
@@ -19,7 +27,8 @@ from simple_history.admin import SimpleHistoryAdmin
 from simple_history.utils import update_change_reason
 
 from app.models import Facility, Device, Municipality, PlatformAttribute, Platform, \
-    FacilityMembership, DeviceConnection, CronJobExecution, CronJob, DeviceCalibrationModel, AlertScheme
+    FacilityMembership, DeviceConnection, CronJobExecution, CronJob, DeviceCalibrationModel, AlertScheme, \
+    RockiotGlobalPreferenceModel
 from app.system.decorators import action_form, device_event_form
 from app.system.dockerops import DockerOps
 from app.tasks import register_device, activate_device, deactivate_device, terminate_device, \
@@ -27,6 +36,176 @@ from app.tasks import register_device, activate_device, deactivate_device, termi
 from app.widgets import MyPrettyJSONWidget
 
 DEFAULT_CHOICE_DASH = []
+
+
+class JSONFieldFilter(SimpleListFilter):
+
+    @staticmethod
+    def is_bool(x):
+        return x in ("True", "true", True, "False", "false", False)
+
+    @staticmethod
+    def to_bool(x):
+        return x in ("True", "true", True)
+
+    model_json_field_name = None  # name of the json field column in the model
+    json_data_property_name = None  # name of one attribute from json data
+
+    def get_child_value_from_json_field_data(self, json_field_data):
+        key_list = self.json_data_property_name.split('__')
+        for key in key_list:
+            if isinstance(json_field_data, dict):
+                json_field_data = json_field_data.get(key, None)
+        return json_field_data
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples.
+        The first element in each tuple is the coded value for the option that will appear in the URL query.
+        The 2nd element is the human-readable name for the option that will appear in the right sidebar.
+        """
+        if self.model_json_field_name is None:
+            raise ImproperlyConfigured(
+                f'Filter class {self.__class__.__name__} does not specify "model_json_field_name"')
+
+        if self.json_data_property_name is None:
+            raise ImproperlyConfigured(
+                f'Filter class {self.__class__.__name__} does not specify "json_data_property_name"')
+
+        field_value_set = set()
+
+        for json_field_data in model_admin.model.objects.values_list(self.model_json_field_name, flat=True):
+            field_data = self.get_child_value_from_json_field_data(json_field_data)
+            if field_data is not None:
+                field_value_set.add(field_data)
+
+        return [(v, v) for v in field_value_set]
+
+    @staticmethod
+    def _retype_value(value):
+        if value is None:
+            return value
+        if JSONFieldFilter.is_bool(value):
+            value = JSONFieldFilter.to_bool(value)
+            return value
+        try:
+            value = int(value)
+        except ValueError:
+            try:
+                value = float(value)
+            except ValueError:
+                value = str(value)
+        finally:
+            return value
+
+    def value(self):
+        return self._retype_value(super(JSONFieldFilter, self).value())
+
+    def queryset(self, request, queryset):
+        if self.value() is not None:
+            json_field_query = {f'{self.model_json_field_name}__{self.json_data_property_name}': self.value()}
+            return queryset.filter(**json_field_query)
+        else:
+            return queryset
+
+
+class DeviceMetadataFirmwareFilter(JSONFieldFilter):
+    model_json_field_name = 'metadata'
+    json_data_property_name = 'device_fw'
+    title = 'Device FW'
+    parameter_name = 'metadata_device_fw'
+
+
+class DeviceMetadataNo2ReadyFilter(JSONFieldFilter):
+    model_json_field_name = 'metadata'
+    json_data_property_name = 'no2_ready'
+    title = 'NO2 Ready'
+    parameter_name = 'metadata_no2_ready'
+
+
+class DeviceMetadataNo2OnlineFilter(JSONFieldFilter):
+    model_json_field_name = 'metadata'
+    json_data_property_name = 'no2_online'
+    title = 'NO2 Online'
+    parameter_name = 'metadata_no2_online'
+
+
+class DeviceMetadataSo2ReadyFilter(JSONFieldFilter):
+    model_json_field_name = 'metadata'
+    json_data_property_name = 'so2_ready'
+    title = 'SO2 Ready'
+    parameter_name = 'metadata_so2_ready'
+
+
+class DeviceMetadataSo2OnlineFilter(JSONFieldFilter):
+    model_json_field_name = 'metadata'
+    json_data_property_name = 'so2_online'
+    title = 'SO2 Online'
+    parameter_name = 'metadata_so2_online'
+
+
+class DeviceMetadataPmsOnlineFilter(JSONFieldFilter):
+    model_json_field_name = 'metadata'
+    json_data_property_name = 'pms_online'
+    title = 'PMS Online'
+    parameter_name = 'metadata_pms_online'
+
+
+class FacilityFilter(SimpleListFilter):
+    title = "Facility"
+    parameter_name = "facility"
+
+    def lookups(self, request, model_admin):
+        facilities = set([c.facility for c in model_admin.model.objects.select_related('facility').all()])
+        return [(c.id, c.name) for c in facilities]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            try:
+                facility_id = int(self.value())
+            except ValueError:
+                return queryset.none()
+            else:
+                return queryset.filter(facility__id=facility_id)
+
+
+class DynamicLookupMixin(object):
+    """
+    a mixin to add dynamic callable attributes like 'book__author' which
+    return a function that return the instance.book.author value
+    """
+
+    def __getattr__(self, attr):
+        if '__' in attr and not attr.startswith('_') and not attr.endswith('_boolean') and not attr.endswith('_short_description'):
+
+            def get_attr(parent, child):
+                if type(parent) is dict:
+                    return parent.get(child, "")
+                else:
+                    return getattr(parent, child)
+
+            def dyn_lookup(instance):
+                # traverse all __ lookups
+                return reduce(lambda parent, child: get_attr(parent, child),
+                              attr.split('__'),
+                              instance)
+
+            # get admin_order_field, boolean and short_description
+            dyn_lookup.admin_order_field = attr
+            dyn_lookup.boolean = getattr(self, '{}_boolean'.format(attr), False)
+            attr_parent = attr.split('__')[0]
+            if attr_parent.startswith("metadata"):
+                attr_name = f"(M) {attr.split('__')[1]}"
+            else:
+                attr_name = attr
+            dyn_lookup.short_description = getattr(
+                self, '{}_short_description'.format(attr_name),
+                attr_name.replace('_', ' ').capitalize())
+
+            return dyn_lookup
+
+        # not dynamic lookup, default behaviour
+        return self.__getattribute__(attr)
 
 
 class ActionMixin(object):
@@ -350,7 +529,7 @@ class DeviceSendEventForm(forms.Form):
 
 
 @admin.register(Device)
-class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
+class DeviceAdmin(ActionMixin, DynamicLookupMixin, OSMGeoAdmin, SimpleHistoryAdmin):
 
     map_template = 'admin/map-openlayers.html'
     default_zoom = 4
@@ -511,9 +690,44 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
         row_actions += super(DeviceAdmin, self).get_row_actions(obj)
         return row_actions
 
-    list_display = ('device_id', 'name', 'facility', 'municipality', 'mode', 'activation_status', 'state')
-    list_display_links = ('device_id', 'name')
-    list_filter = ('status', 'mode')
+    def get_list_display(self, request):
+        pref = request.user.preferences['device__table_columns']
+        if pref:
+            list_display = pref.split(', ')
+        else:
+            list_display = ('device_id', 'name', 'facility', 'municipality', 'mode', 'activation_status', 'state')
+        return list_display
+
+    def get_list_display_links(self, request, list_display):
+        pref = request.user.preferences['device__table_columns_links']
+        if pref:
+            return pref.split(', ')
+        else:
+            return super().get_list_display_links(request, list_display)
+
+    def get_list_filter(self, request):
+        optional_field_sets = {
+            'facility': FacilityFilter,
+            'device_fw': DeviceMetadataFirmwareFilter,
+            'no2_ready': DeviceMetadataNo2ReadyFilter,
+            'so2_ready': DeviceMetadataSo2ReadyFilter,
+            'no2_online': DeviceMetadataNo2OnlineFilter,
+            'so2_online': DeviceMetadataSo2OnlineFilter,
+            'pms_online': DeviceMetadataPmsOnlineFilter
+        }
+        list_filter = []
+        pref = request.user.preferences['device__table_filter']
+        if pref:
+            for s in pref.split(', '):
+                filtr = optional_field_sets.get(s.strip(), None)
+                if filtr is not None:
+                    list_filter.append(filtr)
+                else:
+                    list_filter.append(s.strip())
+        else:
+            list_filter = ('status', 'mode')
+        return list_filter
+
     history_list_display = ["status"]
 
     def get_readonly_fields(self, request, obj=None):
@@ -522,16 +736,29 @@ class DeviceAdmin(ActionMixin, OSMGeoAdmin, SimpleHistoryAdmin):
         else:
             return ['status', 'created_at', 'updated_at', 'state']
 
-    fieldsets = [
-        (None, {'fields': (
-            'device_id',
-            ('name', 'mode'),
-            ('description', 'facility')
-        )}),
-        ('Location', {'fields': ('location',)}),
-        ('Metadata', {'fields': ('metadata',), 'classes': ['collapse']}),
-        ('Confidential', {'fields': ('device_pass',), 'classes': ['collapse']})
-    ]
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = [
+            (None, {'fields': (
+                'device_id',
+                ('name', 'mode'),
+                ('description', 'facility')
+            )})
+        ]
+        pref_location_opened = request.user.preferences['device__form_location_opened']
+        optional_field_sets = {
+            'Location': ('Location', {'fields': ('location',), 'classes': ['' if pref_location_opened else 'collapse']}),
+            'Metadata': ('Metadata', {'fields': ('metadata',)}),
+            'Confidential': ('Confidential', {'fields': ('device_pass',), 'classes': ['collapse']})
+        }
+        pref = request.user.preferences['device__form_sections']
+        if pref:
+            for s in pref.split(', '):
+                fieldsets.append(optional_field_sets.get(s.strip()))
+        else:
+            fieldsets.append(optional_field_sets.get('Location'))
+            fieldsets.append(optional_field_sets.get('Metadata'))
+            fieldsets.append(optional_field_sets.get('Confidential'))
+        return fieldsets
 
     inlines = [DeviceCalibrationModelInlineAdmin, DeviceConnectionInlineAdmin]
     formfield_overrides = get_form_field_overrides()
@@ -685,7 +912,7 @@ admin.site.unregister(GroupResult)
 admin.site.unregister(TaskResult)
 
 
-class MyTaskResultAdmin(TaskResultAdmin):
+class RockiotTaskResultAdmin(TaskResultAdmin):
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -694,6 +921,27 @@ class MyTaskResultAdmin(TaskResultAdmin):
         return False
 
 
-admin.site.register(TaskResult, MyTaskResultAdmin)
+admin.site.register(TaskResult, RockiotTaskResultAdmin)
 
 # admin.site.index_template = 'admin/rockiot_index.html'
+
+admin.site.unregister(GlobalPreferenceModel)
+admin.site.register(RockiotGlobalPreferenceModel, GlobalPreferenceAdmin)
+
+
+class RockiotUserPreferenceAdmin(UserPreferenceAdmin):
+    search_fields = ['instance__username'] + DynamicPreferenceAdmin.search_fields
+    form = UserSinglePreferenceForm
+    list_display = ('verbose_name', 'name', 'help_text', 'raw_value', 'default_value')
+    list_display_links = ('verbose_name', 'name')
+    changelist_form = UserSinglePreferenceForm
+
+    def get_queryset(self, request, *args, **kwargs):
+        getattr(request.user, preferences_settings.MANAGER_ATTRIBUTE).all()
+        return super(UserPreferenceAdmin, self).get_queryset(
+            request, *args, **kwargs)
+
+
+admin.site.unregister(UserPreferenceModel)
+admin.site.register(UserPreferenceModel, RockiotUserPreferenceAdmin)
+

@@ -145,7 +145,15 @@ $function$;
 
 CREATE OR REPLACE FUNCTION rockiot_delete_terminated_devices_connections(since_time timestamptz) RETURNS void LANGUAGE PLPGSQL AS $function$
 BEGIN
-  RAISE NOTICE 'Deleting Terminated Devices Connections%', since_time;
+  RAISE NOTICE 'Deleting Terminated Devices Connections %', since_time;
   DELETE FROM public.app_deviceconnection WHERE state='TERMINATED' AND terminated_at IS NOT NULL AND terminated_at <= since_time;
+END;
+$function$;
+
+
+CREATE OR REPLACE FUNCTION rockiot_delete_metadata_devices_logs() RETURNS void LANGUAGE PLPGSQL AS $function$
+BEGIN
+  RAISE NOTICE 'Deleting Metadata Devices Logs';
+  DELETE FROM public.app_devicelogentry WHERE history_change_reason = 'Metadata saved (by device)' and history_date <= (select now() - (raw_value || ' days')::interval as since from dynamic_preferences_globalpreferencemodel where name = 'metadata_devices_logs_deletion_after_days');
 END;
 $function$;
