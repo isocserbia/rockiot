@@ -16,6 +16,8 @@ from srtools import cyrillic_to_latin
 logger = logging.getLogger(__name__)
 
 
+
+
 class CommaSeparatedStringsField(models.CharField):
 
     def from_db_value(self, value, *args):
@@ -584,4 +586,42 @@ class RockiotGlobalPreferenceModel(GlobalPreferenceModel):
         proxy = True
         app_label = 'app'
         verbose_name = GlobalPreferenceModel._meta.verbose_name
+
+
+class AqClassification(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.CharField(max_length=250)
+
+    class Meta:
+        db_table = 'aq_classification'
+
+    def __str__(self):
+        return self.name
+
+class AqCategory(models.Model):
+
+    TIME1H = '1h'
+    TIME4H = '4h'
+    TIME24H = '24h'
+    TIME15MIN = '15m'
+    TIMEFRAMES = (
+        (TIME1H, '1h'),
+        (TIME4H, '4h'),
+        (TIME24H, '24h'),
+        (TIME15MIN, '15m'),
+    )
+    name = models.CharField(max_length=100)
+    pollutant = models.CharField(max_length=16)
+    classification = models.ForeignKey(AqClassification, related_name='categories',
+                                       on_delete=models.CASCADE, null=False)
+    timeframe = models.CharField(max_length=10, choices=TIMEFRAMES, default=TIME1H, null=False)
+    lower_limit = models.IntegerField()
+    upper_limit = models.IntegerField()
+
+    class Meta:
+        db_table = 'aq_category'
+
+    def __str__(self):
+        return self.name
+
 
