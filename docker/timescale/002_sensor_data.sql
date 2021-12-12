@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS sensor_data (
   so2           DOUBLE PRECISION,
   pm1           DOUBLE PRECISION,
   pm10          DOUBLE PRECISION,
-  PM2_5         DOUBLE PRECISION,
+  pm2_5         DOUBLE PRECISION,
   CONSTRAINT sensor_data_unique UNIQUE (device_id, "time")
 );
 SELECT create_hypertable('sensor_data', 'time');
