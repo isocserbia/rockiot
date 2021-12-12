@@ -958,6 +958,7 @@ class AqCategoryAdmin(admin.TabularInline):
         return actions
 
 
+@admin.register(AqClassification)
 class AqClassificationAdmin(ModelAdmin):
     list_display = ('name', 'description')
     formfield_overrides = get_form_field_overrides()
@@ -969,6 +970,3 @@ class AqClassificationAdmin(ModelAdmin):
             del actions['delete_selected']
         return actions
 
-
-admin.site.register(AqClassification, AqClassificationAdmin)
-#admin.site.register(AqCategory, AqCategoryAdmin)

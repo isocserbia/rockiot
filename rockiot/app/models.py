@@ -598,6 +598,7 @@ class AqClassification(models.Model):
     def __str__(self):
         return self.name
 
+
 class AqCategory(models.Model):
 
     TIME1H = '1h'
