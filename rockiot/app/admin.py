@@ -28,7 +28,7 @@ from simple_history.utils import update_change_reason
 
 from app.models import Facility, Device, Municipality, PlatformAttribute, Platform, \
     FacilityMembership, DeviceConnection, CronJobExecution, CronJob, DeviceCalibrationModel, AlertScheme, \
-    RockiotGlobalPreferenceModel
+    RockiotGlobalPreferenceModel, AqCategory, AqClassification
 from app.system.decorators import action_form, device_event_form
 from app.system.dockerops import DockerOps
 from app.tasks import register_device, activate_device, deactivate_device, terminate_device, \
@@ -945,3 +945,30 @@ class RockiotUserPreferenceAdmin(UserPreferenceAdmin):
 admin.site.unregister(UserPreferenceModel)
 admin.site.register(UserPreferenceModel, RockiotUserPreferenceAdmin)
 
+
+class AqCategoryAdmin(admin.TabularInline):
+    model = AqCategory
+    list_display = ('name', 'classification', 'pollutant', 'timeframe', 'lower_limit', 'upper_limit')
+    formfield_overrides = get_form_field_overrides()
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+
+class AqClassificationAdmin(ModelAdmin):
+    list_display = ('name', 'description')
+    formfield_overrides = get_form_field_overrides()
+    inlines = [AqCategoryAdmin]
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+
+admin.site.register(AqClassification, AqClassificationAdmin)
+#admin.site.register(AqCategory, AqCategoryAdmin)
