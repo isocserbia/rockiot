@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS sensor_data_rollup_15m (
 );
 
 SELECT create_hypertable('sensor_data_rollup_15m', 'time');
-CREATE INDEX IF NOT EXISTS sensor_data_rollup_15m_device_id_time_ind ON sensor_data (device_id, time DESC);
+CREATE INDEX IF NOT EXISTS sensor_data_rollup_15m_device_id_time_ind ON sensor_data_rollup_15m (device_id, time DESC);
 
 
 CREATE TABLE IF NOT EXISTS sensor_data_rollup_1h (
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS sensor_data_rollup_1h (
 );
 
 SELECT create_hypertable('sensor_data_rollup_1h', 'time');
-CREATE INDEX IF NOT EXISTS sensor_data_rollup_1h_device_id_time_ind ON sensor_data (device_id, time DESC);
+CREATE INDEX IF NOT EXISTS sensor_data_rollup_1h_device_id_time_ind ON sensor_data_rollup_1h (device_id, time DESC);
 
 
 CREATE TABLE IF NOT EXISTS sensor_data_rollup_4h (
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS sensor_data_rollup_4h (
 );
 
 SELECT create_hypertable('sensor_data_rollup_4h', 'time');
-CREATE INDEX IF NOT EXISTS sensor_data_rollup_4h_device_id_time_ind ON sensor_data (device_id, time DESC);
+CREATE INDEX IF NOT EXISTS sensor_data_rollup_4h_device_id_time_ind ON sensor_data_rollup_4h (device_id, time DESC);
 
 
 CREATE TABLE IF NOT EXISTS sensor_data_rollup_24h (
@@ -63,4 +63,4 @@ CREATE TABLE IF NOT EXISTS sensor_data_rollup_24h (
 );
 
 SELECT create_hypertable('sensor_data_rollup_24h', 'time');
-CREATE INDEX IF NOT EXISTS sensor_data_rollup_24h_device_id_time_ind ON sensor_data (device_id, time DESC);
+CREATE INDEX IF NOT EXISTS sensor_data_rollup_24h_device_id_time_ind ON sensor_data_rollup_24h (device_id, time DESC);
