@@ -14,10 +14,18 @@ from simple_history.utils import update_change_reason
 from app.models import Device, DeviceConnection, PlatformAttribute
 from app.rabbitops import actions_events
 from app.rabbitops.mqtt_publisher import PahoPublisher
+from statsd import StatsClient
 
 config = settings.BROKER_CONFIG
 
 logger = logging.getLogger(__name__)
+
+
+statsd = StatsClient(host='statsd',
+                     port=9125,
+                     prefix=None,
+                     maxudpsize=512,
+                     ipv6=False)
 
 
 def get_mngmt_client():
@@ -75,27 +83,34 @@ def update_connections():
                         dc.update_from_rabbitmq_connection(dconn)
                         dc.save()
                         logger.info(f"{device.device_id} connection updated")
+                        statsd.gauge(f'rockiot.connected.{device.device_id}', 1)
                     except:
                         dcs_existing = DeviceConnection.objects.filter(name=dconn["name"], client_id=dconn["client_id"])
                         dcs_existing.update_from_rabbitmq_connection(dconn)
                         dcs_existing.save()
                         logger.info(f"{device.device_id} connection updated")
+                        statsd.gauge(f'rockiot.connected.{device.device_id}', 1)
                 else:
                     dc.state = Device.TERMINATED
                     dc.terminated_at = datetime.datetime.utcnow()
                     dc.save()
                     logger.info("%s connection changed, terminating ... " % device.device_id)
+                    statsd.incr(f'rockiot.connection.terminated.{device.device_id}')
+                    statsd.gauge(f'rockiot.connected.{device.device_id}', 0)
                     new_dc = DeviceConnection()
                     new_dc.device = dc.device
                     new_dc.update_from_rabbitmq_connection(list(conn.values())[0])
                     new_dc.save()
                     logger.info("%s new connection created" % device.device_id)
+                    statsd.gauge(f'rockiot.connected.{device.device_id}', 1)
                 del connection_map[device.device_id]
             else:
                 dc.state = Device.TERMINATED
                 dc.terminated_at = datetime.datetime.utcnow()
                 dc.save()
                 logger.info("%s connection terminated" % device.device_id)
+                statsd.incr(f'rockiot.connection.terminated.{device.device_id}')
+                statsd.gauge(f'rockiot.connected.{device.device_id}', 0)
         except:
             logger.error(f"Error updating device connection [device: {device.device_id}]", exc_info=True)
 
@@ -111,6 +126,7 @@ def update_connections():
                     new_dc.update_from_rabbitmq_connection(connection)
                     new_dc.save()
                     logger.info(f"{did} new connection created [client: {cid}]")
+                    statsd.gauge(f'rockiot.connected.{did}', 1)
                 else:
                     logger.info(f"{did} skipped, connection already exists [client: {cid}]")
             except:
@@ -199,6 +215,7 @@ def save_device_metadata(did, metadata):
         device.metadata = metadata
         device.save()
         update_change_reason(device, 'Metadata saved (by device)')
+        statsd.gauge(f'rockiot.metadata.saved.{device.device_id}', datetime.datetime.now().timestamp())
         return True
     except ValueError as ve:
         logger.error("Error executing task: ", exc_info=ve)

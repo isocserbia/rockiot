@@ -41,6 +41,9 @@ services:
       - django.env
     ports:
       - 8000:8000
+      - 8001:8001
+      - 8002:8002
+      - 8003:8003
     environment:
       - DEBUG=False
       - BROKER_EXCHANGE=amq.topic
@@ -107,20 +110,17 @@ services:
       - EXPORT_METRICS=False
     restart: on-failure
 
-  rockiotmetrics:
-    <<: *rockiotfunction
-    container_name: rockiot_app_metrics
-    command: >
-      sh -c "/wait.sh && python manage.py export_metrics"
-    depends_on:
-      - rabbit1
-      - rockiot
-    environment:
-      - BROKER_EXCHANGE=amq.topic
-      - WAIT_HOSTS=rabbit1:8883,rabbit1:15672,rockiot:8000
-      - EXPORT_METRICS=True
+  statsd:
+    image: prom/statsd-exporter
+    container_name: statsd
+    volumes:
+      - "./docker/statsd/statsd-mapping.conf:/statsd/statsd-mapping.conf:Z"
+    command: "--statsd.mapping-config=/statsd/statsd-mapping.conf"
     ports:
-      - 8001:8001
+      - "9125:9125/udp"
+      - "9102:9102"
+    networks:
+      - app-tier
 
   rockiot_ingest:
     build: rockiot_ingest
@@ -131,10 +131,11 @@ services:
       - BROKER_USER=amqpingest
       - BROKER_PASS=amqpingest_pass
       - BROKER_QUEUE=mq2_amqp
-      - WAIT_HOSTS=rabbit1:8883,rockiot:8000
+      - WAIT_HOSTS=rabbit1:8883,rockiot:8000,statsd:9125
     depends_on:
       - rabbit1
       - rockiot
+      - statsd
     networks:
       - app-tier
     restart: on-failure
