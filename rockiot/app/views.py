@@ -1,9 +1,10 @@
 """Markers view."""
 import json
 import logging
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from django.conf import settings
+from django.db.models import Prefetch
 from django.http import FileResponse, HttpResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
@@ -20,9 +21,10 @@ from app.models import Facility, SensorData, SensorDataLastValues, Device, Munic
     SensorsDataRollupAbstract, SensorDataRaw
 from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer, \
     SensorDataLastValuesSerializer, DeviceModelSerializer, \
-    SensorsDataRollupSerializer, MunicipalityModelSerializer, SensorsDataRollupWithDeviceSerializer, \
+    MunicipalityModelSerializer, SensorsDataRollupWithDeviceSerializer, \
     SensorDataSerializer, DeviceLogEntrySerializer, SensorAverageMunicipalitySerializer, \
-    SensorAverageFacilitySerializer, SensorDataRawAllSerializer
+    SensorAverageFacilitySerializer, SensorDataRawAllSerializer, DeviceReadingsSerializer, SensorsDataRollupSerializer, \
+    MunicipalityWithFacilitiesModelSerializer
 from app.tasks import export_raw_data_to_csv
 
 logger = logging.getLogger(__name__)
@@ -96,7 +98,7 @@ class MunicipalityView(generics.RetrieveAPIView):
         code = self.kwargs['code']
         return get_object_or_404(Municipality.objects, code=code)
 
-    serializer_class = MunicipalityModelSerializer
+    serializer_class = MunicipalityWithFacilitiesModelSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, ]
 
 
@@ -108,7 +110,7 @@ class MunicipalityList(generics.ListAPIView):
         return super().get(request, *args, **kwargs)
 
     queryset = Municipality.objects.all()
-    serializer_class = MunicipalityModelSerializer
+    serializer_class = MunicipalityWithFacilitiesModelSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
     pagination_class = LimitOffsetPagination
     pagination_class.default_limit = int(config['PAGE_SIZE'])
@@ -199,6 +201,14 @@ interval_param = openapi.Parameter('interval', openapi.IN_QUERY,
                                    description="interval ('15m','1h','4h','24h')",
                                    type=openapi.TYPE_STRING, default='1h')
 
+facility_code = openapi.Parameter('facility', openapi.IN_QUERY,
+                                  description="Facility code",
+                                  type=openapi.TYPE_STRING)
+
+municipality_code = openapi.Parameter('municipality', openapi.IN_QUERY,
+                                      description="Municipality code",
+                                      type=openapi.TYPE_STRING)
+
 
 class DeviceSensorsSummary(generics.ListAPIView):
     @swagger_auto_schema(operation_description="Retrieve list of aggregated Sensor data for Device and time Interval",
@@ -222,6 +232,38 @@ class DeviceSensorsSummary(generics.ListAPIView):
         return qs1
 
     serializer_class = SensorsDataRollupSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
+    pagination_class = LimitOffsetPagination
+    pagination_class.default_limit = int(config['PAGE_SIZE'])
+    pagination_class.max_limit = (int(config['PAGE_SIZE']) * 10)
+
+
+class AllDeviceSensorsSummary(generics.ListAPIView):
+    @swagger_auto_schema(
+        operation_description="Retrieve list of aggregated Sensor data for all devices in last 24h",
+        operation_summary="Gets aggregated Sensor data for all device in last 24h",
+        tags=['report'],
+        manual_parameters=[interval_param, facility_code, municipality_code])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        interval = self.request.query_params.get('interval')
+        facility_code_val = self.request.query_params.get('facility')
+        municipality_code_val = self.request.query_params.get('municipality')
+        model_cls = SensorsDataRollupAbstract.get_class_for_interval(interval)
+        sdq = model_cls.objects.filter(time__gt=datetime.now() - timedelta(days=1))
+        if facility_code_val is not None:
+            devq = Device.objects.filter(facility__code=facility_code_val)
+        elif municipality_code_val is not None:
+            devq = Device.objects.filter(facility__municipality__code=municipality_code_val)
+        else:
+            devq = Device.objects.all()
+        return devq.prefetch_related(Prefetch(model_cls.get_related_name(), queryset=sdq))
+
+    def get_serializer_class(self):
+        return DeviceReadingsSerializer.get_serializer_class(self.request.query_params.get("interval"))
+
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
     pagination_class = LimitOffsetPagination
     pagination_class.default_limit = int(config['PAGE_SIZE'])

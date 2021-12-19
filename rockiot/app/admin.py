@@ -648,7 +648,7 @@ class DeviceAdmin(ActionMixin, DynamicLookupMixin, OSMGeoAdmin, SimpleHistoryAdm
         return obj.municipality_name()
 
     def state(self, obj):
-        connection = DeviceConnection.objects.filter(device=obj).first()
+        connection = obj.connections.first()
         s = "UNKNOWN" if not connection else connection.state
         colors = {
             'RUNNING': '#44B78B',
@@ -729,6 +729,10 @@ class DeviceAdmin(ActionMixin, DynamicLookupMixin, OSMGeoAdmin, SimpleHistoryAdm
         return list_filter
 
     history_list_display = ["status"]
+
+    def get_queryset(self, request):
+        qs = super(DeviceAdmin, self).get_queryset(request)
+        return qs.prefetch_related('connections')
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
@@ -940,6 +944,12 @@ class RockiotUserPreferenceAdmin(UserPreferenceAdmin):
         getattr(request.user, preferences_settings.MANAGER_ATTRIBUTE).all()
         return super(UserPreferenceAdmin, self).get_queryset(
             request, *args, **kwargs)
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
 
 
 admin.site.unregister(UserPreferenceModel)
