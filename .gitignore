@@ -158,3 +158,4 @@ rockiot.aws.env
 /db.prod.env
 /rockiot.prod.env
 /rockiot.dev.env
+rockiot.env
