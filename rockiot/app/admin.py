@@ -28,7 +28,7 @@ from simple_history.utils import update_change_reason
 
 from app.models import Facility, Device, Municipality, PlatformAttribute, Platform, \
     FacilityMembership, DeviceConnection, CronJobExecution, CronJob, DeviceCalibrationModel, AlertScheme, \
-    RockiotGlobalPreferenceModel
+    RockiotGlobalPreferenceModel, AqCategory, AqClassification
 from app.system.decorators import action_form, device_event_form
 from app.system.dockerops import DockerOps
 from app.tasks import register_device, activate_device, deactivate_device, terminate_device, \
@@ -648,7 +648,7 @@ class DeviceAdmin(ActionMixin, DynamicLookupMixin, OSMGeoAdmin, SimpleHistoryAdm
         return obj.municipality_name()
 
     def state(self, obj):
-        connection = DeviceConnection.objects.filter(device=obj).first()
+        connection = obj.connections.first()
         s = "UNKNOWN" if not connection else connection.state
         colors = {
             'RUNNING': '#44B78B',
@@ -729,6 +729,10 @@ class DeviceAdmin(ActionMixin, DynamicLookupMixin, OSMGeoAdmin, SimpleHistoryAdm
         return list_filter
 
     history_list_display = ["status"]
+
+    def get_queryset(self, request):
+        qs = super(DeviceAdmin, self).get_queryset(request)
+        return qs.prefetch_related('connections')
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
@@ -941,7 +945,41 @@ class RockiotUserPreferenceAdmin(UserPreferenceAdmin):
         return super(UserPreferenceAdmin, self).get_queryset(
             request, *args, **kwargs)
 
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
 
 admin.site.unregister(UserPreferenceModel)
 admin.site.register(UserPreferenceModel, RockiotUserPreferenceAdmin)
+
+
+class AqCategoryAdmin(admin.TabularInline):
+    model = AqCategory
+    list_display = ('name', 'classification', 'pollutant', 'timeframe', 'lower_limit', 'upper_limit')
+    formfield_overrides = get_form_field_overrides()
+    extra = 0
+    show_change_link = True
+    can_delete = True
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+
+@admin.register(AqClassification)
+class AqClassificationAdmin(ModelAdmin):
+    list_display = ('name', 'description')
+    formfield_overrides = get_form_field_overrides()
+    inlines = [AqCategoryAdmin]
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
 

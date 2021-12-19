@@ -5,7 +5,7 @@ from app.views import FacilityList, MyTokenObtainPairView, FacilityView, \
     SensorDataRawList, SensorDataLastValuesList, DevicesList, \
     MunicipalitySensorsSummary, FacilitySensorsSummary, DeviceSensorsSummary, MunicipalityList, MunicipalityView, \
     MyTokenRefreshView, CsvExportView, SensorDataList, DeviceChangeLogList, IndexView, SensorDataAverageMunicipality, \
-    SensorDataAverageFacility
+    SensorDataAverageFacility, AllDeviceSensorsSummary
 
 app_name = "app"
 
@@ -22,6 +22,7 @@ urlpatterns = [
     path('devices/', cache_page(60 * 2)(DevicesList.as_view()), name='device-list'),
     path('devices/data/last/', cache_page(60)(SensorDataLastValuesList.as_view()), name='device-last-values'),
     path('devices/data/daily/csv/', CsvExportView.as_view(), name='devices-raw-daily-csv'),
+    path('devices/data/all/aggregate/', cache_page(60)(AllDeviceSensorsSummary.as_view()), name='devices-all-data-aggregate'),
     path('devices/<device_id>/data/aggregate/', cache_page(60)(DeviceSensorsSummary.as_view()), name='device-data-aggregate'),
     path('devices/<device_id>/data/raw/', cache_page(60)(SensorDataRawList.as_view()), name='device-data-raw'),
     path('devices/<device_id>/data/', cache_page(60)(SensorDataList.as_view()), name='device-data-clean'),

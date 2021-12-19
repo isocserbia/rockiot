@@ -7,9 +7,12 @@ import logging
 import re
 import time
 from contextlib import contextmanager
+from datetime import datetime
 
 import pika
 from psycopg2.pool import ThreadedConnectionPool
+from pytz import utc
+from statsd import StatsClient
 
 LOG_FORMAT = '%(levelname)s %(asctime)s %(module)s %(name)s %(process)d %(thread)d %(message)s'
 LOGGER = logging.getLogger(__name__)
@@ -28,6 +31,23 @@ TS_PASS = os.getenv("TS_PASS", default='postgres')
 
 conn_args = dict(host=TS_HOST, port=TS_PORT, database=TS_DB, user=TS_USER, password=TS_PASS)
 db_pool = ThreadedConnectionPool(3, 10, **conn_args)
+
+statsd = StatsClient(host='statsd',
+                     port=9125,
+                     prefix=None,
+                     maxudpsize=512,
+                     ipv6=False)
+
+
+def localized_timestamp(dt):
+    if not dt:
+        return None
+    return dt.timestamp() if dt.tzinfo is not None else utc.localize(dt).timestamp()
+
+
+def local_timestamp():
+    dt = datetime.now()
+    return localized_timestamp(dt)
 
 
 class PikaConsumer(object):
@@ -260,6 +280,7 @@ class PikaConsumer(object):
             logging.error(f"Device ID not detected from the topic [topic: {basic_deliver.routing_key}]")
             self.reject_message(basic_deliver.delivery_tag)
         else:
+            statsd.gauge(f'rockiot.last.ingest.{device_id}', local_timestamp())
             # if self.write_to_db(device_id, body):
             #     self.acknowledge_message(basic_deliver.delivery_tag)
             # else:

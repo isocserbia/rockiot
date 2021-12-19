@@ -33,3 +33,4 @@ prometheus_client
 django-prometheus
 srtools
 django-dynamic-preferences
+statsd

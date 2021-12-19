@@ -16,6 +16,8 @@ from srtools import cyrillic_to_latin
 logger = logging.getLogger(__name__)
 
 
+
+
 class CommaSeparatedStringsField(models.CharField):
 
     def from_db_value(self, value, *args):
@@ -189,7 +191,7 @@ class Device(models.Model):
     location = gismodels.PointField(null=True, default=belgrade_location_point)
     facility = models.ForeignKey(Facility, related_name='devices',
                                  db_column='facility_id', on_delete=models.PROTECT)
-    device_id = models.CharField(max_length=50, null=True)
+    device_id = models.CharField(max_length=50, null=True, unique=True)
     device_pass = models.CharField(max_length=128, null=True)
 
     status = models.CharField(max_length=20, null=False, choices=STATUSES, default=NEW)
@@ -385,8 +387,15 @@ class SensorData(SensorDataAbstract):
 
 
 class SensorsDataRollupAbstract(models.Model):
+    @staticmethod
+    def get_related_name():
+        return '%(app_label)s_%(class)s'
+
     time = models.DateTimeField(primary_key=True)
-    device_id = models.CharField(max_length=30)
+    device_id = models.ForeignKey(Device,
+                                  related_name=get_related_name.__func__(),
+                                  db_column='device_id', to_field="device_id",
+                                  on_delete=models.DO_NOTHING)
     temperature = models.DecimalField(decimal_places=4, max_digits=16)
     humidity = models.DecimalField(decimal_places=4, max_digits=16)
     no2 = models.DecimalField(decimal_places=4, max_digits=16)
@@ -416,6 +425,10 @@ class SensorsDataRollupAbstract(models.Model):
 
 
 class SensorsDataRollup15m(SensorsDataRollupAbstract):
+    @staticmethod
+    def get_related_name():
+        return 'app_sensorsdatarollup15m'
+
     class Meta:
         abstract = False
         managed = False
@@ -425,6 +438,10 @@ class SensorsDataRollup15m(SensorsDataRollupAbstract):
 
 
 class SensorsDataRollup1h(SensorsDataRollupAbstract):
+    @staticmethod
+    def get_related_name():
+        return 'app_sensorsdatarollup1h'
+
     class Meta:
         abstract = False
         managed = False
@@ -434,6 +451,10 @@ class SensorsDataRollup1h(SensorsDataRollupAbstract):
 
 
 class SensorsDataRollup4h(SensorsDataRollupAbstract):
+    @staticmethod
+    def get_related_name():
+        return 'app_sensorsdatarollup4h'
+
     class Meta:
         abstract = False
         managed = False
@@ -443,6 +464,10 @@ class SensorsDataRollup4h(SensorsDataRollupAbstract):
 
 
 class SensorsDataRollup24h(SensorsDataRollupAbstract):
+    @staticmethod
+    def get_related_name():
+        return 'app_sensorsdatarollup24h'
+
     class Meta:
         abstract = False
         managed = False
@@ -584,4 +609,60 @@ class RockiotGlobalPreferenceModel(GlobalPreferenceModel):
         proxy = True
         app_label = 'app'
         verbose_name = GlobalPreferenceModel._meta.verbose_name
+
+
+class AqClassification(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField()
+
+    class Meta:
+        db_table = 'aq_classification'
+
+    def __str__(self):
+        return self.name
+
+
+class AqCategory(models.Model):
+    TEMPERATURE = 'TEMPERATURE'
+    HUMIDITY = 'HUMIDITY'
+    PM1 = 'PM1'
+    PM2_5 = 'PM2_5'
+    PM10 = 'PM10'
+    NO2 = 'NO2'
+    SO2 = 'SO2'
+
+    POLLUTANTS =(
+        (TEMPERATURE, 'TEMPERATURE'),
+        (HUMIDITY, 'HUMIDITY'),
+        (PM1, 'PM1'),
+        (PM2_5, 'PM2_5'),
+        (PM10, 'PM10'),
+        (NO2, 'NO2'),
+        (SO2, 'SO2'),
+    )
+
+    TIME1H = '1h'
+    TIME4H = '4h'
+    TIME24H = '24h'
+    TIME15MIN = '15m'
+    TIMEFRAMES = (
+        (TIME1H, '1h'),
+        (TIME4H, '4h'),
+        (TIME24H, '24h'),
+        (TIME15MIN, '15m'),
+    )
+    name = models.CharField(max_length=100)
+    pollutant = models.CharField(max_length=16, choices=POLLUTANTS, default=PM1, null=False)
+    classification = models.ForeignKey(AqClassification, related_name='categories',
+                                       on_delete=models.CASCADE, null=False)
+    timeframe = models.CharField(max_length=10, choices=TIMEFRAMES, default=TIME1H, null=False)
+    lower_limit = models.IntegerField()
+    upper_limit = models.IntegerField()
+
+    class Meta:
+        db_table = 'aq_category'
+
+    def __str__(self):
+        return self.name
+
 

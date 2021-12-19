@@ -26,7 +26,7 @@ scrape_configs:
 
   - job_name: 'rockiot-exporter'
     static_configs:
-      - targets: [ 'rockiotmetrics:8001' ]
+      - targets: [ 'statsd:9102' ]
 
   - job_name: 'django-exporter'
     static_configs:
