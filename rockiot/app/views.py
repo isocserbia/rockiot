@@ -302,7 +302,7 @@ class SensorDataAverageMunicipality(generics.ListAPIView):
         interval = self.request.query_params.get('interval')
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
-        qs = getattr(models, f"Sensor{interval}AverageMunicipality").objects.filter(code=code)
+        qs = getattr(models, f"Sensor{interval or '1h'}AverageMunicipality").objects.filter(code=code)
         if from_date is not None:
             qs = qs.filter(time__date__gte=from_date)
         if until_date is not None:
@@ -329,7 +329,7 @@ class SensorDataAverageFacility(generics.ListAPIView):
         interval = self.request.query_params.get('interval')
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
-        qs = getattr(models, f"Sensor{interval}AverageFacility").objects.filter(code=code)
+        qs = getattr(models, f"Sensor{interval or '1h'}AverageFacility").objects.filter(code=code)
         if from_date is not None:
             qs = qs.filter(time__date__gte=from_date)
         if until_date is not None:
