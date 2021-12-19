@@ -153,6 +153,17 @@ services:
 #    networks:
 #      - app-tier
 
+  nginx:
+    container_name: rockiot_nginx
+    build:
+      context: ./docker/nginx
+    hostname: nginx
+    networks:
+      - app-tier
+    ports:
+      - "80:80"
+      - "443:443"
+
 networks:
   app-tier:
     driver: bridge
