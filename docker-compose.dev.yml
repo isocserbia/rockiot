@@ -60,10 +60,6 @@ services:
     env_file:
       - rockiot.dev.env
 
-  rockiotmetrics:
-    env_file:
-      - rockiot.dev.env
-
   rockiot_demo:
     build: rockiot_demo
     container_name: rockiot_demo_device1
