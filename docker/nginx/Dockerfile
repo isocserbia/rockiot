@@ -23,4 +23,4 @@ COPY ./config /etc/nginx/
 EXPOSE 80/tcp
 EXPOSE 443/tcp
 
-ENTRYPOINT ["/usr/bin/nginx", "-g", "daemon off;"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
