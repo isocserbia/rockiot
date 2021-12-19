@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from datetime import timedelta
 from pathlib import Path
+
+from corsheaders.defaults import default_headers
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,16 +23,40 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
+DEBUG = bool(os.environ.get("DEBUG", default=False))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-+kw3hg326l#06$3c6_dmahite83n6+d3ey-a2kaqhvl!&+(9u6'
-
+# SECURE_CROSS_ORIGIN_OPENER_POLICY = False
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# X_FRAME_OPTIONS = 'SAMEORIGIN'
+# CSRF_TRUSTED_ORIGINS = ('*', 'localhost', 'http://localhost:8000', 'openstreetmap.org')
+# 'same-origin'
+# SECURE_REFERRER_POLICY = 'no-referrer'
+# 'same-origin'
+# SECURE_CROSS_ORIGIN_OPENER_POLICY = 'unsafe-none'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DEBUG", default=False))
+# USE_X_FORWARDED_HOST = False
+# USE_X_FORWARDED_PORT = False
 
-# ALLOWED_HOSTS = ['localhost', '0.0.0.0', 'rockiot', 'rabbit', 'http://0.0.0.0:8000']
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = default_headers + (
+    'Access-Control-Allow-Origin',
+)
+CORS_ALLOWED_ORIGINS = (
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://a.tile.openstreetmap.org',
+    'http://b.tile.openstreetmap.org',
+    'http://c.tile.openstreetmap.org',
+    'https://a.tile.openstreetmap.org',
+    'https://b.tile.openstreetmap.org',
+    'https://c.tile.openstreetmap.org'
+)
+
+# ALLOWED_HOSTS = ['localhost', '0.0.0.0', 'rockiot', 'rabbit', 'http://0.0.0.0:8000', 'http://localhost:8000', 'https://a.tile.openstreetmap.org', '*.tile.openstreetmap.org']
 ALLOWED_HOSTS = ['*']
-
 EXPORT_METRICS = bool(config('EXPORT_METRICS', default='False'))
 USE_CACHE = bool(config('USE_CACHE', default='True'))
 
@@ -49,8 +75,8 @@ INSTALLED_APPS = [
     "django.contrib.gis",
     'django.contrib.admin',
     'health_check',
-    # 'health_check.contrib.celery',
     'app',
+    'corsheaders',
     'tasks',
     'simple_history',
     'rest_framework',
@@ -60,7 +86,6 @@ INSTALLED_APPS = [
     'import_export',
     'leaflet',
     'prettyjson',
-    'corsheaders',
     'dynamic_preferences',
     'dynamic_preferences.users.apps.UserPreferencesConfig',
 ]
@@ -74,10 +99,10 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'simple_history.middleware.HistoryRequestMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -156,7 +181,7 @@ DYNAMIC_PREFERENCES = {
     'REGISTRY_MODULE': 'preferences',
     'ADMIN_ENABLE_CHANGELIST_FORM': False,
     'SECTION_KEY_SEPARATOR': '__',
-    'ENABLE_CACHE': False,
+    'ENABLE_CACHE': USE_CACHE,
     'VALIDATE_NAMES': True,
 }
 
@@ -196,13 +221,6 @@ GEOS_LIBRARY_PATH = '/usr/lib/libgeos_c.so'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 DATABASES = {
     'default': {
@@ -277,15 +295,10 @@ ROCKIOT_CONFIG = {
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = False
-
 USE_TZ = False
-
 # DATETIME_FORMAT = '%d-%m-%YT%H:%M:%S.%fZ'
 
 # Static files (CSS, JavaScript, Images)
@@ -344,14 +357,6 @@ SIMPLE_HISTORY_HISTORY_CHANGE_REASON_USE_TEXT_FIELD = True
 SIMPLE_HISTORY_EDIT = True
 
 DEBUG = False
-
-CORS_ORIGIN_WHITELIST = (
-    'http://api.decazavazduh.rs',
-    'https://api.decazavazduh.rs',
-    'https://api.decazavazduh.rs:8000',
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-)
 
 SERVING_URL = config('SERVING_URL', default=None)
 

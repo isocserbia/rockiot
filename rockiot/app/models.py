@@ -191,7 +191,7 @@ class Device(models.Model):
     location = gismodels.PointField(null=True, default=belgrade_location_point)
     facility = models.ForeignKey(Facility, related_name='devices',
                                  db_column='facility_id', on_delete=models.PROTECT)
-    device_id = models.CharField(max_length=50, null=True)
+    device_id = models.CharField(max_length=50, null=True, unique=True)
     device_pass = models.CharField(max_length=128, null=True)
 
     status = models.CharField(max_length=20, null=False, choices=STATUSES, default=NEW)
@@ -387,8 +387,15 @@ class SensorData(SensorDataAbstract):
 
 
 class SensorsDataRollupAbstract(models.Model):
+    @staticmethod
+    def get_related_name():
+        return '%(app_label)s_%(class)s'
+
     time = models.DateTimeField(primary_key=True)
-    device_id = models.CharField(max_length=30)
+    device_id = models.ForeignKey(Device,
+                                  related_name=get_related_name.__func__(),
+                                  db_column='device_id', to_field="device_id",
+                                  on_delete=models.DO_NOTHING)
     temperature = models.DecimalField(decimal_places=4, max_digits=16)
     humidity = models.DecimalField(decimal_places=4, max_digits=16)
     no2 = models.DecimalField(decimal_places=4, max_digits=16)
@@ -418,6 +425,10 @@ class SensorsDataRollupAbstract(models.Model):
 
 
 class SensorsDataRollup15m(SensorsDataRollupAbstract):
+    @staticmethod
+    def get_related_name():
+        return 'app_sensorsdatarollup15m'
+
     class Meta:
         abstract = False
         managed = False
@@ -427,6 +438,10 @@ class SensorsDataRollup15m(SensorsDataRollupAbstract):
 
 
 class SensorsDataRollup1h(SensorsDataRollupAbstract):
+    @staticmethod
+    def get_related_name():
+        return 'app_sensorsdatarollup1h'
+
     class Meta:
         abstract = False
         managed = False
@@ -436,6 +451,10 @@ class SensorsDataRollup1h(SensorsDataRollupAbstract):
 
 
 class SensorsDataRollup4h(SensorsDataRollupAbstract):
+    @staticmethod
+    def get_related_name():
+        return 'app_sensorsdatarollup4h'
+
     class Meta:
         abstract = False
         managed = False
@@ -445,6 +464,10 @@ class SensorsDataRollup4h(SensorsDataRollupAbstract):
 
 
 class SensorsDataRollup24h(SensorsDataRollupAbstract):
+    @staticmethod
+    def get_related_name():
+        return 'app_sensorsdatarollup24h'
+
     class Meta:
         abstract = False
         managed = False

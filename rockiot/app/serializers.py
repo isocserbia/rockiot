@@ -1,12 +1,12 @@
 from datetime import timezone
 
 import rest_framework
+from django.apps import apps
 from rest_framework.serializers import CharField, SerializerMethodField, DateTimeField
 from rest_framework_gis import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from app.models import *
-from django.apps import apps
 
 
 class DateTimeTzAwareField(DateTimeField):
@@ -27,6 +27,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class MunicipalityModelSerializer(serializers.ModelSerializer):
+
     def validate(self, attrs):
         pass
 
@@ -126,11 +127,24 @@ class FacilityModelSerializer(serializers.ModelSerializer):
                   'municipality', 'location', 'created_at', 'updated_at', 'devices', 'memberships']
 
 
-class FacilitySerializer(serializers.GeoFeatureModelSerializer):
+class FacilitySerializer(serializers.ModelSerializer):
+    lon = rest_framework.serializers.ReadOnlyField()
+    lat = rest_framework.serializers.ReadOnlyField()
+
     class Meta:
         model = Facility
-        fields = ("id", "name")
-        geo_field = "location"
+        fields = ('code', 'name', 'address', 'lon', 'lat')
+
+
+class MunicipalityWithFacilitiesModelSerializer(serializers.ModelSerializer):
+    schools = FacilitySerializer(many=True, read_only=True, source="facilities")
+
+    def validate(self, attrs):
+        pass
+
+    class Meta:
+        model = Municipality
+        fields = ["code", "name", "schools"]
 
 
 class SensorDataRawAllSerializer(serializers.ModelSerializer):
@@ -201,16 +215,72 @@ class SensorDataRawSerializer(serializers.ModelSerializer):
             return 0.0
 
 
+class SensorsDataRollupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SensorsDataRollup1h
+        fields = ["time", "temperature", "humidity", "no2", "so2", "pm10", "pm2_5"]
+
+
 class SensorDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = SensorData
         fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
 
 
-class SensorsDataRollupSerializer(serializers.ModelSerializer):
+class DeviceReadingsSerializer:
+    @staticmethod
+    def get_serializer_class(interval="1h"):
+        if interval == "15m":
+            return DeviceReadings15mSerializer
+        if interval == "1h":
+            return DeviceReadings1hSerializer
+        elif interval == "4h":
+            return DeviceReadings4hSerializer
+        elif interval == "24h":
+            return DeviceReadings24hSerializer
+        else:
+            return DeviceReadings1hSerializer
+
+
+class DeviceReadings15mSerializer(serializers.ModelSerializer):
+    school = CharField(source='facility.code')
+    municipality = CharField(source='facility.municipality.code')
+    readings = SensorDataSerializer(many=True, read_only=True, source="app_sensorsdatarollup15m")
+
     class Meta:
-        model = SensorsDataRollup1h
-        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
+
+        model = Device
+        fields = ['device_id', 'school', 'municipality', 'readings']
+
+
+class DeviceReadings1hSerializer(serializers.ModelSerializer):
+    school = CharField(source='facility.code')
+    municipality = CharField(source='facility.municipality.code')
+    readings = SensorDataSerializer(many=True, read_only=True, source="app_sensorsdatarollup1h")
+
+    class Meta:
+        model = Device
+        fields = ['device_id', 'school', 'municipality', 'readings']
+
+
+class DeviceReadings4hSerializer(serializers.ModelSerializer):
+    school = CharField(source='facility.code')
+    municipality = CharField(source='facility.municipality.code')
+    readings = SensorDataSerializer(many=True, read_only=True, source="app_sensorsdatarollup4h")
+
+    class Meta:
+        model = Device
+        fields = ['device_id', 'school', 'municipality', 'readings']
+
+
+class DeviceReadings24hSerializer(serializers.ModelSerializer):
+    school = CharField(source='facility.code')
+    municipality = CharField(source='facility.municipality.code')
+    readings = SensorDataSerializer(many=True, read_only=True, source="app_sensorsdatarollup24h")
+
+    class Meta:
+        model = Device
+        fields = ['device_id', 'school', 'municipality', 'readings']
 
 
 class SensorsDataRollupWithDeviceSerializer(serializers.ModelSerializer):
