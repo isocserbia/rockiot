@@ -1,24 +1,26 @@
 FROM nginx:alpine
 
-# set main params
+# Set ENV variables
 ARG BUILD_ARGUMENT_ENV=dev
 ENV ENV=$BUILD_ARGUMENT_ENV
 
+# FOrward NGINX logs to console
 RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
-    ln -sf /dev/stderr /var/log/nginx/error.log && \
-    rm -rf /etc/nginx/conf.d/*
+    ln -sf /dev/stderr /var/log/nginx/error.log
 
-# install openssl
-RUN apk add --update openssl && \
+# Install and update OpenSSL
+RUN apk update && \
+    apk add --update openssl && \
     rm -rf /var/cache/apk/*
 
-# create folder for certificates
-RUN mkdir -p /etc/nginx/certificates
-COPY certs /etc/nginx/certificates
+# Copy SSL certs and keys
+COPY ./ssl /etc/ssl/
 
-# generate certificates
-# TODO: change it and make additional logic for production environment
-# RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/certificates/key.pem -out /etc/nginx/certificates/cert.pem -subj "/C=AT/ST=Vienna/L=Vienna/O=Security/OU=Development/CN=rockiotgate"
+# Copy NGINX configuration
+RUN mkdir -p /etc/nginx/sites-enabled
+COPY ./config /etc/nginx/
 
-# put nginx config
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80/tcp
+EXPOSE 443/tcp
+
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
