@@ -590,7 +590,7 @@ class RockiotGlobalPreferenceModel(GlobalPreferenceModel):
 
 class AqClassification(models.Model):
     name = models.CharField(max_length=50)
-    description = models.CharField(max_length=250)
+    description = models.TextField()
 
     class Meta:
         db_table = 'aq_classification'
@@ -600,6 +600,23 @@ class AqClassification(models.Model):
 
 
 class AqCategory(models.Model):
+    TEMPERATURE = 'TEMPERATURE'
+    HUMIDITY = 'HUMIDITY'
+    PM1 = 'PM1'
+    PM2_5 = 'PM2_5'
+    PM10 = 'PM10'
+    NO2 = 'NO2'
+    SO2 = 'SO2'
+
+    POLLUTANTS =(
+        (TEMPERATURE, 'TEMPERATURE'),
+        (HUMIDITY, 'HUMIDITY'),
+        (PM1, 'PM1'),
+        (PM2_5, 'PM2_5'),
+        (PM10, 'PM10'),
+        (NO2, 'NO2'),
+        (SO2, 'SO2'),
+    )
 
     TIME1H = '1h'
     TIME4H = '4h'
@@ -612,7 +629,7 @@ class AqCategory(models.Model):
         (TIME15MIN, '15m'),
     )
     name = models.CharField(max_length=100)
-    pollutant = models.CharField(max_length=16)
+    pollutant = models.CharField(max_length=16, choices=POLLUTANTS, default=PM1, null=False)
     classification = models.ForeignKey(AqClassification, related_name='categories',
                                        on_delete=models.CASCADE, null=False)
     timeframe = models.CharField(max_length=10, choices=TIMEFRAMES, default=TIME1H, null=False)

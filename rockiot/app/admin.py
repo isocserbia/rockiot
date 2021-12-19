@@ -950,6 +950,9 @@ class AqCategoryAdmin(admin.TabularInline):
     model = AqCategory
     list_display = ('name', 'classification', 'pollutant', 'timeframe', 'lower_limit', 'upper_limit')
     formfield_overrides = get_form_field_overrides()
+    extra = 0
+    show_change_link = True
+    can_delete = True
 
     def get_actions(self, request):
         actions = super().get_actions(request)
