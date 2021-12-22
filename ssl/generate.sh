@@ -19,9 +19,10 @@ openssl req -new -newkey rsa:4096 -nodes -keyout ./keys/decazavazduh.key -out de
 # Download ca-bundle and public key from register
 
 # Step 3
-# Append "STAR_decazavazduh_rs.crt" to "My_CA_Bundle.ca-bundle" and rename to "./certs/fullchain.pem"
+# Append "My_CA_Bundle.ca-bundle" to "STAR_decazavazduh_rs.crt" and rename to "./certs/fullchain.pem"
 
 # Step 4
+# Save "My_CA_Bundle.ca-bundle" as "./certs/trusted.pem"
 # Save "STAR_decazavazduh_rs.crt" as "./certs/decazavazduh.crt"
 
 # Step 5
