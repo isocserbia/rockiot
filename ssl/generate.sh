@@ -27,5 +27,5 @@ openssl req -new -newkey rsa:4096 -nodes -keyout ./keys/decazavazduh.key -out de
 # Step 5
 # Distribute ./keys and ./certs to other locations in the repository
 
-rsync -rP ./certs/ docker/nginx/ssl/certs/ --delete-after
-rsync -rP ./keys/ docker/nginx/ssl/keys/ --delete-after
+rsync -rP ./certs/ ../docker/nginx/ssl/certs/ --delete-after
+rsync -rP ./keys/ ../docker/nginx/ssl/keys/ --delete-after
