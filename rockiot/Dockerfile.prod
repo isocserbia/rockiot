@@ -10,7 +10,7 @@ RUN apk add --no-cache --virtual .build-deps-testing \
         geos-dev
 RUN apk add --no-cache geos proj gdal binutils
 RUN apk add postgresql-libs
-RUN apk add gcc musl-dev postgresql-dev python3-dev
+RUN apk add gcc musl-dev postgresql-dev python3-dev zlib zlib-dev jpeg-dev
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait.sh
 
