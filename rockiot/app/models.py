@@ -617,9 +617,11 @@ class AqClassification(models.Model):
 
     class Meta:
         db_table = 'aq_classification'
+        verbose_name = 'Quality classification'
 
     def __str__(self):
         return self.name
+
 
 
 class AqCategory(models.Model):
