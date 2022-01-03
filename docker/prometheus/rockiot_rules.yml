@@ -2,8 +2,8 @@ groups:
   - name: rockiot
     rules:
       - alert: DeviceMetadataNotUpdated
-        expr: time() - rockiot_metadata_saved > 1020 and rockiot_connected == 1
-        for: 1m
+        expr: time() - rockiot_metadata_saved > 1200 and rockiot_connected == 1
+        for: 2m
         labels:
           severity: warning
         annotations:
@@ -11,8 +11,8 @@ groups:
           description: "Device {{ $labels.device }} metadata not updated. Last update before: {{ $value | humanizeDuration }}"
 
       - alert: DeviceNotIngestingData
-        expr: time() - rockiot_last_ingest > 150 and rockiot_connected == 1
-        for: 1m
+        expr: time() - rockiot_last_ingest > 180 and rockiot_connected == 1
+        for: 2m
         labels:
           severity: warning
         annotations:
@@ -20,8 +20,8 @@ groups:
           description: "Device {{ $labels.device }} sensor data not ingested recently. Last update before: {{ $value | humanizeDuration }}"
 
       - alert: DeviceTooManyTerminatedConnections
-        expr: increase(rockiot_connection_terminated[1h]) > 4
-        for: 1m
+        expr: increase(rockiot_connection_terminated[1h]) > 5
+        for: 2m
         labels:
           severity: warning
         annotations:
