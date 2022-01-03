@@ -267,7 +267,7 @@ class AllDeviceSensorsSummary(generics.ListAPIView):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
     pagination_class = LimitOffsetPagination
     pagination_class.default_limit = int(config['PAGE_SIZE'])
-    pagination_class.max_limit = (int(config['PAGE_SIZE']) * 10)
+    pagination_class.max_limit = (int(config['PAGE_SIZE']) / 5)
 
 
 class FacilitySensorsSummary(generics.ListAPIView):
