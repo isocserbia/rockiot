@@ -1,3 +1,7 @@
+GRANT USAGE ON SCHEMA cron TO rock_iot;
+GRANT ALL ON ALL TABLES IN SCHEMA cron TO rock_iot;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA cron TO rock_iot;
+
 CREATE USER grafanareader WITH PASSWORD 'grafanareader';
 GRANT CONNECT ON DATABASE rock_iot TO grafanareader;
 GRANT USAGE ON SCHEMA public TO grafanareader;

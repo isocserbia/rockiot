@@ -8,6 +8,5 @@ CREATE OR REPLACE VIEW public.minutes_since_last_entry
           GROUP BY sensor_data.device_id) blah;
 
 CREATE OR REPLACE VIEW sensors_last_values AS
-SELECT DISTINCT ON (device_id) device_id, client_id, time, temperature, humidity, no2, so2, pm1, pm10, pm2_5
-FROM sensor_data
-ORDER BY device_id, time DESC;
+SELECT device_id, client_id, time, temperature, humidity, no2, so2, pm1, pm10, pm2_5
+FROM sensor_data s WHERE NOT EXISTS (SELECT 1 FROM sensor_data s2 WHERE s2.device_id = s.device_id AND s2.time > s.time);
