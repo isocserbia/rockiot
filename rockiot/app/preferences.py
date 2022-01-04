@@ -61,9 +61,9 @@ class DeviceTableColumnsLink(LongStringPreference):
 class DeviceTableFilter(LongStringPreference):
     section = device
     name = 'table_filter'
-    default = 'facility, status, mode'
+    default = 'facility, status, mode, state'
     required = False
-    help_text = 'Configures available filters for Devices list view. Columns must exist and be enabled. Available filters: device_id, facility, status, mode, device_fw, no2_ready, so2_ready, no2_online, so2_online, pms_online'
+    help_text = 'Configures available filters for Devices list view. Columns must exist and be enabled. Available filters: device_id, facility, status, state, mode, device_fw, no2_ready, so2_ready, no2_online, so2_online, pms_online'
 
 
 @user_preferences_registry.register

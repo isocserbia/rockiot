@@ -9,6 +9,7 @@ from django.contrib.admin import ModelAdmin, SimpleListFilter
 from django.contrib.gis.admin import OSMGeoAdmin
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
+from django.db.models import Q
 from django.forms import TextInput, Textarea, ModelForm
 from django.utils.html import format_html
 from django_celery_beat.models import SolarSchedule, ClockedSchedule
@@ -167,6 +168,29 @@ class FacilityFilter(SimpleListFilter):
                 return queryset.none()
             else:
                 return queryset.filter(facility__id=facility_id)
+
+
+class StateFilter(SimpleListFilter):
+    title = "State"
+    parameter_name = "state"
+
+    def lookups(self, request, model_admin):
+        return [('1', 'ONLINE'), ('2', 'OFFLINE')]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            try:
+                state_id = int(self.value())
+            except ValueError:
+                return queryset.none()
+            else:
+                if state_id == 1:
+                    return queryset.filter(connections__state='RUNNING')
+                else:
+                    return queryset.filter(
+                        Q(connections__state='TERMINATED') | Q(connections__state='UNKNOWN') | Q(
+                            connections__state__isnull=True)).exclude(connections__state='RUNNING') \
+                        .distinct()
 
 
 class DynamicLookupMixin(object):
@@ -708,6 +732,7 @@ class DeviceAdmin(ActionMixin, DynamicLookupMixin, OSMGeoAdmin, SimpleHistoryAdm
     def get_list_filter(self, request):
         optional_field_sets = {
             'facility': FacilityFilter,
+            'state': StateFilter,
             'device_fw': DeviceMetadataFirmwareFilter,
             'no2_ready': DeviceMetadataNo2ReadyFilter,
             'so2_ready': DeviceMetadataSo2ReadyFilter,
