@@ -1,5 +1,4 @@
 """Markers view."""
-import json
 import logging
 from datetime import date, datetime, timedelta
 
@@ -21,8 +20,8 @@ from app.models import Facility, SensorData, SensorDataLastValues, Device, Munic
     SensorsDataRollupAbstract, SensorDataRaw
 from app.serializers import FacilityModelSerializer, MyTokenObtainPairSerializer, \
     SensorDataLastValuesSerializer, DeviceModelSerializer, \
-    MunicipalityModelSerializer, SensorsDataRollupWithDeviceSerializer, \
-    SensorDataSerializer, DeviceLogEntrySerializer, SensorAverageMunicipalitySerializer, \
+    SensorsDataRollupWithDeviceSerializer, SensorDataSerializer, DeviceLogEntrySerializer, \
+    SensorAverageMunicipalitySerializer, \
     SensorAverageFacilitySerializer, SensorDataRawAllSerializer, DeviceReadingsSerializer, SensorsDataRollupSerializer, \
     MunicipalityWithFacilitiesModelSerializer
 from app.tasks import export_raw_data_to_csv
@@ -209,6 +208,10 @@ municipality_code = openapi.Parameter('municipality', openapi.IN_QUERY,
                                       description="Municipality code",
                                       type=openapi.TYPE_STRING)
 
+mode_param = openapi.Parameter('mode', openapi.IN_QUERY,
+                               description="Device mode",
+                               type=openapi.TYPE_STRING, default=Device.PRODUCTION)
+
 
 class DeviceSensorsSummary(generics.ListAPIView):
     @swagger_auto_schema(operation_description="Retrieve list of aggregated Sensor data for Device and time Interval",
@@ -243,7 +246,7 @@ class AllDeviceSensorsSummary(generics.ListAPIView):
         operation_description="Retrieve list of aggregated Sensor data for all devices in last 24h",
         operation_summary="Gets aggregated Sensor data for all device in last 24h",
         tags=['report'],
-        manual_parameters=[interval_param, facility_code, municipality_code])
+        manual_parameters=[interval_param, facility_code, municipality_code, mode_param])
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
@@ -251,15 +254,18 @@ class AllDeviceSensorsSummary(generics.ListAPIView):
         interval = self.request.query_params.get('interval')
         facility_code_val = self.request.query_params.get('facility')
         municipality_code_val = self.request.query_params.get('municipality')
+        mode_param_val = self.request.query_params.get('mode')
         model_cls = SensorsDataRollupAbstract.get_class_for_interval(interval)
         sdq = model_cls.objects.filter(time__gt=datetime.now() - timedelta(days=1))
+        devq = Device.objects.filter(mode=mode_param_val)
         if facility_code_val is not None:
-            devq = Device.objects.filter(facility__code=facility_code_val)
+            devq = devq.filter(facility__code=facility_code_val)
         elif municipality_code_val is not None:
-            devq = Device.objects.filter(facility__municipality__code=municipality_code_val)
-        else:
-            devq = Device.objects.all()
-        return devq.prefetch_related(Prefetch(model_cls.get_related_name(), queryset=sdq))
+            devq = devq.filter(facility__municipality__code=municipality_code_val)
+        devq = devq.only("device_id", "facility").prefetch_related(
+                Prefetch('facility', queryset=Facility.objects.all().only('id', 'code', 'municipality__code')))
+        result = devq.prefetch_related(Prefetch(model_cls.get_related_name(), queryset=sdq))
+        return result
 
     def get_serializer_class(self):
         return DeviceReadingsSerializer.get_serializer_class(self.request.query_params.get("interval"))
@@ -267,7 +273,7 @@ class AllDeviceSensorsSummary(generics.ListAPIView):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
     pagination_class = LimitOffsetPagination
     pagination_class.default_limit = int(config['PAGE_SIZE'])
-    pagination_class.max_limit = (int(config['PAGE_SIZE']) / 5)
+    pagination_class.max_limit = (int(config['PAGE_SIZE']) / 2)
 
 
 class FacilitySensorsSummary(generics.ListAPIView):

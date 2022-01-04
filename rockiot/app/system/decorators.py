@@ -8,15 +8,18 @@ from django.template.response import TemplateResponse
 log = logging.getLogger(__name__)
 
 
-def timeit(func):
-    def wrapper(*args, **kwargs):
-        start = datetime.utcnow()
-        result = func(*args, **kwargs)
-        end = datetime.utcnow()
-        log.info(f'Duration: {end - start}')
-        return result
+def duration_log():
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(self):
+            start = datetime.utcnow()
+            result = func(self)
+            end = datetime.utcnow()
+            log.info(f'Duration {func.__name__}: {end - start}')
+            return result
 
-    return wrapper
+        return wrapper
+    return decorator
 
 
 def action_form(form_class=None, initial_value="Change reason"):
