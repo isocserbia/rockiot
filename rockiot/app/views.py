@@ -53,7 +53,7 @@ class DevicesList(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
-    queryset = Device.objects.all()
+    queryset = Device.objects.defer("metadata").all()
     serializer_class = DeviceModelSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly, ]
     pagination_class = LimitOffsetPagination
@@ -254,10 +254,11 @@ class AllDeviceSensorsSummary(generics.ListAPIView):
         interval = self.request.query_params.get('interval')
         facility_code_val = self.request.query_params.get('facility')
         municipality_code_val = self.request.query_params.get('municipality')
-        mode_param_val = self.request.query_params.get('mode')
+        mode_param_val = self.request.query_params.get('mode', '').upper()
+        mode_param_val = mode_param_val if Device.is_known_mode(mode_param_val) else None
         model_cls = SensorsDataRollupAbstract.get_class_for_interval(interval)
         sdq = model_cls.objects.filter(time__gt=datetime.now() - timedelta(days=1))
-        devq = Device.objects.filter(mode=mode_param_val)
+        devq = Device.objects.all() if mode_param_val is None else Device.objects.filter(mode=mode_param_val)
         if facility_code_val is not None:
             devq = devq.filter(facility__code=facility_code_val)
         elif municipality_code_val is not None:
@@ -288,7 +289,7 @@ class FacilitySensorsSummary(generics.ListAPIView):
         code = self.kwargs['code']
         interval = self.request.query_params.get('interval')
         model_cls = SensorsDataRollupAbstract.get_class_for_interval(interval)
-        ids = list([d.device_id for d in Device.objects.filter(facility__code=code)])
+        ids = list([d.device_id for d in Device.objects.only("device_id").filter(facility__code=code)])
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
         qs1 = model_cls.objects.filter(device_id__in=ids)
@@ -319,8 +320,8 @@ class MunicipalitySensorsSummary(generics.ListAPIView):
         interval = self.request.query_params.get('interval')
         model_cls = SensorsDataRollupAbstract.get_class_for_interval(interval)
         mid = Municipality.objects.filter(code=code).first().id
-        eids = [e.id for e in Facility.objects.filter(municipality__id=mid)]
-        ids = list([d.device_id for d in Device.objects.filter(facility__id__in=eids)])
+        eids = [e.id for e in Facility.objects.only("id", "municipality").filter(municipality__id=mid)]
+        ids = list([d.device_id for d in Device.objects.only("device_id", "facility").filter(facility__id__in=eids)])
         from_date = self.request.query_params.get('from_date', None)
         until_date = self.request.query_params.get('until_date', None)
         qs1 = model_cls.objects.filter(device_id__in=ids)

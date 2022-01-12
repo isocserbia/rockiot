@@ -62,7 +62,7 @@ class DeviceModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Device
         fields = ["name", "device_id", "school_code", "lon", "lat", "status", "mode",
-                  "metadata", "last_active_at", "created_at", "updated_at"]
+                  "last_active_at", "created_at", "updated_at"]
 
 
 DeviceLogEntry = apps.get_model("app", "DeviceLogEntry")

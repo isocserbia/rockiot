@@ -250,6 +250,13 @@ class Device(models.Model):
     def municipality_name(self):
         return None if not self.facility else self.facility.municipality_name()
 
+    @classmethod
+    def is_known_mode(cls, mode_param):
+        try:
+            return [cls.DEFAULT, cls.PRODUCTION, cls.CALIBRATION].index(mode_param.upper()) >= 0
+        except ValueError:
+            return False
+
 
 class Platform(models.Model):
     name = models.CharField(max_length=30, null=False)
