@@ -16,9 +16,6 @@ RUN apk update && \
 RUN curl https://ssl-config.mozilla.org/ffdhe2048.txt \
     > /etc/ssl/dhparam
 
-# Copy SSL certs and keys
-COPY ./ssl /etc/ssl/
-
 # Copy NGINX configuration
 RUN mkdir -p /etc/nginx/sites-enabled
 COPY ./config /etc/nginx/
