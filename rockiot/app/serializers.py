@@ -218,7 +218,7 @@ class SensorDataRawSerializer(serializers.ModelSerializer):
 class SensorsDataRollupSerializer(serializers.ModelSerializer):
     class Meta:
         model = SensorsDataRollup1h
-        fields = ["time", "temperature", "humidity", "no2", "so2", "pm10", "pm2_5"]
+        fields = ["time", "temperature", "humidity", "no2", "so2", "pm1", "pm10", "pm2_5"]
 
 
 class SensorDataSerializer(serializers.ModelSerializer):

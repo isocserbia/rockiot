@@ -16,7 +16,6 @@ SELECT
 FROM sensor_data sd
 JOIN app_device ad on sd.device_id = ad.device_id
 WHERE time >= start_time AND time <= end_time
-AND ad.mode != 'CALIBRATION'
 GROUP BY mnt, sd.device_id
 ON CONFLICT (time, device_id)
 DO UPDATE
@@ -51,7 +50,6 @@ SELECT
 FROM sensor_data sd
 JOIN app_device ad on sd.device_id = ad.device_id
 WHERE time >= start_time AND time <= end_time
-AND ad.mode != 'CALIBRATION'
 GROUP BY hr, sd.device_id
 ON CONFLICT (time, device_id)
 DO UPDATE
@@ -86,7 +84,6 @@ SELECT
 FROM sensor_data sd
 JOIN app_device ad on sd.device_id = ad.device_id
 WHERE time >= start_time AND time <= end_time
-AND ad.mode != 'CALIBRATION'
 GROUP BY hr, sd.device_id
 ON CONFLICT (time, device_id)
 DO UPDATE
