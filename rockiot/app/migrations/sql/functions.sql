@@ -1,10 +1,9 @@
 CREATE OR REPLACE FUNCTION rockiot_compute_15m_rollups(start_time timestamptz, end_time timestamptz) RETURNS void LANGUAGE PLPGSQL AS $function$
 BEGIN
   RAISE NOTICE 'Computing 15min rollups from % to % (excluded)', start_time, end_time;
-
 INSERT INTO sensor_data_rollup_15m("time", device_id, temperature, humidity, no2, so2, pm1, pm10, pm2_5)
 SELECT
-   date_trunc('seconds', (time - timestamptz 'epoch') / 900) * 900 + timestamptz 'epoch' AS mnt,
+   date_trunc('seconds', (time - timestamp 'epoch') / 900) * 900 + timestamp 'epoch' AS mnt,
    sd.device_id,
    ROUND(avg(temperature)::numeric, 4) as temperature,
    ROUND(avg(humidity)::numeric, 4) as humidity,
@@ -31,11 +30,9 @@ END;
 $function$;
 
 
-
 CREATE OR REPLACE FUNCTION rockiot_compute_1h_rollups(start_time timestamptz, end_time timestamptz) RETURNS void LANGUAGE PLPGSQL AS $function$
 BEGIN
   RAISE NOTICE 'Computing 1h rollups from % to % (excluded)', start_time, end_time;
-
 INSERT INTO sensor_data_rollup_1h("time", device_id, temperature, humidity, no2, so2, pm1, pm10, pm2_5)
 SELECT
    date_trunc('hour', time) AS hr,
@@ -69,10 +66,9 @@ $function$;
 CREATE OR REPLACE FUNCTION rockiot_compute_4h_rollups(start_time timestamptz, end_time timestamptz) RETURNS void LANGUAGE PLPGSQL AS $function$
 BEGIN
   RAISE NOTICE 'Computing 4h rollups from % to % (excluded)', start_time, end_time;
-
 INSERT INTO sensor_data_rollup_4h("time", device_id, temperature, humidity, no2, so2, pm1, pm10, pm2_5)
 SELECT
-   date_trunc('hour', (time - timestamptz 'epoch') / 4) * 4 + timestamptz 'epoch' AS hr,
+   date_trunc('hour', (time - timestamp 'epoch') / 4) * 4 + timestamp 'epoch' AS hr,
    sd.device_id,
    ROUND(avg(temperature)::numeric, 4) as temperature,
    ROUND(avg(humidity)::numeric, 4) as humidity,
