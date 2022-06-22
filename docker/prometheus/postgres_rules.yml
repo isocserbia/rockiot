@@ -65,10 +65,46 @@ groups:
           description: "Too many locks acquired on the database. If this alert happens frequently, we may need to increase the postgres setting max_locks_per_transaction {{ $value }}"
 
       - alert: CleanAndCalibrateTaskFailed
-        expr: pg_celery_task_fail_failed_celery_taks > 5
+        expr: pg_celery_clean_calibrate_task_fail_failed_clean_calibrate_tasks > 5
         for: 1m
         labels:
           severity: critical
         annotations:
           summary: Celery tasks Clean&Calibrate failed
           description: "Celery tasks Clean&Calibrate are failing in last 2 hours"
+
+      - alert: CronRollupTaskCount15m
+        expr: pg_cron_aggregate_rollup_count_aggregate_rollup_count_15m < 10000
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: Low data in rollup task for 15 minutes
+          description: "Rollup task for 15 minutes is not processing enough data"
+
+      - alert: CronRollupTaskCount1h
+        expr: pg_cron_aggregate_rollup_count_aggregate_rollup_count_1h < 10000
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: Low data in rollup task for 1 hour
+          description: "Rollup task for 1 hour is not processing enough data"
+
+      - alert: CronRollupTaskCount4h
+        expr: pg_cron_aggregate_rollup_count_aggregate_rollup_count_4h < 10000
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: Low data in rollup task for 4 hours
+          description: "Rollup task for 4 hours is not processing enough data"
+
+      - alert: CronRollupTaskCount24h
+        expr: pg_cron_aggregate_rollup_count_aggregate_rollup_count_24h < 200
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: Low data in rollup task for 24 hours
+          description: "Rollup task for 24 hours is not processing enough data"

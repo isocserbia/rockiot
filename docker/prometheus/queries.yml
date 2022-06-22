@@ -2,24 +2,80 @@
 # Change ExecStart in /lib/systemd/system/prometheus-postgres-exporter.service to:
 #   ExecStart=/usr/bin/prometheus-postgres-exporter --extend.query-path /etc/queries.yml $ARGS
 
-pg_celery_task_fail:
+pg_celery_clean_calibrate_task_fail:
   query: |
     with
       metrics as (
         select
-          count(task_id) as failed_celery_taks
+          count(task_id) as failed_clean_calibrate_tasks
         from
           django_celery_results_taskresult
         where
-          date_created > now() - interval '2h' and
+          date_created > timezone('utc', now()) - interval '2h' and
           task_name = 'app.tasks.clean_and_calibrate' and
           status != 'SUCCESS'
       )
     select
-        failed_celery_taks
+        failed_clean_calibrate_tasks
     from metrics;
   master: true
   metrics:
-    - failed_celery_taks:
+    - failed_clean_calibrate_tasks:
         usage: "GAUGE"
-        description: "Number of failed Celery tasks"
+        description: "Number of failed Clean&Calibrate Celery tasks"
+
+pg_cron_aggregate_rollup_count:
+  query: |
+    with
+      metrics_15m as (
+        select
+          count(time) as aggregate_rollup_count_15m
+        from
+          sensor_data_rollup_15m
+        where time > timezone('utc', now()) - interval '30min'
+      ),
+      metrics_1h as (
+        select
+          count(time) as aggregate_rollup_count_1h
+        from
+          sensor_data_rollup_1h
+        where time > timezone('utc', now()) - interval '1.5h'
+      ),
+      metrics_4h as (
+        select
+          count(time) as aggregate_rollup_count_4h
+        from
+          sensor_data_rollup_4h
+        where time > timezone('utc', now()) - interval '6h'
+      ),
+      metrics_24h as (
+        select
+          count(time) as aggregate_rollup_count_24h
+        from
+          sensor_data_rollup_4h
+        where time > timezone('utc', now()) - interval '36h'
+      )
+    select
+      aggregate_rollup_count_15m,
+      aggregate_rollup_count_1h,
+      aggregate_rollup_count_4h,
+      aggregate_rollup_count_24h
+    from
+      metrics_15m,
+      metrics_1h,
+      metrics_4h,
+      metrics_24h;
+  master: true
+  metrics:
+    - aggregate_rollup_count_15m:
+        usage: "GAUGE"
+        description: "Count of unique rolled up datasets in last 30min"
+    - aggregate_rollup_count_1h:
+        usage: "GAUGE"
+        description: "Count of unique rolled up datasets in last 1.5h"
+    - aggregate_rollup_count_4h:
+        usage: "GAUGE"
+        description: "Count of unique rolled up datasets in last 6h"
+    - aggregate_rollup_count_24h:
+        usage: "GAUGE"
+        description: "Count of unique rolled up datasets in last 36h"
