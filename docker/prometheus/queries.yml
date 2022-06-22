@@ -52,7 +52,7 @@ pg_cron_aggregate_rollup_count:
         select
           count(time) as aggregate_rollup_count_24h
         from
-          sensor_data_rollup_4h
+          sensor_data_rollup_24h
         where time > timezone('utc', now()) - interval '36h'
       )
     select

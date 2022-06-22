@@ -74,7 +74,7 @@ groups:
           description: "Celery tasks Clean&Calibrate are failing in last 2 hours"
 
       - alert: CronRollupTaskCount15m
-        expr: pg_cron_aggregate_rollup_count_aggregate_rollup_count_15m < 10000
+        expr: pg_cron_aggregate_rollup_count_aggregate_rollup_count_15m < 120
         for: 1m
         labels:
           severity: warning
@@ -83,7 +83,7 @@ groups:
           description: "Rollup task for 15 minutes is not processing enough data"
 
       - alert: CronRollupTaskCount1h
-        expr: pg_cron_aggregate_rollup_count_aggregate_rollup_count_1h < 10000
+        expr: pg_cron_aggregate_rollup_count_aggregate_rollup_count_1h < 120
         for: 1m
         labels:
           severity: warning
@@ -92,7 +92,7 @@ groups:
           description: "Rollup task for 1 hour is not processing enough data"
 
       - alert: CronRollupTaskCount4h
-        expr: pg_cron_aggregate_rollup_count_aggregate_rollup_count_4h < 10000
+        expr: pg_cron_aggregate_rollup_count_aggregate_rollup_count_4h < 120
         for: 1m
         labels:
           severity: warning
@@ -101,7 +101,7 @@ groups:
           description: "Rollup task for 4 hours is not processing enough data"
 
       - alert: CronRollupTaskCount24h
-        expr: pg_cron_aggregate_rollup_count_aggregate_rollup_count_24h < 200
+        expr: pg_cron_aggregate_rollup_count_aggregate_rollup_count_24h < 120
         for: 1m
         labels:
           severity: warning
