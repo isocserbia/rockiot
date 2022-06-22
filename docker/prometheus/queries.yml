@@ -1,0 +1,25 @@
+# Add this file to /etc/queries.yml
+# Change ExecStart in /lib/systemd/system/prometheus-postgres-exporter.service to:
+#   ExecStart=/usr/bin/prometheus-postgres-exporter --extend.query-path /etc/queries.yml $ARGS
+
+pg_celery_task_fail:
+  query: |
+    with
+      metrics as (
+        select
+          count(task_id) as failed_celery_taks
+        from
+          django_celery_results_taskresult
+        where
+          date_created > now() - interval '2h' and
+          task_name = 'app.tasks.clean_and_calibrate' and
+          status != 'SUCCESS'
+      )
+    select
+        failed_celery_taks
+    from metrics;
+  master: true
+  metrics:
+    - failed_celery_taks:
+        usage: "GAUGE"
+        description: "Number of failed Celery tasks"
