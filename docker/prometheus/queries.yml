@@ -79,3 +79,23 @@ pg_cron_aggregate_rollup_count:
     - aggregate_rollup_count_24h:
         usage: "GAUGE"
         description: "Count of unique rolled up datasets in last 36h"
+
+pg_cron_job_failures:
+  query: |
+    with
+      last_hour as (
+        select
+            count(status) as last_hour_failures
+        from
+            cron.job_run_details
+        where "status" = 'failed' and start_time >= timezone('utc', now()) - interval '1h'
+      )
+    select
+      last_hour_failures
+    from
+      last_hour;
+  master: true
+  metrics:
+    - last_hour_failures:
+        usage: "GAUGE"
+        description: "Count of failed cron data jobs in last 1 hour"

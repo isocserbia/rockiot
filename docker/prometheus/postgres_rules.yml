@@ -108,3 +108,12 @@ groups:
         annotations:
           summary: Low data in rollup task for 24 hours
           description: "Rollup task for 24 hours is not processing enough data"
+
+      - alert: DataJobFailure
+        expr: pg_cron_job_failures_last_hour_failures > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: Scheduled data jobs are failing
+          description: "One or more scheduled cron data jobs failed in the last hour"
