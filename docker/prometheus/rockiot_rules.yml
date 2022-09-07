@@ -27,3 +27,12 @@ groups:
         annotations:
           summary: Device has too many terminated connections in last hour (device {{ $labels.device }})
           description: "Device {{ $labels.device }} is terminating connections to often. Terminated {{ $value }} connections in last hour"
+
+      - alert: DeviceConnectionLost
+        expr: max_over_time(rockiot_connected[45m]) < 1
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: Device (device {{ $labels.device }}) is offline
+          description: "Device {{ $labels.device }} has been offline during the last hour"
