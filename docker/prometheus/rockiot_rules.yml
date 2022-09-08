@@ -30,9 +30,10 @@ groups:
 
       - alert: DeviceConnectionLost
         expr: max_over_time(rockiot_connected[45m]) < 1
-        for: 1h
+        for: 15m
         labels:
           severity: warning
+          oneshot: true
         annotations:
-          summary: Device (device {{ $labels.device }}) is offline
+          summary: Device {{ $labels.device }} is offline
           description: "Device {{ $labels.device }} has been offline during the last hour"

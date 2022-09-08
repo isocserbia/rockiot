@@ -2,14 +2,12 @@ global:
   slack_api_url: https://hooks.slack.com/services/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
 
 route:
-  receiver: 'discord_webhook'
-  group_wait: 1m
+  receiver: 'slack-notifications'
+  group_wait: 30s
   group_interval: 5m
-  repeat_interval: 30m
+  repeat_interval: 1h
   group_by: [alarmname, device]
   routes:
-    - receiver: 'discord_webhook'
-      repeat_interval: 1h
     - receiver: 'slack-notifications'
       repeat_interval: 1h
 
